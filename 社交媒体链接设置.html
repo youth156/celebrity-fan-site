@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社交媒体链接设置</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6C38FF', // 主色调：紫色
+                        secondary: '#FF5E7D', // 辅助色：粉色
+                        dark: '#1A1A2E',
+                        light: '#F7F7F9',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-3xl">
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-center text-dark">社交媒体链接设置</h1>
+            
+            <form id="socialForm" class="space-y-6">
+                <div>
+                    <label for="weibo" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-weibo text-red-500 mr-2"></i>微博链接
+                    </label>
+                    <input type="url" id="weibo" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://weibo.com/明星账号" value="https://weibo.com/u/7977907334">
+                </div>
+                
+                <div>
+                    <label for="twitter" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-twitter text-blue-400 mr-2"></i>Twitter/X链接
+                    </label>
+                    <input type="url" id="twitter" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://twitter.com/明星账号" value="https://x.com/boom_rvw">
+                </div>
+                
+                <div>
+                    <label for="instagram" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-instagram text-pink-500 mr-2"></i>Instagram链接
+                    </label>
+                    <input type="url" id="instagram" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://instagram.com/明星账号" value="https://www.instagram.com/boom_rvw">
+                </div>
+                
+                <div>
+                    <label for="youtube" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-youtube-play text-red-600 mr-2"></i>YouTube链接
+                    </label>
+                    <input type="url" id="youtube" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://youtube.com/明星频道" value="#">
+                </div>
+                
+                <div class="flex justify-center space-x-4 pt-4">
+                    <button type="button" id="previewBtn" class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition-all">
+                        预览链接
+                    </button>
+                    <button type="button" id="generateBtn" class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all">
+                        生成代码
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="resultDiv" class="hidden bg-white rounded-xl shadow-lg p-8">
+            <h2 class="text-xl font-bold mb-4 text-dark">生成的代码</h2>
+            <p class="text-gray-600 mb-4">请复制以下代码，替换index.html文件中对应的社交媒体链接部分：</p>
+            <div class="relative">
+                <pre id="resultCode" class="bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm"></pre>
+                <button id="copyBtn" class="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded text-sm hover:bg-primary/90 transition-all">
+                    复制代码
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            // 获取用户输入的链接
+            const weibo = document.getElementById('weibo').value || '#';
+            const twitter = document.getElementById('twitter').value || '#';
+            const instagram = document.getElementById('instagram').value || '#';
+            const youtube = document.getElementById('youtube').value || '#';
+            
+            // 生成HTML代码
+            const htmlCode = `                    <div class="mt-12 flex space-x-6">
+                        <a href="${weibo}" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="${twitter}" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="${instagram}" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="${youtube}" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                    </div>`;
+            
+            // 显示结果
+            document.getElementById('resultCode').textContent = htmlCode;
+            document.getElementById('resultDiv').classList.remove('hidden');
+            
+            // 滚动到结果区域
+            document.getElementById('resultDiv').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        document.getElementById('previewBtn').addEventListener('click', function() {
+            // 简单预览功能
+            const weibo = document.getElementById('weibo').value || '#';
+            const twitter = document.getElementById('twitter').value || '#';
+            const instagram = document.getElementById('instagram').value || '#';
+            const youtube = document.getElementById('youtube').value || '#';
+            
+            let previewText = "当前设置的链接：\n";
+            previewText += `- 微博: ${weibo}\n`;
+            previewText += `- Twitter/X: ${twitter}\n`;
+            previewText += `- Instagram: ${instagram}\n`;
+            previewText += `- YouTube: ${youtube}`;
+            
+            alert(previewText);
+        });
+        
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const code = document.getElementById('resultCode').textContent;
+            navigator.clipboard.writeText(code).then(function() {
+                alert('代码已复制到剪贴板！');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代表作品查看详情链接设置</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6C38FF', // 主色调：紫色
+                        secondary: '#FF5E7D', // 辅助色：粉色
+                        dark: '#1A1A2E',
+                        light: '#F7F7F9',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-3xl">
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-center text-dark">代表作品查看详情链接设置</h1>
+            
+            <form id="worksForm" class="space-y-6">
+                <div>
+                    <label for="topform" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-film text-primary mr-2"></i>《TopForm》链接
+                    </label>
+                    <input type="url" id="topform" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://example.com/topform" value="https://www.iflix.com/zh-cn/play/d1z6o64bu16ncf3">
+                </div>
+                
+                <div>
+                    <label for="chainsofheart" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-film text-primary mr-2"></i>《Chains Of Heart》链接
+                    </label>
+                    <input type="url" id="chainsofheart" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://example.com/chainsofheart" value="https://www.iq.com/play/%E5%BF%83%E9%93%BE-%E7%AC%AC1%E9%9B%86-1zhugtw8fjs?lang=zh_cn">
+                </div>
+                
+                <div>
+                    <label for="northstar" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-music text-primary mr-2"></i>《North Star》链接
+                    </label>
+                    <input type="url" id="northstar" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://example.com/northstar" value="https://youtu.be/rYLY1Vzv1QM?si=xLcnSYFHbIubKSAS">
+                </div>
+                
+                <div>
+                    <label for="bt4u" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-music text-primary mr-2"></i>《BT4U》链接
+                    </label>
+                    <input type="url" id="bt4u" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://example.com/bt4u" value="https://open.spotify.com/search">
+                </div>
+                
+                <div>
+                    <label for="news1" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-newspaper-o text-primary mr-2"></i>新剧《爱情迷宫2》新闻链接
+                    </label>
+                    <input type="url" id="news1" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://example.com/news1" value="https://x.com/nitteleplus/status/1959812981656813893?t=kbDmXf81Amz17dqViuhWSg&s=09">
+                </div>
+                
+                <div>
+                    <label for="news2" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-newspaper-o text-primary mr-2"></i>时尚活动新闻链接
+                    </label>
+                    <input type="url" id="news2" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://example.com/news2" value="https://x.com/HeadlinerTH/status/1974100411620704341?s=19">
+                </div>
+                
+                <div>
+                    <label for="news3" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fa fa-newspaper-o text-primary mr-2"></i>GISMOW推荐官新闻链接
+                    </label>
+                    <input type="url" id="news3" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="https://example.com/news3" value="https://weibo.com/7977907334/5215941505319759">
+                </div>
+                
+                <div class="flex justify-center space-x-4 pt-4">
+                    <button type="button" id="previewBtn" class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition-all">
+                        预览链接
+                    </button>
+                    <button type="button" id="generateBtn" class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all">
+                        生成代码
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="resultDiv" class="hidden bg-white rounded-xl shadow-lg p-8">
+            <h2 class="text-xl font-bold mb-4 text-dark">生成的代码</h2>
+            <p class="text-gray-600 mb-4">请复制以下代码，替换index.html文件中对应的代表作品链接部分：</p>
+            <div class="relative">
+                <pre id="resultCode" class="bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm"></pre>
+                <button id="copyBtn" class="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded text-sm hover:bg-primary/90 transition-all">
+                    复制代码
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            // 获取用户输入的链接
+            const topform = document.getElementById('topform').value || '#';
+            const chainsofheart = document.getElementById('chainsofheart').value || '#';
+            const northstar = document.getElementById('northstar').value || '#';
+            const bt4u = document.getElementById('bt4u').value || '#';
+            // 新闻链接
+            const news1 = document.getElementById('news1').value || '#';
+            const news2 = document.getElementById('news2').value || '#';
+            const news3 = document.getElementById('news3').value || '#';
+            
+            // 生成HTML代码
+            const htmlCode = `<!-- 关于部分的代表作品链接 -->
+                                    <a href="${topform}" class="text-primary hover:underline">《TopForm》</a>、
+                                    <a href="${chainsofheart}" class="text-primary hover:underline">《Chains Of Heart》</a>
+                                
+                                <!-- 关于部分的音乐作品链接 -->
+                                    <a href="${northstar}" class="text-primary hover:underline">《North Star》</a>、
+                                    <a href="${bt4u}" class="text-primary hover:underline">《BT4U》</a>
+                                
+<!-- 作品网格中的链接 -->
+                                <a href="${topform}" class="px-4 py-2 bg-primary/90 text-white rounded-lg hover:bg-primary transition-all">查看详情</a>
+                                <a href="${chainsofheart}" class="px-4 py-2 bg-primary/90 text-white rounded-lg hover:bg-primary transition-all">查看详情</a>
+                                <a href="${northstar}" class="px-4 py-2 bg-primary/90 text-white rounded-lg hover:bg-primary transition-all">聆听音乐</a>
+                                <a href="${bt4u}" class="px-4 py-2 bg-primary/90 text-white rounded-lg hover:bg-primary transition-all">聆听音乐</a>
+                                
+<!-- 最新动态部分的链接 -->
+                                <a href="${news1}" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom">
+                                    阅读更多
+                                    <i class="fa fa-long-arrow-right ml-2"></i>
+                                </a>
+                                <a href="${news2}" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom">
+                                    阅读更多
+                                    <i class="fa fa-long-arrow-right ml-2"></i>
+                                </a>
+                                <a href="${news3}" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom">
+                                    阅读更多
+                                    <i class="fa fa-long-arrow-right ml-2"></i>
+                                </a>`;
+            
+            // 显示结果
+            document.getElementById('resultCode').textContent = htmlCode;
+            document.getElementById('resultDiv').classList.remove('hidden');
+            
+            // 滚动到结果区域
+            document.getElementById('resultDiv').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        document.getElementById('previewBtn').addEventListener('click', function() {
+            // 简单预览功能
+            const topform = document.getElementById('topform').value || '#';
+            const chainsofheart = document.getElementById('chainsofheart').value || '#';
+            const northstar = document.getElementById('northstar').value || '#';
+            const bt4u = document.getElementById('bt4u').value || '#';
+            const news1 = document.getElementById('news1').value || '#';
+            const news2 = document.getElementById('news2').value || '#';
+            const news3 = document.getElementById('news3').value || '#';
+            
+            let previewText = "当前设置的链接：\n";
+            previewText += `- 《TopForm》: ${topform}\n`;
+            previewText += `- 《Chains Of Heart》: ${chainsofheart}\n`;
+            previewText += `- 《North Star》: ${northstar}\n`;
+            previewText += `- 《BT4U》: ${bt4u}\n`;
+            previewText += `- 新剧《爱情迷宫2》新闻: ${news1}\n`;
+            previewText += `- 时尚活动新闻: ${news2}\n`;
+            previewText += `- GISMOW推荐官新闻: ${news3}`;
+            
+            alert(previewText);
+        });
+        
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const code = document.getElementById('resultCode').textContent;
+            navigator.clipboard.writeText(code).then(function() {
+                alert('代码已复制到剪贴板！');
+            });
+        });
+    </script>
+</body>
+</html>

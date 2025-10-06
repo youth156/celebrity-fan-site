@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星光闪耀 - 明星宣传网站</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6C38FF', // 主色调：紫色，代表创造力和独特性
+                        secondary: '#FF5E7D', // 辅助色：粉色，代表热情和活力
+                        dark: '#1A1A2E', // 深色背景
+                        light: '#F7F7F9', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+            .transition-custom {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+        }
+    </style>
+    <!-- 预加载字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light font-sans text-gray-800 overflow-x-hidden">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="#" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fa fa-star text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-display font-bold text-white text-shadow-lg">Boom Raweewit</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="home">首页</a>
+                    <a href="#about" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="about">关于</a>
+                    <a href="#works" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="works">作品</a>
+                    <a href="#gallery" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="gallery">照片</a>
+                    <a href="#news" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="news">动态</a>
+                     
+                    <!-- 语言切换下拉菜单 -->
+                    <div id="language-selector" class="relative ml-6">
+                        <button id="language-btn" class="flex items-center space-x-2 bg-white/10 hover:bg-primary px-3 py-1.5 rounded-full text-white transition-custom">
+                            <i class="fa fa-globe"></i>
+                            <span id="current-language">中文</span>
+                            <i class="fa fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 hidden">
+                            <a href="#" data-lang="zh" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇨🇳</span> 中文
+                            </a>
+                            <a href="#" data-lang="en" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇬🇧</span> English
+                            </a>
+                            <a href="#" data-lang="th" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇹🇭</span> ภาษาไทย
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-white text-2xl focus:outline-none">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>            </div>
+            <!-- 图片查看器模态框 -->            
+            <div id="imageViewer" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
+                <button id="closeViewer" class="absolute top-6 right-6 text-white text-3xl hover:text-primary transition-custom">
+                    <i class="fa fa-times"></i>
+                </button>
+                <button id="prevImage" class="absolute left-4 text-white text-4xl hover:text-primary transition-custom">
+                    <i class="fa fa-angle-left"></i>
+                </button>
+                <div class="max-w-5xl w-full max-h-[80vh] relative">
+                    <img id="viewerImage" src="" alt="大图预览" class="w-full h-full object-contain">
+                </div>
+                <button id="nextImage" class="absolute right-4 text-white text-4xl hover:text-primary transition-custom">
+                    <i class="fa fa-angle-right"></i>
+                </button>
+            </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-dark/95 backdrop-blur-md">
+            <div class="container mx-auto px-4 py-4 space-y-4">
+                <a href="#home" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="home">首页</a>
+                    <a href="#about" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="about">关于</a>
+                    <a href="#works" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="works">作品</a>
+                    <a href="#gallery" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="gallery">照片</a>
+                    <a href="#news" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="news">动态</a>
+                    
+                    <!-- 移动端语言切换 -->
+                    <div class="pt-2 border-t border-white/10">
+                        <button id="mobile-lang-btn" class="flex items-center justify-between w-full text-white py-2">
+                            <span><i class="fa fa-globe mr-2"></i> <span data-lang-key="language">语言</span></span>
+                            <i class="fa fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="mobile-lang-menu" class="hidden mt-2 space-y-1">
+                            <a href="#" data-lang="zh" class="block px-4 py-2 hover:bg-primary/10 text-white transition-custom">
+                                <span class="flag-icon">🇨🇳</span> 中文
+                            </a>
+                            <a href="#" data-lang="en" class="block px-4 py-2 hover:bg-primary/10 text-white transition-custom">
+                                <span class="flag-icon">🇬🇧</span> English
+                            </a>
+                            <a href="#" data-lang="th" class="block px-4 py-2 hover:bg-primary/10 text-white transition-custom">
+                                <span class="flag-icon">🇹🇭</span> ภาษาไทย
+                            </a>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区 -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <!-- 背景图 -->
+    <div class="absolute inset-0 z-0">
+        <!-- 明星图片：英雄区背景图，已替换为本地图片 -->
+        <img src="images/hero-bg.jpg" alt="明星高清照片" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-r from-dark/80 to-dark/40"></div>
+    </div>
+        
+        <!-- 内容 -->
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-3xl">
+                <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-display font-bold text-white leading-tight text-shadow-lg mb-6 animate-fade-in-up">
+                    Boom Raweewit<br>
+                    <span class="text-secondary">闪耀星光</span>
+                </h1>
+                <p class="text-[clamp(1rem,3vw,1.25rem)] text-white/90 mb-8 max-w-2xl text-shadow">
+                    实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#works" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium transition-custom transform hover:scale-105 hover:shadow-lg">
+                        查看作品
+                    </a>
+                    <a href="#gallery" class="bg-transparent border-2 border-white hover:border-secondary text-white hover:text-secondary px-8 py-3 rounded-full font-medium transition-custom">
+                        浏览照片
+                    </a>
+                </div>
+                
+                <!-- 社交媒体链接 -->
+                <div class="mt-12 flex space-x-6">
+                        <a href="https://weibo.com/u/7977907334" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="https://x.com/bxxm_rvw?s=09" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/bxxm_rvw?igsh=MW83ZzZnZG5xYmozYg==" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="https://youtube.com/@bxxmmaimeetangkaaaaa?si=VTUmSL-znwl1hyVB" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+
+                    </div>
+            </div>
+        </div>
+        
+        <!-- 向下滚动指示 -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+            <a href="#about" class="flex flex-col items-center">
+                <span class="mb-2 text-sm">向下滚动</span>
+                <i class="fa fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 关于部分 -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-display font-bold mb-4" data-lang-key="about-star">关于明星</h2>
+                    <div class="w-20 h-1 bg-primary mx-auto"></div>
+                </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- 照片 -->
+                <div class="relative">
+                    <div class="absolute -top-4 -left-4 w-64 h-64 bg-primary/10 rounded-full -z-10"></div>
+                    <div class="absolute -bottom-4 -right-4 w-64 h-64 bg-secondary/10 rounded-full -z-10"></div>
+                    <!-- 明星图片：关于部分写真，已替换为本地图片 -->
+                    <img src="images/about-portrait.jpg" alt="Boom Raweewit写真" class="w-full h-auto rounded-lg shadow-xl">
+                    
+                    <!-- 成就卡片 -->
+                    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-lg shadow-lg max-w-xs hidden md:block">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                                <i class="fa fa-trophy text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">获得奖项</p>
+                                <p class="font-bold text-xl">2+</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 信息 -->
+                <div>
+                    <h3 class="text-3xl font-display font-bold mb-6">Boom Raweewit</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Boom Raweewit（英文全名：RAVEEWIT JIRAPONGKANON，中文名：苏伦，泰语名：รวีวิทย์ จิราพงกานนท์），泰国知名演员、歌手，出生于1991年8月8日，身高175cm。自出道以来，凭借出色的演技和独特的艺术风格，塑造了众多经典角色，深受观众喜爱。
+                    </p>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        不仅在演艺事业上取得了卓越成就，在音乐领域也展现出非凡才华。是一位热爱运动和健身的艺人，尤其喜欢羽毛球。
+                    </p>
+                    
+                    <!-- 基本信息 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-birthday-cake"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="birthday">出生日期</h4>
+                            <p class="text-gray-600">1991年8月8日</p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-map-marker"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="birthplace">出生地</h4>
+                            <p class="text-gray-600">泰国</p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-film"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="representative-works">代表作品</h4>
+                            <p class="text-gray-600">
+                                <a href="https://www.iflix.com/zh-cn/play/d1z6o64bu16ncf3" class="text-primary hover:underline">《TopForm》</a>、
+                                <a href="https://www.iq.com/play/%E5%BF%83%E9%93%BE-%E7%AC%AC1%E9%9B%86-1zhugtw8fjs?lang=zh_cn" class="text-primary hover:underline">《Chains Of Heart》</a>
+                            </p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-music"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="music-works">音乐作品</h4>
+                            <p class="text-gray-600">
+                                <a href="https://youtu.be/rYLY1Vzv1QM?si=xLcnSYFHbIubKSAS" class="text-primary hover:underline">《North Star》</a>、
+                                <a href="https://open.spotify.com/track/7l4ZTZlCFtmZer58ECj04G?si=c3dd5fd850724597" class="text-primary hover:underline">《Be there For You》</a>
+                            </p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-info-circle"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="constellation">星座</h4>
+                            <p class="text-gray-600">巨蟹座</p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-paint-brush"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="favorite-color">喜欢的颜色</h4>
+                            <p class="text-gray-600">黑色</p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-graduation-cap"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="education">学历</h4>
+                            <p class="text-gray-600">北曼谷先皇家技术学院（工程学士）</p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-cutlery"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="favorite-food">喜欢的食物</h4>
+                            <p class="text-gray-600">泰国菜、涮锅、烧烤、零食</p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-ban"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="disliked-food">不喜欢的食物</h4>
+                            <p class="text-gray-600">榴莲、昆虫、生蟹</p>
+                        </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="mt-1 text-primary"><i class="fa fa-users"></i></div>
+                            <div>
+                            <h4 class="font-semibold" data-lang-key="fan-name">粉丝名</h4>
+                            <p class="text-gray-600">betus</p>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据统计 -->
+                    <div class="grid grid-cols-3 gap-4 mb-8">
+                        <!-- 电影部分暂时不显示 -->
+                        <div class="hidden text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-3xl font-bold text-primary counter" data-target="0">0</p>
+                            <p class="text-gray-500 text-sm">电影</p>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-3xl font-bold text-primary counter" data-target="2">2</p>
+                            <p class="text-gray-500 text-sm" data-lang-key="tv-series">电视剧</p>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-3xl font-bold text-primary counter" data-target="2">2</p>
+                            <p class="text-gray-500 text-sm" data-lang-key="music-works">音乐作品</p>
+                        </div>
+                    </div>
+                    
+                    <a href="#works" class="inline-block bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium transition-custom transform hover:scale-105" data-lang-key="view-works">
+                        查看代表作品
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品展示 -->
+    <section id="works" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-display font-bold mb-4" data-lang-key="representative-works">代表作品</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto" data-lang-key="works-description">明星精选代表作品展示，包括电视剧和音乐作品</p>
+                    <div class="w-20 h-1 bg-primary mx-auto mt-4"></div>
+                </div>
+            
+            <!-- 作品分类标签 -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="work-filter active px-6 py-2 rounded-full bg-primary text-white font-medium transition-custom" data-filter="all" data-lang-key="all">全部</button>
+                <!-- 电影分类暂时不显示 -->
+                <button class="hidden work-filter px-6 py-2 rounded-full bg-white text-gray-600 font-medium hover:bg-gray-100 transition-custom" data-filter="movie" data-lang-key="movies">电影</button>
+                <button class="work-filter px-6 py-2 rounded-full bg-white text-gray-600 font-medium hover:bg-gray-100 transition-custom" data-filter="tv" data-lang-key="tv-series">电视剧</button>
+                <button class="work-filter px-6 py-2 rounded-full bg-white text-gray-600 font-medium hover:bg-gray-100 transition-custom" data-filter="music" data-lang-key="music">音乐</button>
+            </div>
+            
+            <!-- 作品网格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 电视剧作品1 - TopForm -->
+                <div class="work-item group" data-category="tv">
+                    <div class="relative overflow-hidden rounded-lg shadow-lg">
+                        <!-- 明星图片：电视剧作品封面，已替换为本地图片 -->
+                        <img src="images/tv1.jpg" alt="TopForm" class="w-full h-80 object-contain bg-gray-100 transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="text-white/90 text-sm mb-2" data-lang-key="release-date">播出时间: 2025-3-20</p>
+                            <p class="text-white/90 text-sm" data-lang-key="role">角色: Akin</p>
+                            <a href="https://www.iflix.com/zh-cn/play/d1z6o64bu16ncf3" class="mt-4 inline-block text-white bg-primary/80 hover:bg-primary px-4 py-2 rounded-full text-sm transition-custom" data-lang-key="view-details">
+                                    查看详情
+                                </a>
+                        </div>
+                    </div>
+                    <h3 class="mt-4 text-xl font-bold">TopForm</h3>
+                    <p class="text-gray-600">评分: IMDb 8.9</p>
+                </div>
+                
+                <!-- 电视剧作品2 - Chains Of Heart -->
+                <div class="work-item group" data-category="tv">
+                    <div class="relative overflow-hidden rounded-lg shadow-lg">
+                        <!-- 明星图片：电视剧作品封面，已替换为本地图片 -->
+                        <img src="images/tv2.jpg" alt="Chains Of Heart" class="w-full h-80 object-contain bg-gray-100 transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="text-white/90 text-sm mb-2" data-lang-key="release-date">播出时间: 2023-2-18</p>
+                            <p class="text-white/90 text-sm" data-lang-key="role">角色: Torranee</p>
+                            <a href="https://www.iq.com/play/%E5%BF%83%E9%93%BE-%E7%AC%AC1%E9%9B%86-1zhugtw8fjs?lang=zh_cn" class="mt-4 inline-block text-white bg-primary/80 hover:bg-primary px-4 py-2 rounded-full text-sm transition-custom" data-lang-key="view-details">
+                                    查看详情
+                                </a>
+                        </div>
+                    </div>
+                    <h3 class="mt-4 text-xl font-bold">Chains Of Heart</h3>
+                    <p class="text-gray-600">评分: IMDb 6.4</p>
+                </div>
+                
+                <!-- 音乐作品1 - North Star -->
+                <div class="work-item group" data-category="music">
+                    <div class="relative overflow-hidden rounded-lg shadow-lg">
+                        <!-- 明星图片：音乐作品封面，已替换为本地图片 -->
+                        <img src="images/music1.jpg" alt="North Star" class="w-full h-80 object-contain bg-gray-100 transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="text-white/90 text-sm mb-2" data-lang-key="release-date">发行时间: 2025年</p>
+                            <p class="text-white/90 text-sm" data-lang-key="type">类型: 单曲</p>
+                            <a href="https://youtu.be/rYLY1Vzv1QM?si=xLcnSYFHbIubKSAS" class="mt-4 inline-block text-white bg-primary/80 hover:bg-primary px-4 py-2 rounded-full text-sm transition-custom" data-lang-key="listen-music">
+                                    聆听音乐
+                                </a>
+                        </div>
+                    </div>
+                    <h3 class="mt-4 text-xl font-bold">North Star</h3>
+                    <p class="text-gray-600">播放量142K</p>
+                </div>
+                
+                <!-- 音乐作品2 - BT4U -->
+                <div class="work-item group" data-category="music">
+                    <div class="relative overflow-hidden rounded-lg shadow-lg">
+                        <!-- 明星图片：音乐作品封面，已替换为本地图片 -->
+                        <img src="images/music2.jpg" alt="BT4U" class="w-full h-80 object-contain bg-gray-100 transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="text-white/90 text-sm mb-2" data-lang-key="release-date">发行时间: 2022年</p>
+                            <p class="text-white/90 text-sm" data-lang-key="type">类型: 单曲</p>
+                            <a href="https://open.spotify.com/track/7l4ZTZlCFtmZer58ECj04G?si=c3dd5fd850724597" class="mt-4 inline-block text-white bg-primary/80 hover:bg-primary px-4 py-2 rounded-full text-sm transition-custom" data-lang-key="listen-music">
+                                    聆听音乐
+                                </a>
+                        </div>
+                    </div>
+                    <h3 class="mt-4 text-xl font-bold">Be there For You</h3>
+                    <p class="text-gray-600">播放量75K</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full font-medium transition-custom" data-lang-key="view-more-works">
+                    查看更多作品
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- 照片墙 -->
+    <section id="gallery" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-display font-bold mb-4" data-lang-key="wonderful-moments">精彩瞬间</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto" data-lang-key="gallery-description">记录明星在舞台、片场和生活中的精彩时刻</p>
+                    <div class="w-20 h-1 bg-primary mx-auto mt-4"></div>
+                </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间1 -->
+                    <img src="images/gallery1.jpg" alt="Boom Raweewit精彩瞬间1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间2 -->
+                    <img src="images/gallery2.jpg" alt="Boom Raweewit精彩瞬间2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间3 -->
+                    <img src="images/gallery3.jpg" alt="Boom Raweewit精彩瞬间3" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间4 -->
+                    <img src="images/gallery4.jpg" alt="Boom Raweewit精彩瞬间4" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间5 -->
+                    <img src="images/gallery5.jpg" alt="Boom Raweewit精彩瞬间5" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间6 -->
+                    <img src="images/gallery6.jpg" alt="Boom Raweewit精彩瞬间6" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间7 -->
+                    <img src="images/gallery7.jpg" alt="Boom Raweewit精彩瞬间7" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
+                    <!-- 明星图片：精彩瞬间8 -->
+                    <img src="images/gallery8.jpg" alt="Boom Raweewit精彩瞬间8" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="gallery.html" class="inline-block bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium transition-custom transform hover:scale-105" data-lang-key="view-more-photos">
+                    查看更多照片
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 最新动态 -->
+    <section id="news" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-display font-bold mb-4" data-lang-key="latest-news">最新动态</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto" data-lang-key="news-description">了解明星的最新活动、作品动态和个人消息</p>
+                    <div class="w-20 h-1 bg-primary mx-auto mt-4"></div>
+                </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 新闻1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg">
+                    <div class="relative h-72 overflow-hidden">
+                        <!-- 明星图片：新闻图片1，已替换为本地图片 -->
+                        <img src="images/new1.jpg" alt="Boom Raweewit日本初冠番組" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-4 left-4 bg-primary text-white text-sm px-3 py-1 rounded-full">
+                            新作品
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center text-gray-500 text-xs mb-3">
+                            <i class="fa fa-calendar-o mr-2"></i>
+                            <span>2005-10-11</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom">
+                            タイ俳優 #BOOM のモッパン🍖 
+ ✨日本初✨冠番組👏
+                        </h3>
+                        <a href="https://x.com/nitteleplus/status/1959812981656813893?t=kbDmXf81Amz17dqViuhWSg&s=09" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more">
+                                阅读更多
+                                <i class="fa fa-long-arrow-right ml-2"></i>
+                            </a>
+                    </div>
+                </div>
+                
+                <!-- 新闻2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg">
+                    <div class="relative h-72 overflow-hidden">
+                        <!-- 明星图片：新闻图片2，已替换为本地图片 -->
+                        <img src="images/new2.jpg" alt="Boom Europe Fan Meet Tour" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm px-3 py-1 rounded-full">
+                            活动现场
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center text-gray-500 text-xs mb-3">
+                            <i class="fa fa-calendar-o mr-2"></i>
+                            <span>2025-10-04 (CEST GMT+2)</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom">
+                            Boom Europe Fan Meet Tour
+                        </h3>
+                        <a href="https://x.com/HeadlinerTH/status/1974100411620704341?s=19" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more">
+                                阅读更多
+                                <i class="fa fa-long-arrow-right ml-2"></i>
+                            </a>
+                    </div>
+                </div>
+                
+                <!-- 新闻3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg">
+                    <div class="relative h-72 overflow-hidden">
+                        <!-- 明星图片：活动预告 -->
+                        <img src="images/new3.jpg" alt="Boom Raweewit活动预告" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-4 left-4 bg-green-500 text-white text-sm px-3 py-1 rounded-full">
+                            活动预告
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center text-gray-500 text-xs mb-3">
+                            <i class="fa fa-calendar-o mr-2"></i>
+                            <span>2025-10-12 (GMT+7)</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom">
+                            新身份GISMOW小憨包灵感推荐官，正式解锁！ ✨
+                        </h3>
+                        <a href="https://weibo.com/7977907334/5215941505319759" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more">
+                                阅读更多
+                                <i class="fa fa-long-arrow-right ml-2"></i>
+                            </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full font-medium transition-custom" data-lang-key="view-all-news">
+                    查看全部动态
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <a href="#" class="flex items-center space-x-2 mb-6">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fa fa-star text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-display font-bold">Boom Raweewit</span>
+                </a>
+                <p class="text-gray-400 mb-6">
+                    泰国实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。
+                </p>
+                    <div class="flex space-x-4">
+                        <a href="https://weibo.com/u/7977907334" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="https://x.com/boom_rvw" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/boom_rvw" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/boom_rvw" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@boom_rvw" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-custom" target="_blank">
+                            <i class="fa fa-music"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6" data-lang-key="quick-links">快速链接</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-custom" data-lang-key="home">首页</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-custom" data-lang-key="about">关于</a></li>
+                        <li><a href="#works" class="text-gray-400 hover:text-white transition-custom" data-lang-key="works">作品</a></li>
+                        <li><a href="#gallery" class="text-gray-400 hover:text-white transition-custom" data-lang-key="gallery">照片</a></li>
+                        <li><a href="#news" class="text-gray-400 hover:text-white transition-custom" data-lang-key="news">动态</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2023 Boom Raweewit 官方网站. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 多语言数据
+        const translations = {
+            zh: {
+                home: '首页',
+                about: '关于',
+                works: '作品',
+                gallery: '照片',
+                news: '动态',
+                language: '语言',
+                'about-star': '关于明星',
+                birthday: '出生日期',
+                birthplace: '出生地',
+                'representative-works': '代表作品',
+                'music-works': '音乐作品',
+                constellation: '星座',
+                'favorite-color': '喜欢的颜色',
+                education: '学历',
+                'favorite-food': '喜欢的食物',
+                'disliked-food': '不喜欢的食物',
+                'fan-name': '粉丝名',
+                'tv-series': '电视剧',
+                'view-works': '查看代表作品',
+                'works-description': '明星精选代表作品展示，包括电视剧和音乐作品',
+                all: '全部',
+                movies: '电影',
+                music: '音乐',
+                'release-date': '播出时间',
+                role: '角色',
+                'view-details': '查看详情',
+                type: '类型',
+                'listen-music': '聆听音乐',
+                'view-more-works': '查看更多作品',
+                'wonderful-moments': '精彩瞬间',
+                'gallery-description': '记录明星在舞台、片场和生活中的精彩时刻',
+                'view-more-photos': '查看更多照片',
+                'latest-news': '最新动态',
+                'news-description': '了解明星的最新活动、作品动态和个人消息',
+                'read-more': '阅读更多',
+                'view-all-news': '查看全部动态',
+                'quick-links': '快速链接'
+            },
+            en: {
+                home: 'Home',
+                about: 'About',
+                works: 'Works',
+                gallery: 'Gallery',
+                news: 'News',
+                language: 'Language',
+                'about-star': 'About Star',
+                birthday: 'Date of Birth',
+                birthplace: 'Birth Place',
+                'representative-works': 'Representative Works',
+                'music-works': 'Music Works',
+                constellation: 'Constellation',
+                'favorite-color': 'Favorite Color',
+                education: 'Education',
+                'favorite-food': 'Favorite Food',
+                'disliked-food': 'Disliked Food',
+                'fan-name': 'Fan Name',
+                'tv-series': 'TV Series',
+                'view-works': 'View Works',
+                'works-description': 'Selected works showcase, including TV series and music',
+                all: 'All',
+                movies: 'Movies',
+                music: 'Music',
+                'release-date': 'Release Date',
+                role: 'Role',
+                'view-details': 'View Details',
+                type: 'Type',
+                'listen-music': 'Listen to Music',
+                'view-more-works': 'View More Works',
+                'wonderful-moments': 'Wonderful Moments',
+                'gallery-description': 'Recording wonderful moments of the star on stage, set and in life',
+                'view-more-photos': 'View More Photos',
+                'latest-news': 'Latest News',
+                'news-description': 'Learn about the star\'s latest activities, works and personal news',
+                'read-more': 'Read More',
+                'view-all-news': 'View All News',
+                'quick-links': 'Quick Links'
+            },
+            th: {
+                home: 'หน้าแรก',
+                about: 'เกี่ยวกับ',
+                works: 'ผลงาน',
+                gallery: 'รูปภาพ',
+                news: 'ข่าวสาร',
+                language: 'ภาษา',
+                'about-star': 'เกี่ยวกับดารา',
+                birthday: 'วันเกิด',
+                birthplace: 'สถานที่เกิด',
+                'representative-works': 'ผลงาน代表性',
+                'music-works': 'ผลงานดนตรี',
+                constellation: 'ราศี',
+                'favorite-color': 'สีโปรด',
+                education: 'การศึกษา',
+                'favorite-food': 'อาหารโปรด',
+                'disliked-food': 'อาหารที่ไม่ชอบ',
+                'fan-name': 'ชื่อแฟนคลับ',
+                'tv-series': 'ซีรีส์โทรทัศน์',
+                'view-works': 'ดูผลงาน',
+                'works-description': 'แสดงผลงาน代表性ของดารา รวมถึงซีรีส์โทรทัศน์และดนตรี',
+                all: 'ทั้งหมด',
+                movies: 'ภาพยนตร์',
+                music: 'ดนตรี',
+                'release-date': 'วันที่ออกอากาศ',
+                role: 'บทบาท',
+                'view-details': 'ดูรายละเอียด',
+                type: 'ประเภท',
+                'listen-music': 'ฟังเพลง',
+                'view-more-works': 'ดูผลงานเพิ่มเติม',
+                'wonderful-moments': 'ช่วงเวลาที่ดีงาม',
+                'gallery-description': 'บันทึกช่วงเวลาที่ดีงามของดาราในเวทีชุดถ่ายและชีวิตประจำวัน',
+                'view-more-photos': 'ดูรูปภาพเพิ่มเติม',
+                'latest-news': 'ข่าวสารล่าสุด',
+                'news-description': '了解明星的最新活动、作品动态和个人消息',
+                'read-more': 'อ่านเพิ่มเติม',
+                'view-all-news': 'ดูข่าวสารทั้งหมด',
+                'quick-links': 'ลิงก์ด่วน'
+            }
+        };
+
+        // 语言切换函数
+        function changeLanguage(lang) {
+            if (!translations[lang]) return;
+            
+            // 更新页面上所有带有data-lang-key属性的元素
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            // 更新当前语言显示
+            document.getElementById('current-language').textContent = lang === 'zh' ? '中文' : lang === 'en' ? 'English' : 'ภาษาไทย';
+            
+            // 保存语言偏好到localStorage
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // 初始化语言
+        function initLanguage() {
+            // 从localStorage获取语言偏好，如果没有则使用浏览器语言或默认中文
+            const savedLang = localStorage.getItem('preferredLanguage');
+            const browserLang = navigator.language.slice(0, 2);
+            const initialLang = savedLang || (translations[browserLang] ? browserLang : 'zh');
+            
+            changeLanguage(initialLang);
+        }
+
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        if (navbar) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-dark/95', 'backdrop-blur-md', 'shadow-md');
+                    navbar.classList.remove('bg-transparent');
+                } else {
+                    navbar.classList.remove('bg-dark/95', 'backdrop-blur-md', 'shadow-md');
+                    navbar.classList.add('bg-transparent');
+                }
+            });
+        }
+
+        // 移动端菜单切换
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuToggle.innerHTML = '<i class="fa fa-bars"></i>';
+            } else {
+                menuToggle.innerHTML = '<i class="fa fa-times"></i>';
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    // 关闭移动端菜单
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        menuToggle.innerHTML = '<i class="fa fa-bars"></i>';
+                    }
+                }
+            });
+        });
+
+        // 作品分类筛选功能
+        const filterButtons = document.querySelectorAll('.work-filter');
+        const workItems = document.querySelectorAll('.work-item');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 移除所有按钮的active状态
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-white', 'text-gray-600');
+                });
+                
+                // 为当前点击的按钮添加active状态
+                button.classList.remove('bg-white', 'text-gray-600');
+                button.classList.add('bg-primary', 'text-white');
+                
+                const filterValue = button.getAttribute('data-filter');
+                
+                // 筛选作品项
+                workItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 图片查看器功能
+        const imageViewer = document.getElementById('imageViewer');
+        const viewerImage = document.getElementById('viewerImage');
+        const closeViewer = document.getElementById('closeViewer');
+        const prevImage = document.getElementById('prevImage');
+        const nextImage = document.getElementById('nextImage');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        let currentImageIndex = 0;
+        
+        // 获取所有图片的src
+        const imageSources = Array.from(galleryItems).map(item => item.querySelector('img').src);
+        
+        // 打开图片查看器
+        galleryItems.forEach((item, index) => {
+            item.addEventListener('click', function() {
+                currentImageIndex = index;
+                viewerImage.src = imageSources[index];
+                imageViewer.classList.remove('hidden');
+                imageViewer.classList.add('flex');
+                // 禁止背景滚动
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        // 关闭图片查看器
+        closeViewer.addEventListener('click', function() {
+            imageViewer.classList.add('hidden');
+            imageViewer.classList.remove('flex');
+            // 恢复背景滚动
+            document.body.style.overflow = 'auto';
+        });
+        
+        // 下一张图片
+        nextImage.addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentImageIndex = (currentImageIndex + 1) % imageSources.length;
+            viewerImage.src = imageSources[currentImageIndex];
+        });
+        
+        // 上一张图片
+        prevImage.addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentImageIndex = (currentImageIndex - 1 + imageSources.length) % imageSources.length;
+            viewerImage.src = imageSources[currentImageIndex];
+        });
+        
+        // 点击空白处关闭
+        imageViewer.addEventListener('click', function(e) {
+            if (e.target === imageViewer) {
+                closeViewer.click();
+            }
+        });
+        
+        // 键盘导航
+        document.addEventListener('keydown', function(e) {
+            if (imageViewer.classList.contains('flex')) {
+                if (e.key === 'Escape') {
+                    closeViewer.click();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage.click();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImage.click();
+                }
+            }
+        });
+
+        // 语言切换下拉菜单
+        const languageBtn = document.getElementById('language-btn');
+        const languageDropdown = document.getElementById('language-dropdown');
+        
+        if (languageBtn && languageDropdown) {
+            languageBtn.addEventListener('click', function() {
+                languageDropdown.classList.toggle('hidden');
+            });
+        }
+
+        // 移动端语言菜单切换
+        const mobileLangBtn = document.getElementById('mobile-lang-btn');
+        const mobileLangMenu = document.getElementById('mobile-lang-menu');
+        
+        if (mobileLangBtn && mobileLangMenu) {
+            mobileLangBtn.addEventListener('click', function() {
+                mobileLangMenu.classList.toggle('hidden');
+                this.querySelector('i:last-child').classList.toggle('fa-chevron-down');
+                this.querySelector('i:last-child').classList.toggle('fa-chevron-up');
+            });
+        }
+
+        // 点击页面其他地方关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            if (languageBtn && languageDropdown && !languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
+                languageDropdown.classList.add('hidden');
+            }
+            
+            if (mobileLangBtn && mobileLangMenu && !mobileLangBtn.contains(e.target) && !mobileLangMenu.contains(e.target)) {
+                mobileLangMenu.classList.add('hidden');
+                if (mobileLangBtn.querySelector('i:last-child')) {
+                    mobileLangBtn.querySelector('i:last-child').classList.add('fa-chevron-down');
+                    mobileLangBtn.querySelector('i:last-child').classList.remove('fa-chevron-up');
+                }
+            }
+        });
+
+        // 语言选项点击事件
+        document.querySelectorAll('[data-lang]').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+                changeLanguage(lang);
+                
+                // 关闭下拉菜单
+                if (languageDropdown) languageDropdown.classList.add('hidden');
+                if (mobileLangMenu) mobileLangMenu.classList.add('hidden');
+            });
+        });
+
+        // 初始化页面
+        window.addEventListener('load', function() {
+            // 初始化语言
+            initLanguage();
+        });
+    </script>
+</body>
+</html>
