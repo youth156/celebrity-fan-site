@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星光闪耀 - 明星宣传网站</title>
+    <title data-lang-key="site-title">星光闪耀 - 明星宣传网站</title>
     <!-- 引入Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入Font Awesome -->
@@ -155,17 +155,17 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="max-w-3xl">
                 <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-display font-bold text-white leading-tight text-shadow-lg mb-6 animate-fade-in-up">
-                    BoomRaveewit<br>
-                    <span class="text-secondary">闪耀星光</span>
-                </h1>
-                <p class="text-[clamp(1rem,3vw,1.25rem)] text-white/90 mb-8 max-w-2xl text-shadow">
-                    实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。
-                </p>
+                        BoomRaveewit<br>
+                        <span class="text-secondary" data-lang-key="shining-star">闪耀星光</span>
+                    </h1>
+                <p class="text-[clamp(1rem,3vw,1.25rem)] text-white/90 mb-8 max-w-2xl text-shadow" data-lang-key="hero-description">
+                      实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。
+                  </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="#works" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium transition-custom transform hover:scale-105 hover:shadow-lg">
+                    <a href="#works" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium transition-custom transform hover:scale-105 hover:shadow-lg" data-lang-key="view-works-btn">
                         查看作品
                     </a>
-                    <a href="#gallery" class="bg-transparent border-2 border-white hover:border-secondary text-white hover:text-secondary px-8 py-3 rounded-full font-medium transition-custom">
+                    <a href="#gallery" class="bg-transparent border-2 border-white hover:border-secondary text-white hover:text-secondary px-8 py-3 rounded-full font-medium transition-custom" data-lang-key="browse-photos-btn">
                         浏览照片
                     </a>
                 </div>
@@ -195,7 +195,7 @@
         <!-- 向下滚动指示 -->
         <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
             <a href="#about" class="flex flex-col items-center">
-                <span class="mb-2 text-sm">向下滚动</span>
+                <span class="mb-2 text-sm" data-lang-key="scroll-down">向下滚动</span>
                 <i class="fa fa-chevron-down"></i>
             </a>
         </div>
@@ -224,7 +224,7 @@
                                 <i class="fa fa-trophy text-2xl"></i>
                             </div>
                             <div>
-                                <p class="text-gray-500 text-sm">获得奖项</p>
+                                <p class="text-gray-500 text-sm" data-lang-key="awards">获得奖项</p>
                                 <p class="font-bold text-xl">2+</p>
                             </div>
                         </div>
@@ -234,10 +234,10 @@
                 <!-- 信息 -->
                 <div>
                     <h3 class="text-3xl font-display font-bold mb-6">BoomRaveewit</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+                    <p class="text-gray-600 mb-6 leading-relaxed" data-lang-key="star-bio-1">
                         BoomRaveewit（英文全名：RAVEEWIT JIRAPONGKANON，中文名：苏伦，泰语名：รวีวิทย์ จิราพงกานนท์），泰国知名演员、歌手，出生于1991年8月8日，身高175cm。自出道以来，凭借出色的演技和独特的艺术风格，塑造了众多经典角色，深受观众喜爱。
                     </p>
-                    <p class="text-gray-600 mb-8 leading-relaxed">
+                    <p class="text-gray-600 mb-8 leading-relaxed" data-lang-key="star-bio-2">
                         不仅在演艺事业上取得了卓越成就，在音乐领域也展现出非凡才华。是一位热爱运动和健身的艺人，尤其喜欢羽毛球。
                     </p>
                     
@@ -247,14 +247,14 @@
                             <div class="mt-1 text-primary"><i class="fa fa-birthday-cake"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="birthday">出生日期</h4>
-                            <p class="text-gray-600">1991年8月8日</p>
+                            <p class="text-gray-600" data-lang-key="birthday-value">1991年8月8日</p>
                         </div>
                         </div>
                         <div class="flex items-start space-x-4">
                             <div class="mt-1 text-primary"><i class="fa fa-map-marker"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="birthplace">出生地</h4>
-                            <p class="text-gray-600">泰国</p>
+                            <p class="text-gray-600" data-lang-key="birthplace-value">泰国</p>
                         </div>
                         </div>
                         <div class="flex items-start space-x-4">
@@ -262,8 +262,8 @@
                             <div>
                             <h4 class="font-semibold" data-lang-key="representative-works">代表作品</h4>
                             <p class="text-gray-600">
-                                <a href="https://www.iflix.com/zh-cn/play/d1z6o64bu16ncf3" class="text-primary hover:underline">《TopForm》</a>、
-                                <a href="https://www.iq.com/play/%E5%BF%83%E9%93%BE-%E7%AC%AC1%E9%9B%86-1zhugtw8fjs?lang=zh_cn" class="text-primary hover:underline">《Chains Of Heart》</a>
+                                <a href="https://www.iflix.com/zh-cn/play/d1z6o64bu16ncf3" class="text-primary hover:underline" data-lang-key="work-title-topform">《TopForm》</a>、
+                                <a href="https://www.iq.com/play/%E5%BF%83%E9%93%BE-%E7%AC%AC1%E9%9B%86-1zhugtw8fjs?lang=zh_cn" class="text-primary hover:underline" data-lang-key="work-title-chainsofheart">《Chains Of Heart》</a>
                             </p>
                         </div>
                         </div>
@@ -272,8 +272,9 @@
                             <div>
                             <h4 class="font-semibold" data-lang-key="music-works">音乐作品</h4>
                             <p class="text-gray-600">
-                                <a href="https://youtu.be/rYLY1Vzv1QM?si=xLcnSYFHbIubKSAS" class="text-primary hover:underline">《North Star》</a>、
-                                <a href="https://open.spotify.com/track/7l4ZTZlCFtmZer58ECj04G?si=c3dd5fd850724597" class="text-primary hover:underline">《Be there For You》</a>
+                                <a href="https://youtu.be/rYLY1Vzv1QM?si=xLcnSYFHbIubKSAS" class="text-primary hover:underline" data-lang-key="work-title-northstar">《North Star》</a>、
+                                <a href="https://open.spotify.com/track/7l4ZTZlCFtmZer58ECj04G?si=c3dd5fd850724597" class="text-primary hover:underline" data-lang-key="work-title-bt4u">《Be there For You》</a>、
+                                <a href="https://163cn.tv/LaHpXjy" class="text-primary hover:underline" data-lang-key="work-title-star">《以你为名的星》</a>
                             </p>
                         </div>
                         </div>
@@ -281,42 +282,42 @@
                             <div class="mt-1 text-primary"><i class="fa fa-info-circle"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="constellation">星座</h4>
-                            <p class="text-gray-600">巨蟹座</p>
+                            <p class="text-gray-600" data-lang-key="constellation-value">巨蟹座</p>
                         </div>
                         </div>
                         <div class="flex items-start space-x-4">
                             <div class="mt-1 text-primary"><i class="fa fa-paint-brush"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="favorite-color">喜欢的颜色</h4>
-                            <p class="text-gray-600">黑色</p>
+                            <p class="text-gray-600" data-lang-key="favorite-color-value">黑色</p>
                         </div>
                         </div>
                         <div class="flex items-start space-x-4">
                             <div class="mt-1 text-primary"><i class="fa fa-graduation-cap"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="education">学历</h4>
-                            <p class="text-gray-600">北曼谷先皇家技术学院（工程学士）</p>
+                            <p class="text-gray-600" data-lang-key="education-value">King Mongkut's Institute of Technology North Bangkok（工程学士）</p>
                         </div>
                         </div>
                         <div class="flex items-start space-x-4">
                             <div class="mt-1 text-primary"><i class="fa fa-cutlery"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="favorite-food">喜欢的食物</h4>
-                            <p class="text-gray-600">泰国菜、涮锅、烧烤、零食</p>
+                            <p class="text-gray-600" data-lang-key="favorite-food-value">泰国菜、涮锅、烧烤、零食</p>
                         </div>
                         </div>
                         <div class="flex items-start space-x-4">
                             <div class="mt-1 text-primary"><i class="fa fa-ban"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="disliked-food">不喜欢的食物</h4>
-                            <p class="text-gray-600">榴莲、昆虫、生蟹</p>
+                            <p class="text-gray-600" data-lang-key="disliked-food-value">榴莲、昆虫、生蟹</p>
                         </div>
                         </div>
                         <div class="flex items-start space-x-4">
                             <div class="mt-1 text-primary"><i class="fa fa-users"></i></div>
                             <div>
                             <h4 class="font-semibold" data-lang-key="fan-name">粉丝名</h4>
-                            <p class="text-gray-600">Betus🐋✨</p>
+                            <p class="text-gray-600" data-lang-key="fan-name-value">Betus🐋✨</p>
                         </div>
                         </div>
                     </div>
@@ -333,7 +334,7 @@
                             <p class="text-gray-500 text-sm" data-lang-key="tv-series">电视剧</p>
                         </div>
                         <div class="text-center p-4 bg-gray-50 rounded-lg">
-                            <p class="text-3xl font-bold text-primary counter" data-target="2">2</p>
+                            <p class="text-3xl font-bold text-primary counter" data-target="3">3</p>
                             <p class="text-gray-500 text-sm" data-lang-key="music-works">音乐作品</p>
                         </div>
                     </div>
@@ -379,8 +380,8 @@
                                 </a>
                         </div>
                     </div>
-                    <h3 class="mt-4 text-xl font-bold">TopForm</h3>
-                    <p class="text-gray-600">评分: IMDb 8.9</p>
+                    <h3 class="mt-4 text-xl font-bold" data-lang-key="work-title-topform">TopForm</h3>
+                    <p class="text-gray-600" data-lang-key="work-rating-topform">评分: IMDb 8.9</p>
                 </div>
                 
                 <!-- 电视剧作品2 - Chains Of Heart -->
@@ -396,8 +397,8 @@
                                 </a>
                         </div>
                     </div>
-                    <h3 class="mt-4 text-xl font-bold">Chains Of Heart</h3>
-                    <p class="text-gray-600">评分: IMDb 6.4</p>
+                    <h3 class="mt-4 text-xl font-bold" data-lang-key="work-title-chainsofheart">Chains Of Heart</h3>
+                    <p class="text-gray-600" data-lang-key="work-rating-chainsofheart">评分: IMDb 6.4</p>
                 </div>
                 
                 <!-- 音乐作品1 - North Star -->
@@ -413,8 +414,8 @@
                                 </a>
                         </div>
                     </div>
-                    <h3 class="mt-4 text-xl font-bold">North Star</h3>
-                    <p class="text-gray-600">播放量142K</p>
+                    <h3 class="mt-4 text-xl font-bold" data-lang-key="work-title-northstar">North Star</h3>
+                    <p class="text-gray-600" data-lang-key="work-views-northstar">播放量142K</p>
                 </div>
                 
                 <!-- 音乐作品2 - BT4U -->
@@ -430,8 +431,8 @@
                                 </a>
                         </div>
                     </div>
-                    <h3 class="mt-4 text-xl font-bold">Be there For You</h3>
-                    <p class="text-gray-600">播放量75K</p>
+                    <h3 class="mt-4 text-xl font-bold" data-lang-key="work-title-bt4u">Be there For You</h3>
+                    <p class="text-gray-600" data-lang-key="work-views-bt4u">播放量75K</p>
                 </div>
                 
                 <!-- 音乐作品3 - 以你为名的星 -->
@@ -447,8 +448,8 @@
                                 </a>
                         </div>
                     </div>
-                    <h3 class="mt-4 text-xl font-bold">以你为名的星</h3>
-                    <p class="text-gray-600">播放量88K</p>
+                    <h3 class="mt-4 text-xl font-bold" data-lang-key="work-title-star">以你为名的星</h3>
+                    <p class="text-gray-600" data-lang-key="work-views-star">播放量88K</p>
                 </div>
             </div>
             
@@ -529,16 +530,16 @@
                     <div class="relative h-72 overflow-hidden">
                         <!-- 明星图片：新闻图片1，已替换为本地图片 -->
                         <img src="images/new1.jpg" alt="BoomRaveewit日本初冠番組" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute top-4 left-4 bg-primary text-white text-sm px-3 py-1 rounded-full">
+                        <div class="absolute top-4 left-4 bg-primary text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-new-work">
                             新作品
                         </div>
                     </div>
                     <div class="p-5">
                         <div class="flex items-center text-gray-500 text-xs mb-3">
                             <i class="fa fa-calendar-o mr-2"></i>
-                            <span>2005-10-11</span>
+                            <span data-lang-key="news-date-1">2005-10-11</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom">
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-1">
                             タイ俳優 #BOOM のモッパン🍖 
  ✨日本初✨冠番組👏
                         </h3>
@@ -554,16 +555,16 @@
                     <div class="relative h-72 overflow-hidden">
                         <!-- 明星图片：新闻图片2，已替换为本地图片 -->
                         <img src="images/new2.jpg" alt="Boom Europe Fan Meet Tour" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm px-3 py-1 rounded-full">
+                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-event">
                             活动现场
                         </div>
                     </div>
                     <div class="p-5">
                         <div class="flex items-center text-gray-500 text-xs mb-3">
                             <i class="fa fa-calendar-o mr-2"></i>
-                            <span>2025-10-04 (CEST GMT+2)</span>
+                            <span data-lang-key="news-date-2">2025-10-04 (CEST GMT+2)</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom">
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-2">
                             Boom Europe Fan Meet Tour
                         </h3>
                         <a href="https://x.com/HeadlinerTH/status/1974100411620704341?s=19" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more">
@@ -578,17 +579,17 @@
                     <div class="relative h-72 overflow-hidden">
                         <!-- 明星图片：活动预告 -->
                         <img src="images/new3.jpg" alt="BoomRaveewit活动预告" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute top-4 left-4 bg-green-500 text-white text-sm px-3 py-1 rounded-full">
+                        <div class="absolute top-4 left-4 bg-green-500 text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-preview">
                             活动预告
                         </div>
                     </div>
                     <div class="p-5">
                         <div class="flex items-center text-gray-500 text-xs mb-3">
                             <i class="fa fa-calendar-o mr-2"></i>
-                            <span>2025-10-12 (GMT+7)</span>
+                            <span data-lang-key="news-date-3">2025-10-12 (GMT+7)</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom">
-                            新身份GISMOW小憨包灵感推荐官，正式解锁！ ✨
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-3">
+                            新身份GISMOW小憨包灵感推荐官，正式解锁！  ✨
                         </h3>
                         <a href="https://weibo.com/7977907334/5215941505319759" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more">
                                 阅读更多
@@ -619,7 +620,7 @@
                     </div>
                     <span class="text-2xl font-display font-bold">BoomRaveewit</span>
                 </a>
-                <p class="text-gray-400 mb-6">
+                <p class="text-gray-400 mb-6" data-lang-key="footer-bio">
                     泰国实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。
                 </p>
                     <div class="flex space-x-4">
@@ -657,7 +658,7 @@
             </div>
         </div>
         <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
-            <p>&copy; 2023 BoomRaveewit 官方网站. 保留所有权利.</p>
+            <p data-lang-key="copyright">© 2023 BoomRaveewit 官方网站. 保留所有权利.</p>
         </div>
     </footer>
 
@@ -702,7 +703,35 @@
                 'news-description': '了解明星的最新活动、作品动态和个人消息',
                 'read-more': '阅读更多',
                 'view-all-news': '查看全部动态',
-                'quick-links': '快速链接'
+                'quick-links': '快速链接',
+                'work-title-topform': 'TopForm',
+                'work-rating-topform': '评分: IMDb 8.9',
+                'work-title-chainsofheart': 'Chains Of Heart',
+                'work-rating-chainsofheart': '评分: IMDb 6.4',
+                'work-title-northstar': 'North Star',
+                'work-views-northstar': '播放量142K',
+                'work-title-bt4u': 'Be there For You',
+                'work-views-bt4u': '播放量75K',
+                'work-title-star': '以你为名的星',
+                'work-views-star': '播放量88K',
+                'footer-bio': '泰国实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。',
+                'news-tag-new-work': '新作品',
+                'news-date-1': '2005-10-11',
+                'news-title-1': 'タイ俳優 #BOOM のモッパン🍖 \n ✨日本初✨冠番組👏',
+                'news-tag-event': '活动现场',
+                'news-date-2': '2025-10-04 (CEST GMT+2)',
+                'news-title-2': 'Boom Europe Fan Meet Tour',
+                'news-tag-preview': '活动预告',
+                'news-date-3': '2025-10-12 (GMT+7)',
+                'news-title-3': '新身份GISMOW小憨包灵感推荐官，正式解锁！   ✨',
+                'site-title': '星光闪耀 - 明星宣传网站',
+                'shining-star': '闪耀星光',
+                'scroll-down': '向下滚动',
+                'awards': '获得奖项',
+                'hero-description': '实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。',
+                'view-works-btn': '查看作品',
+                'browse-photos-btn': '浏览照片',
+                'copyright': '© 2023 BoomRaveewit 官方网站. 保留所有权利.'
             },
             en: {
                 home: 'Home',
@@ -741,7 +770,35 @@
                 'news-description': 'Learn about the star\'s latest activities, works and personal news',
                 'read-more': 'Read More',
                 'view-all-news': 'View All News',
-                'quick-links': 'Quick Links'
+                'quick-links': 'Quick Links',
+                'work-title-topform': 'TopForm',
+                'work-rating-topform': 'Rating: IMDb 8.9',
+                'work-title-chainsofheart': 'Chains Of Heart',
+                'work-rating-chainsofheart': 'Rating: IMDb 6.4',
+                'work-title-northstar': 'North Star',
+                'work-views-northstar': 'Views: 142K',
+                'work-title-bt4u': 'Be there For You',
+                'work-views-bt4u': 'Views: 75K',
+                'work-title-star': 'Star Named After You',
+                'work-views-star': 'Views: 88K',
+                'footer-bio': 'A powerful Thai actor/singer who has won the love and support of fans worldwide with his outstanding acting skills and unique personal charm.',
+                'news-tag-new-work': 'New Work',
+                'news-date-1': '2005-10-11',
+                'news-title-1': 'Thai Actor #BOOM\'s Moppan🍖 \n ✨First Japanese Regular Show✨👏',
+                'news-tag-event': 'Event Scene',
+                'news-date-2': '2025-10-04 (CEST GMT+2)',
+                'news-title-2': 'Boom Europe Fan Meet Tour',
+                'news-tag-preview': 'Event Preview',
+                'news-date-3': '2025-10-12 (GMT+7)',
+                'news-title-3': 'New role as GISMOW brand ambassador officially unlocked!   ✨',
+                'site-title': 'Starlight - Celebrity Promotion Website',
+                'shining-star': 'Shining Star',
+                'scroll-down': 'Scroll Down',
+                'awards': 'Awards Won',
+                'hero-description': 'A powerful actor/singer who has won the love and support of fans worldwide with outstanding acting skills and unique personal charm.',
+                'view-works-btn': 'View Works',
+                'browse-photos-btn': 'Browse Photos',
+                'copyright': '© 2023 BoomRaveewit Official Website. All rights reserved.'
             },
             th: {
                 home: 'หน้าแรก',
@@ -780,7 +837,35 @@
                 'news-description': '了解明星的最新活动、作品动态和个人消息',
                 'read-more': 'อ่านเพิ่มเติม',
                 'view-all-news': 'ดูข่าวสารทั้งหมด',
-                'quick-links': 'ลิงก์ด่วน'
+                'quick-links': 'ลิงก์ด่วน',
+                'work-title-topform': 'TopForm',
+                'work-rating-topform': 'อันดับ: IMDb 8.9',
+                'work-title-chainsofheart': 'Chains Of Heart',
+                'work-rating-chainsofheart': 'อันดับ: IMDb 6.4',
+                'work-title-northstar': 'North Star',
+                'work-views-northstar': 'จำนวนการชม: 142K',
+                'work-title-bt4u': 'Be there For You',
+                'work-views-bt4u': 'จำนวนการชม: 75K',
+                'work-title-star': 'ดาวที่ใช้ชื่อเธอ',
+                'work-views-star': 'จำนวนการชม: 88K',
+                'footer-bio': 'นักแสดงที่มีพลัง/นักร้องชาวไทย ที่ได้รับความรักและการสนับสนุนจากแฟน ๆ ทั่วโลกด้วยทักษะการแสดงที่ยอดเยี่ยมและบุคลิกพิเศษเฉพาะตัว',
+                'news-tag-new-work': 'ผลงานใหม่',
+                'news-date-1': '2005-10-11',
+                'news-title-1': 'นักแสดงไทย #BOOM งานมอปปัน🍖 \n ✨ครั้งแรกในญี่ปุ่น✨รายการปกติ👏',
+                'news-tag-event': 'งาน现场',
+                'news-date-2': '2025-10-04 (CEST GMT+2)',
+                'news-title-2': 'Boom Europe Fan Meet Tour',
+                'news-tag-preview': 'ตัวอย่างกิจกรรม',
+                'news-date-3': '2025-10-12 (GMT+7)',
+                'news-title-3': 'ตำแหน่งใหม่เป็นผู้แนะนำความ灵感应ของ GISMOW ข正式ปลดล็อคแล้ว！   ✨',
+                'site-title': 'ดวงดาวสด - เว็บไซต์โปรโมชั่นดารา',
+                'shining-star': 'ดาวประดับ',
+                'scroll-down': 'เลื่อนลง',
+                'awards': 'รางวัลที่ได้รับ',
+                'hero-description': 'นักแสดงที่มีพลัง/นักร้อง ที่ได้รับความรักและการสนับสนุนจากแฟน ๆ ทั่วโลกด้วยทักษะการแสดงที่ยอดเยี่ยมและบุคลิกพิเศษเฉพาะตัว',
+                'view-works-btn': 'ดูผลงาน',
+                'browse-photos-btn': 'เรียบดูรูปภาพ',
+                'copyright': '© 2023 เว็บไซต์ทางการ BoomRaveewit. สงวนลิขสิทธิ์ทั้งหมด'
             }
         };
 
@@ -795,6 +880,15 @@
                     el.textContent = translations[lang][key];
                 }
             });
+            
+            // 更新文档标题
+            const titleElement = document.querySelector('title[data-lang-key]');
+            if (titleElement) {
+                const titleKey = titleElement.getAttribute('data-lang-key');
+                if (translations[lang][titleKey]) {
+                    document.title = translations[lang][titleKey];
+                }
+            }
             
             // 更新当前语言显示
             document.getElementById('current-language').textContent = lang === 'zh' ? '中文' : lang === 'en' ? 'English' : 'ภาษาไทย';
