@@ -1,0 +1,24 @@
+{
+  "name": "celebrity-fan-site",
+  "version": "1.0.0",
+  "description": "A beautiful, responsive fan site dedicated to showcasing celebrity information, works, gallery, and news.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "celebrity",
+    "fan-site",
+    "responsive",
+    "html5",
+    "css3",
+    "javascript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "http": "0.0.1-security"
+  },
+  "devDependencies": {}
+}

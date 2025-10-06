@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boom Raweewit - 精彩瞬间</title>
+    <title>BoomRaveewit - 精彩瞬间</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -64,6 +64,34 @@
         .gallery-item:hover img {
             transform: scale(1.1);
         }
+        
+        /* 相框样式 - 1220*1799 */
+        .photo-frame {
+            width: 100%;
+            height: 100%;
+            max-width: 1220px;
+            max-height: 1799px;
+            position: relative;
+            background-color: #fff;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        
+        /* 相框装饰边框 */
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 1px solid #e0e0e0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -73,7 +101,7 @@
             <div class="flex items-center justify-between">
                 <a href="index.html" class="flex items-center space-x-2">
                     <i class="fa fa-star text-primary text-2xl"></i>
-                    <span class="text-xl font-bold text-dark">Boom Raweewit</span>
+                    <span class="text-xl font-bold text-dark">BoomRaveewit</span>
                 </a>
                 
                 <!-- 桌面端导航 -->
@@ -101,20 +129,56 @@
                     <a href="index.html#contact" class="text-gray-600 hover:text-primary transition-custom font-medium">联系</a>
                 </nav>
             </div>            </div>            
-            <!-- 图片查看器模态框 -->            
-            <div id="imageViewer" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
-                <button id="closeViewer" class="absolute top-6 right-6 text-white text-3xl hover:text-primary transition-custom">
+            <!-- 图片查看器模态框 -->
+            <div id="imageViewer" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4">
+                <!-- 关闭按钮 -->
+                <button id="closeViewer" class="absolute top-6 right-6 text-white text-3xl hover:text-primary transition-custom z-10">
                     <i class="fa fa-times"></i>
                 </button>
-                <button id="prevImage" class="absolute left-4 text-white text-4xl hover:text-primary transition-custom">
+                
+                <!-- 保存按钮 -->
+                <button id="saveImage" class="absolute top-6 left-6 text-white text-2xl hover:text-primary transition-custom z-10">
+                    <i class="fa fa-download"></i>
+                </button>
+                
+                <!-- 上一张/下一张按钮 -->
+                <button id="prevImage" class="absolute left-4 text-white text-4xl hover:text-primary transition-custom z-10 opacity-70 hover:opacity-100">
                     <i class="fa fa-angle-left"></i>
                 </button>
-                <div class="max-w-5xl w-full max-h-[80vh] relative">
-                    <img id="viewerImage" src="" alt="大图预览" class="w-full h-full object-contain">
-                </div>
-                <button id="nextImage" class="absolute right-4 text-white text-4xl hover:text-primary transition-custom">
+                <button id="nextImage" class="absolute right-4 text-white text-4xl hover:text-primary transition-custom z-10 opacity-70 hover:opacity-100">
                     <i class="fa fa-angle-right"></i>
                 </button>
+                
+                <!-- 缩放控制 -->
+                <div id="zoomControls" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-4 bg-black/70 backdrop-blur-md px-6 py-3 rounded-full shadow-lg transition-all hover:bg-black/90 z-10">
+                    <button id="zoomOut" class="text-white text-xl hover:text-primary transition-custom p-2">
+                        <i class="fa fa-search-minus"></i>
+                    </button>
+                    <button id="resetZoom" class="text-white text-xl hover:text-primary transition-custom p-2">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                    <button id="zoomIn" class="text-white text-xl hover:text-primary transition-custom p-2">
+                        <i class="fa fa-search-plus"></i>
+                    </button>
+                </div>
+                
+                <!-- 图片数量指示器 -->
+                <div class="absolute top-16 left-6 bg-black/70 backdrop-blur-md px-4 py-2 rounded-full text-white z-10">
+                    <span id="currentImageCount">1</span> / <span id="totalImageCount">15</span>
+                </div>
+                
+                <!-- 图片容器 -->
+                <div class="absolute inset-0 flex items-center justify-center p-4">
+                    <div id="imageContainer" class="transform transition-transform duration-200 ease-out cursor-grab active:cursor-grabbing flex items-center justify-center">
+                        <div class="photo-frame mx-auto">
+                            <img id="viewerImage" src="" alt="大图预览" class="w-auto h-auto object-contain max-w-[calc(100%-50px)] max-h-[calc(100%-50px)] transition-opacity duration-300" style="opacity: 0;">
+                        </div>
+                        <!-- 加载中指示器 -->
+                        <div id="imageLoader" class="absolute inset-0 flex items-center justify-center z-10">
+                            <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
     </header>
 
@@ -124,70 +188,70 @@
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12 fade-in">
                     <h2 class="text-[clamp(1.75rem,3vw,2.5rem)] font-bold text-dark mb-4">精彩瞬间</h2>
-                    <p class="text-gray-600 max-w-2xl mx-auto">记录Boom Raweewit在舞台、片场和生活中的所有精彩时刻</p>
+                    <p class="text-gray-600 max-w-2xl mx-auto">记录BoomRaveewit在舞台、片场和生活中的所有精彩时刻</p>
                 </div>
                 
                 <!-- 照片墙 - 展示所有15张照片 -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间1 -->
-                        <img src="images/gallery1.jpg" alt="Boom Raweewit精彩瞬间1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery1.jpg" alt="BoomRaveewit精彩瞬间1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间2 -->
-                        <img src="images/gallery2.jpg" alt="Boom Raweewit精彩瞬间2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery2.jpg" alt="BoomRaveewit精彩瞬间2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间3 -->
-                        <img src="images/gallery3.jpg" alt="Boom Raweewit精彩瞬间3" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery3.jpg" alt="BoomRaveewit精彩瞬间3" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间4 -->
-                        <img src="images/gallery4.jpg" alt="Boom Raweewit精彩瞬间4" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery4.jpg" alt="BoomRaveewit精彩瞬间4" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间5 -->
-                        <img src="images/gallery5.jpg" alt="Boom Raweewit精彩瞬间5" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery5.jpg" alt="BoomRaveewit精彩瞬间5" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间6 -->
-                        <img src="images/gallery6.jpg" alt="Boom Raweewit精彩瞬间6" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery6.jpg" alt="BoomRaveewit精彩瞬间6" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间7 -->
-                        <img src="images/gallery7.jpg" alt="Boom Raweewit精彩瞬间7" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery7.jpg" alt="BoomRaveewit精彩瞬间7" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间8 -->
-                        <img src="images/gallery8.jpg" alt="Boom Raweewit精彩瞬间8" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery8.jpg" alt="BoomRaveewit精彩瞬间8" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间9 -->
-                        <img src="images/gallery9.jpg" alt="Boom Raweewit精彩瞬间9" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery9.jpg" alt="BoomRaveewit精彩瞬间9" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间10 -->
-                        <img src="images/gallery10.jpg" alt="Boom Raweewit精彩瞬间10" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery10.jpg" alt="BoomRaveewit精彩瞬间10" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间11 -->
-                        <img src="images/gallery11.jpg" alt="Boom Raweewit精彩瞬间11" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery11.jpg" alt="BoomRaveewit精彩瞬间11" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间12 -->
-                        <img src="images/gallery12.jpg" alt="Boom Raweewit精彩瞬间12" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery12.jpg" alt="BoomRaveewit精彩瞬间12" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间13 -->
-                        <img src="images/gallery13.jpg" alt="Boom Raweewit精彩瞬间13" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery13.jpg" alt="BoomRaveewit精彩瞬间13" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间14 -->
-                        <img src="images/gallery14.jpg" alt="Boom Raweewit精彩瞬间14" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery14.jpg" alt="BoomRaveewit精彩瞬间14" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                     <div class="gallery-item overflow-hidden rounded-lg shadow-md group">
                         <!-- 明星图片：精彩瞬间15 -->
-                        <img src="images/gallery15.jpg" alt="Boom Raweewit精彩瞬间15" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="images/gallery15.jpg" alt="BoomRaveewit精彩瞬间15" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
                     </div>
                 </div>
                 
@@ -207,7 +271,7 @@
                 <div>
                     <h3 class="text-xl font-bold mb-4 flex items-center">
                         <i class="fa fa-star text-primary mr-2"></i>
-                        Boom Raweewit
+                        BoomRaveewit
                     </h3>
                     <p class="text-gray-400">泰国知名演员、歌手，以其出色的演技和迷人的歌喉赢得了众多粉丝的喜爱。</p>
                 </div>
@@ -233,6 +297,9 @@
                         <a href="https://www.instagram.com/boom_raweewit" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-primary transition-custom">
                             <i class="fa fa-instagram"></i>
                         </a>
+                        <a href="https://xhslink.com/m/6HAzkv9RBhh" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-primary transition-custom">
+                            <i class="fa fa-paper-plane"></i>
+                        </a>
                         <a href="https://www.youtube.com/channel/UCboomraweewit" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-primary transition-custom">
                             <i class="fa fa-youtube-play"></i>
                         </a>
@@ -240,7 +307,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500">
-                <p>&copy; 2023 Boom Raweewit 粉丝站. 保留所有权利.</p>
+                <p>&copy; 2023 BoomRaveewit 粉丝站. 保留所有权利.</p>
             </div>
         </div>
     </footer>
@@ -261,7 +328,10 @@
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
+                        // 添加轻微延迟以增强效果
+                        setTimeout(() => {
+                            entry.target.classList.add('fade-in');
+                        }, 100 * Array.from(galleryImages).indexOf(entry.target) % 5);
                         observer.unobserve(entry.target);
                     }
                 });
@@ -274,24 +344,42 @@
             // 图片查看器功能
             const imageViewer = document.getElementById('imageViewer');
             const viewerImage = document.getElementById('viewerImage');
+            const imageContainer = document.getElementById('imageContainer');
             const closeViewer = document.getElementById('closeViewer');
             const prevImage = document.getElementById('prevImage');
             const nextImage = document.getElementById('nextImage');
+            const zoomIn = document.getElementById('zoomIn');
+            const zoomOut = document.getElementById('zoomOut');
+            const resetZoom = document.getElementById('resetZoom');
+            const saveImage = document.getElementById('saveImage');
+            const currentImageCount = document.getElementById('currentImageCount');
+            const totalImageCount = document.getElementById('totalImageCount');
+            const imageLoader = document.getElementById('imageLoader');
             const galleryItems = document.querySelectorAll('.gallery-item');
-            let currentImageIndex = 0;
             
-            // 获取所有图片的src
-            const imageSources = Array.from(galleryItems).map(item => item.querySelector('img').src);
+            let currentImageIndex = 0;
+            let scale = 1;
+            let isDragging = false;
+            let startX, startY, translateX = 0, translateY = 0, previousTranslateX = 0, previousTranslateY = 0;
+            let initialDistance = 0;
+            let lastScale = 1;
+            
+            // 获取所有图片的src和alt
+            const imagesInfo = Array.from(galleryItems).map(item => ({
+                src: item.querySelector('img').src,
+                alt: item.querySelector('img').alt
+            }));
+            
+            // 设置总数
+            totalImageCount.textContent = imagesInfo.length;
             
             // 打开图片查看器
             galleryItems.forEach((item, index) => {
                 item.addEventListener('click', function() {
-                    currentImageIndex = index;
-                    viewerImage.src = imageSources[index];
-                    imageViewer.classList.remove('hidden');
-                    imageViewer.classList.add('flex');
-                    // 禁止背景滚动
-                    document.body.style.overflow = 'hidden';
+                    // 跳转到单独的图片查看页面
+                    const imgSrc = item.querySelector('img').src;
+                    const imgAlt = item.querySelector('img').alt;
+                    window.location.href = `view-photo.html?index=${index}&src=${encodeURIComponent(imgSrc)}&alt=${encodeURIComponent(imgAlt)}`;
                 });
             });
             
@@ -306,15 +394,123 @@
             // 下一张图片
             nextImage.addEventListener('click', function(e) {
                 e.stopPropagation();
-                currentImageIndex = (currentImageIndex + 1) % imageSources.length;
-                viewerImage.src = imageSources[currentImageIndex];
+                nextImageFunc();
             });
             
             // 上一张图片
             prevImage.addEventListener('click', function(e) {
                 e.stopPropagation();
-                currentImageIndex = (currentImageIndex - 1 + imageSources.length) % imageSources.length;
-                viewerImage.src = imageSources[currentImageIndex];
+                prevImageFunc();
+            });
+            
+            // 下一张图片函数
+            function nextImageFunc() {
+                const nextIndex = (currentImageIndex + 1) % imagesInfo.length;
+                
+                // 显示加载指示器
+                imageLoader.style.display = 'flex';
+                viewerImage.style.opacity = '0';
+                
+                // 预加载下一张图片
+                const tempImg = new Image();
+                tempImg.src = imagesInfo[nextIndex].src;
+                tempImg.onload = function() {
+                    currentImageIndex = nextIndex;
+                    viewerImage.src = imagesInfo[currentImageIndex].src;
+                    viewerImage.alt = imagesInfo[currentImageIndex].alt;
+                    currentImageCount.textContent = currentImageIndex + 1;
+                    
+                    // 重置位置，但保持缩放状态以提供更好的连续性
+                    translateX = 0;
+                    translateY = 0;
+                    applyTransform();
+                    
+                    // 显示图片
+                    setTimeout(() => {
+                        viewerImage.style.opacity = '1';
+                        imageLoader.style.display = 'none';
+                    }, 100);
+                };
+            }
+            
+            // 上一张图片函数
+            function prevImageFunc() {
+                const prevIndex = (currentImageIndex - 1 + imagesInfo.length) % imagesInfo.length;
+                
+                // 显示加载指示器
+                imageLoader.style.display = 'flex';
+                viewerImage.style.opacity = '0';
+                
+                // 预加载上一张图片
+                const tempImg = new Image();
+                tempImg.src = imagesInfo[prevIndex].src;
+                tempImg.onload = function() {
+                    currentImageIndex = prevIndex;
+                    viewerImage.src = imagesInfo[currentImageIndex].src;
+                    viewerImage.alt = imagesInfo[currentImageIndex].alt;
+                    currentImageCount.textContent = currentImageIndex + 1;
+                    
+                    // 重置位置，但保持缩放状态以提供更好的连续性
+                    translateX = 0;
+                    translateY = 0;
+                    applyTransform();
+                    
+                    // 显示图片
+                    setTimeout(() => {
+                        viewerImage.style.opacity = '1';
+                        imageLoader.style.display = 'none';
+                    }, 100);
+                };
+            }
+            
+            // 放大图片
+            zoomIn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                scale += 0.2;
+                // 添加缩放动画
+                imageContainer.style.transition = 'transform 0.2s ease-out';
+                applyTransform();
+                
+                // 重置过渡效果，避免影响拖动
+                setTimeout(() => {
+                    imageContainer.style.transition = 'transform 0.1s ease-out';
+                }, 200);
+            });
+            
+            // 缩小图片
+            zoomOut.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (scale > 0.4) {
+                    scale -= 0.2;
+                    // 添加缩放动画
+                    imageContainer.style.transition = 'transform 0.2s ease-out';
+                    applyTransform();
+                    
+                    // 重置过渡效果
+                    setTimeout(() => {
+                        imageContainer.style.transition = 'transform 0.1s ease-out';
+                    }, 200);
+                }
+            });
+            
+            // 重置图片
+            resetZoom.addEventListener('click', function(e) {
+                e.stopPropagation();
+                resetImage();
+            });
+            
+            // 保存图片
+            saveImage.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // 创建一个链接元素
+                const link = document.createElement('a');
+                link.href = viewerImage.src;
+                // 从alt属性或URL中提取文件名
+                const fileName = viewerImage.alt || viewerImage.src.split('/').pop();
+                link.download = fileName.replace(/[^a-zA-Z0-9._-]/g, '_'); // 清理文件名
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
             
             // 点击空白处关闭
@@ -330,11 +526,210 @@
                     if (e.key === 'Escape') {
                         closeViewer.click();
                     } else if (e.key === 'ArrowRight') {
-                        nextImage.click();
+                        nextImageFunc();
                     } else if (e.key === 'ArrowLeft') {
-                        prevImage.click();
+                        prevImageFunc();
+                    } else if (e.key === '+') {
+                        zoomIn.click();
+                    } else if (e.key === '-') {
+                        zoomOut.click();
+                    } else if (e.key === '0') {
+                        resetZoom.click();
+                    } else if (e.key === ' ') {
+                        // 空格键也可以切换到下一张
+                        e.preventDefault();
+                        nextImageFunc();
                     }
                 }
+            });
+            
+            // 鼠标滚轮缩放 - 增强版
+            imageContainer.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                
+                // 获取鼠标位置作为缩放中心
+                const rect = imageContainer.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // 计算鼠标位置相对于图片中心点的偏移
+                const offsetX = mouseX - rect.width / 2;
+                const offsetY = mouseY - rect.height / 2;
+                
+                // 计算缩放前的偏移比例
+                const offsetRatioX = offsetX / scale;
+                const offsetRatioY = offsetY / scale;
+                
+                // 计算缩放增量
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                const newScale = scale + delta;
+                
+                // 限制缩放范围
+                if (newScale > 0.2 && newScale < 10) {
+                    scale = newScale;
+                    
+                    // 调整平移量，使鼠标指向的点保持不动
+                    translateX += offsetRatioX * (scale - (scale - delta));
+                    translateY += offsetRatioY * (scale - (scale - delta));
+                    
+                    applyTransform();
+                }
+            });
+            
+            // 鼠标拖动功能
+            imageContainer.addEventListener('mousedown', startDrag);
+            window.addEventListener('mousemove', drag);
+            window.addEventListener('mouseup', endDrag);
+            
+            // 触摸拖动功能
+            imageContainer.addEventListener('touchstart', startDrag);
+            window.addEventListener('touchmove', drag);
+            window.addEventListener('touchend', endDrag);
+            
+            // 多点触摸缩放
+            imageContainer.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    // 计算两指之间的距离
+                    initialDistance = getDistance(e.touches[0], e.touches[1]);
+                    lastScale = scale;
+                    isDragging = false;
+                }
+            });
+            
+            imageContainer.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    // 计算当前两指之间的距离
+                    const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                    // 计算缩放比例
+                    const scaleFactor = currentDistance / initialDistance;
+                    
+                    // 计算新的缩放值
+                    const newScale = lastScale * scaleFactor;
+                    
+                    // 限制缩放范围
+                    if (newScale > 0.2 && newScale < 10) {
+                        scale = newScale;
+                        
+                        // 获取两指中心点
+                        const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                        const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                        
+                        // 计算缩放前的偏移
+                        const rect = imageContainer.getBoundingClientRect();
+                        const prevOffsetX = centerX - rect.left;
+                        const prevOffsetY = centerY - rect.top;
+                        
+                        // 调整平移量
+                        translateX += prevOffsetX * (1 - 1/scaleFactor);
+                        translateY += prevOffsetY * (1 - 1/scaleFactor);
+                        
+                        applyTransform();
+                    }
+                }
+            });
+            
+            function getDistance(touch1, touch2) {
+                const dx = touch2.clientX - touch1.clientX;
+                const dy = touch2.clientY - touch1.clientY;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+            
+            function startDrag(e) {
+                // 只有在单指或鼠标时启用拖动
+                if (e.type === 'mousedown' || (e.type === 'touchstart' && e.touches.length === 1)) {
+                    isDragging = true;
+                    
+                    // 记录起始位置
+                    if (e.type === 'mousedown') {
+                        startX = e.clientX - translateX;
+                        startY = e.clientY - translateY;
+                    } else {
+                        startX = e.touches[0].clientX - translateX;
+                        startY = e.touches[0].clientY - translateY;
+                    }
+                    
+                    // 更改过渡效果，使拖动更流畅
+                    imageContainer.style.transition = 'transform 0.1s ease-out';
+                }
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                // 计算新的平移位置
+                if (e.type === 'mousemove') {
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                } else if (e.type === 'touchmove' && e.touches.length === 1) {
+                    translateX = e.touches[0].clientX - startX;
+                    translateY = e.touches[0].clientY - startY;
+                }
+                
+                applyTransform();
+            }
+            
+            function endDrag() {
+                if (isDragging) {
+                    isDragging = false;
+                    previousTranslateX = translateX;
+                    previousTranslateY = translateY;
+                }
+            }
+            
+            function applyTransform() {
+                imageContainer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            }
+            
+            function resetImage() {
+                scale = 1;
+                translateX = 0;
+                translateY = 0;
+                previousTranslateX = 0;
+                previousTranslateY = 0;
+                // 添加重置动画
+                imageContainer.style.transition = 'transform 0.3s ease-out';
+                applyTransform();
+                
+                // 重置过渡效果
+                setTimeout(() => {
+                    imageContainer.style.transition = 'transform 0.1s ease-out';
+                }, 300);
+            }
+            
+            // 双击缩放
+            imageContainer.addEventListener('dblclick', function(e) {
+                e.stopPropagation();
+                if (scale === 1) {
+                    // 计算双击位置作为缩放中心
+                    const rect = imageContainer.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const clickY = e.clientY - rect.top;
+                    
+                    // 记录缩放前的位置
+                    const prevScale = scale;
+                    scale = 2; // 双击放大到2倍
+                    
+                    // 调整平移量，使点击的点保持不动
+                    translateX += (clickX - rect.width / 2) * (1 - prevScale/scale);
+                    translateY += (clickY - rect.height / 2) * (1 - prevScale/scale);
+                } else {
+                    // 如果已经缩放，则重置
+                    scale = 1;
+                    translateX = 0;
+                    translateY = 0;
+                }
+                
+                // 添加动画
+                imageContainer.style.transition = 'transform 0.3s ease-out';
+                applyTransform();
+                
+                // 重置过渡效果
+                setTimeout(() => {
+                    imageContainer.style.transition = 'transform 0.1s ease-out';
+                }, 300);
             });
         });
     </script>
