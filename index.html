@@ -528,13 +528,50 @@
             <div class="mb-10 max-w-6xl mx-auto w-full">
                 <!-- 新闻4 - 商务活动：图片在左，文字在右 -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg flex flex-col md:flex-row">
-                    <!-- 图片部分 -->
+                    <!-- 图片轮播部分 -->
                     <div class="relative w-full md:w-2/5 h-72 overflow-hidden">
-                        <!-- 明星图片：商务活动 -->
-                        <img src="images/new4.jpg" alt="BOOM专属范趣町GISMOW搪胶毛绒娃娃盲盒" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
+                        <!-- 轮播容器 -->
+                        <div id="commercialSlider" class="relative w-full h-full transition-all duration-500">
+                            <!-- 明星图片1：商务活动 -->
+                            <img src="images/new4.jpg" alt="BOOM专属范趣町GISMOW搪胶毛绒娃娃盲盒" class="absolute top-0 left-0 w-full h-full object-contain transition-all duration-500 opacity-100">
+                            <!-- 明星图片2：商务活动 -->
+                            <img src="images/new4-1.jpg" alt="BOOM专属范趣町GISMOW搪胶毛绒娃娃盲盒" class="absolute top-0 left-0 w-full h-full object-contain transition-all duration-500 opacity-0">
+                        </div>
                         <div class="absolute top-4 left-4 bg-purple-500 text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-commercial">
                             商务活动
                         </div>
+                        <!-- 轮播指示器 -->
+                        <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-100" onclick="changeSlide(0)"></button>
+                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-50" onclick="changeSlide(1)"></button>
+                        </div>
+                        
+                        <!-- 轮播脚本 -->
+                        <script>
+                            let currentSlide = 0;
+                            const slides = document.querySelectorAll('#commercialSlider img');
+                            const indicators = document.querySelectorAll('#commercialSlider + div button');
+                            
+                            // 轮播切换函数
+                            function changeSlide(index) {
+                                slides[currentSlide].classList.remove('opacity-100');
+                                slides[currentSlide].classList.add('opacity-0');
+                                indicators[currentSlide].classList.remove('opacity-100');
+                                indicators[currentSlide].classList.add('opacity-50');
+                                
+                                currentSlide = index;
+                                
+                                slides[currentSlide].classList.remove('opacity-0');
+                                slides[currentSlide].classList.add('opacity-100');
+                                indicators[currentSlide].classList.remove('opacity-50');
+                                indicators[currentSlide].classList.add('opacity-100');
+                            }
+                            
+                            // 自动轮播
+                            setInterval(() => {
+                                changeSlide((currentSlide + 1) % slides.length);
+                            }, 3000);
+                        </script>
                     </div>
                     <!-- 文字描述部分 -->
                     <div class="p-8 md:p-10 w-full md:w-3/5 flex flex-col justify-center">
