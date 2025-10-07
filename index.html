@@ -542,8 +542,8 @@
                         </div>
                         <!-- 轮播指示器 -->
                         <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
-                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-100" onclick="switchToSlide(0)"></button>
-                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-50" onclick="switchToSlide(1)"></button>
+                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-100" onclick="changeSlide(0)"></button>
+                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-50" onclick="changeSlide(1)"></button>
                         </div>
                         
                         <!-- 轮播脚本 -->
@@ -552,32 +552,8 @@
                             const slides = document.querySelectorAll('#commercialSlider img');
                             const indicators = document.querySelectorAll('#commercialSlider + div button');
                             
-                            // 随机显示一张图片
-                            function showRandomSlide() {
-                                // 随机选择一张图片，但确保不与当前显示的图片相同
-                                let randomIndex;
-                                do {
-                                    randomIndex = Math.floor(Math.random() * slides.length);
-                                } while (randomIndex === currentSlide && slides.length > 1);
-                                
-                                // 隐藏当前显示的图片
-                                slides[currentSlide].classList.remove('opacity-100');
-                                slides[currentSlide].classList.add('opacity-0');
-                                indicators[currentSlide].classList.remove('opacity-100');
-                                indicators[currentSlide].classList.add('opacity-50');
-                                
-                                // 更新当前图片索引
-                                currentSlide = randomIndex;
-                                
-                                // 显示随机选择的图片
-                                slides[currentSlide].classList.remove('opacity-0');
-                                slides[currentSlide].classList.add('opacity-100');
-                                indicators[currentSlide].classList.remove('opacity-50');
-                                indicators[currentSlide].classList.add('opacity-100');
-                            }
-                            
-                            // 切换到指定幻灯片（用于按钮点击）
-                            function switchToSlide(index) {
+                            // 轮播切换函数
+                            function changeSlide(index) {
                                 slides[currentSlide].classList.remove('opacity-100');
                                 slides[currentSlide].classList.add('opacity-0');
                                 indicators[currentSlide].classList.remove('opacity-100');
@@ -591,8 +567,10 @@
                                 indicators[currentSlide].classList.add('opacity-100');
                             }
                             
-                            // 每3秒随机显示一张图片
-                            setInterval(showRandomSlide, 3000);
+                            // 自动轮播
+                            setInterval(() => {
+                                changeSlide((currentSlide + 1) % slides.length);
+                            }, 3000);
                         </script>
                     </div>
                     <!-- 文字描述部分 -->
@@ -815,7 +793,7 @@
                 'news-title-3': '新身份GISMOW小憨包灵感推荐官，正式解锁！   ✨',
                 'news-tag-commercial': '商务活动',
                 'news-date-4': '2025年9月28日',
-                'news-title-4': '【BOOM专属】范趣町GISMOW搪胶毛绒娃娃盲盒直发小憨包盲盒手办直播',
+                'news-title-4': '【BOOM专属】范趣町GISMOW搪胶毛绒娃娃盲盒直发小憨包盲盒手办',
                 'site-title': '星光闪耀 - 明星宣传网站',
                 'shining-star': '闪耀星光',
                 'scroll-down': '向下滚动',
@@ -884,8 +862,8 @@
                 'news-date-3': '2025-10-12 (GMT+7)',
                 'news-title-3': 'New role as GISMOW brand ambassador officially unlocked!   ✨',
                 'news-tag-commercial': 'Commercial Event',
-                'news-date-4': '2025-10-20 (GMT+7)',
-                'news-title-4': 'Boom becomes new brand ambassador, starting new cooperation with famous brand!   ✨',
+                'news-date-4': '2025-09-28',
+                'news-title-4': '【BOOM Exclusive】GISMOW Vinyl Plush Doll Blind Box Straight Hair Little Chubby Bag Blind Box Figure',
                 'site-title': 'Starlight - Celebrity Promotion Website',
                 'shining-star': 'Shining Star',
                 'scroll-down': 'Scroll Down',
@@ -954,8 +932,8 @@
                 'news-date-3': '2025-10-12 (GMT+7)',
                 'news-title-3': 'ตำแหน่งใหม่เป็นผู้แนะนำความ灵感应ของ GISMOW ข正式ปลดล็อคแล้ว！   ✨',
                 'news-tag-commercial': 'กิจกรรมการตลาด',
-                'news-date-4': '2025-10-20 (GMT+7)',
-                'news-title-4': 'Boom กลายเป็นตัวแทนแบรนด์ใหม่ เริ่มความร่วมมือใหม่กับแบรนด์ดัง！   ✨',
+                'news-date-4': '2568-09-28',
+                'news-title-4': '【ส่วนตัว BOOM】GISMOW Vinyl Plush Doll Blind Box Straight Hair Little Chubby Bag Blind Box Figure',
                 'site-title': 'ดวงดาวสด - เว็บไซต์โปรโมชั่นดารา',
                 'shining-star': 'ดาวประดับ',
                 'scroll-down': 'เลื่อนลง',
