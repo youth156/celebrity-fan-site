@@ -542,8 +542,8 @@
                         </div>
                         <!-- 轮播指示器 -->
                         <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
-                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-100" onclick="changeSlide(0)"></button>
-                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-50" onclick="changeSlide(1)"></button>
+                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-100" onclick="switchToSlide(0)"></button>
+                            <button class="w-2.5 h-2.5 rounded-full bg-white opacity-50" onclick="switchToSlide(1)"></button>
                         </div>
                         
                         <!-- 轮播脚本 -->
@@ -552,8 +552,32 @@
                             const slides = document.querySelectorAll('#commercialSlider img');
                             const indicators = document.querySelectorAll('#commercialSlider + div button');
                             
-                            // 轮播切换函数
-                            function changeSlide(index) {
+                            // 随机显示一张图片
+                            function showRandomSlide() {
+                                // 随机选择一张图片，但确保不与当前显示的图片相同
+                                let randomIndex;
+                                do {
+                                    randomIndex = Math.floor(Math.random() * slides.length);
+                                } while (randomIndex === currentSlide && slides.length > 1);
+                                
+                                // 隐藏当前显示的图片
+                                slides[currentSlide].classList.remove('opacity-100');
+                                slides[currentSlide].classList.add('opacity-0');
+                                indicators[currentSlide].classList.remove('opacity-100');
+                                indicators[currentSlide].classList.add('opacity-50');
+                                
+                                // 更新当前图片索引
+                                currentSlide = randomIndex;
+                                
+                                // 显示随机选择的图片
+                                slides[currentSlide].classList.remove('opacity-0');
+                                slides[currentSlide].classList.add('opacity-100');
+                                indicators[currentSlide].classList.remove('opacity-50');
+                                indicators[currentSlide].classList.add('opacity-100');
+                            }
+                            
+                            // 切换到指定幻灯片（用于按钮点击）
+                            function switchToSlide(index) {
                                 slides[currentSlide].classList.remove('opacity-100');
                                 slides[currentSlide].classList.add('opacity-0');
                                 indicators[currentSlide].classList.remove('opacity-100');
@@ -567,10 +591,8 @@
                                 indicators[currentSlide].classList.add('opacity-100');
                             }
                             
-                            // 自动轮播
-                            setInterval(() => {
-                                changeSlide((currentSlide + 1) % slides.length);
-                            }, 3000);
+                            // 每3秒随机显示一张图片
+                            setInterval(showRandomSlide, 3000);
                         </script>
                     </div>
                     <!-- 文字描述部分 -->
