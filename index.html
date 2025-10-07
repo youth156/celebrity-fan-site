@@ -524,34 +524,40 @@
                     <div class="w-20 h-1 bg-primary mx-auto mt-4"></div>
                 </div>
             
-            <div class="grid grid-cols-1 gap-8">
-                <!-- 新闻4 - 商务活动 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg">
-                    <div class="relative h-72 overflow-hidden">
+            <!-- 单行布局：商务活动单独一行 -->
+            <div class="mb-10">
+                <!-- 新闻4 - 商务活动：图片在左，文字在右 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg flex flex-col md:flex-row">
+                    <!-- 图片部分 -->
+                    <div class="relative w-full md:w-2/5 h-72 overflow-hidden">
                         <!-- 明星图片：商务活动 -->
                         <img src="images/gallery1.jpg" alt="BoomRaveewit商务活动" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute top-4 left-4 bg-purple-500 text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-commercial">
                             商务活动
                         </div>
                     </div>
-                    <div class="p-5">
+                    <!-- 文字描述部分 -->
+                    <div class="p-8 w-full md:w-3/5 flex flex-col justify-center">
                         <div class="flex items-center text-gray-500 text-xs mb-3">
                             <i class="fa fa-calendar-o mr-2"></i>
                             <span data-lang-key="news-date-4">2025-10-20 (GMT+7)</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-4">
+                        <h3 class="text-2xl font-bold mb-6 group-hover:text-primary transition-custom" data-lang-key="news-title-4">
                             Boom成为全新品牌形象大使，携手知名品牌开启新合作！  ✨
                         </h3>
-                        <a href="#" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
+                        <a href="#" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom self-start" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
                                 阅读更多
                                 <i class="fa fa-long-arrow-right ml-2"></i>
                             </a>
                     </div>
                 </div>
-                
+            </div>
+            
+            <!-- 新作品、活动现场和活动预告在同一行 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- 新闻1 -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg">
-                    <div class="relative h-72 overflow-hidden">
+                    <div class="relative h-64 overflow-hidden">
                         <!-- 明星图片：新闻图片1，已替换为本地图片 -->
                         <img src="images/new1.jpg" alt="BoomRaveewit日本初冠番組" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute top-4 left-4 bg-primary text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-new-work">
@@ -563,7 +569,7 @@
                             <i class="fa fa-calendar-o mr-2"></i>
                             <span data-lang-key="news-date-1">2005-10-11</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-1">
+                        <h3 class="text-lg font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-1">
                             タイ俳優 #BOOM のモッパン🍖 
  ✨日本初✨冠番組👏
                         </h3>
@@ -576,7 +582,7 @@
                 
                 <!-- 新闻2 -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg">
-                    <div class="relative h-72 overflow-hidden">
+                    <div class="relative h-64 overflow-hidden">
                         <!-- 明星图片：新闻图片2，已替换为本地图片 -->
                         <img src="images/new2.jpg" alt="Boom Europe Fan Meet Tour" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute top-4 left-4 bg-secondary text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-event">
@@ -588,7 +594,7 @@
                             <i class="fa fa-calendar-o mr-2"></i>
                             <span data-lang-key="news-date-2">2025-10-04 (CEST GMT+2)</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-2">
+                        <h3 class="text-lg font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-2">
                             Boom Europe Fan Meet Tour
                         </h3>
                         <a href="https://x.com/HeadlinerTH/status/1974100411620704341?s=19" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
@@ -600,7 +606,7 @@
                 
                 <!-- 新闻3 -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg">
-                    <div class="relative h-72 overflow-hidden">
+                    <div class="relative h-64 overflow-hidden">
                         <!-- 明星图片：活动预告 -->
                         <img src="images/new3.jpg" alt="BoomRaveewit活动预告" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute top-4 left-4 bg-green-500 text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-preview">
@@ -612,7 +618,7 @@
                             <i class="fa fa-calendar-o mr-2"></i>
                             <span data-lang-key="news-date-3">2025-10-12 (GMT+7)</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-3">
+                        <h3 class="text-lg font-bold mb-4 group-hover:text-primary transition-custom" data-lang-key="news-title-3">
                             新身份GISMOW小憨包灵感推荐官，正式解锁！  ✨
                         </h3>
                         <a href="https://weibo.com/7977907334/5215941505319759" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
