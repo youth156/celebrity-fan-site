@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="site-title">星光闪耀 - 明星宣传网站</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6C38FF', // 主色调：紫色，代表创造力和独特性
+                        secondary: '#FF5E7D', // 辅助色：粉色，代表热情和活力
+                        dark: '#1A1A2E', // 深色背景
+                        light: '#F7F7F9', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+            .transition-custom {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+        }
+    </style>
+    <!-- 预加载字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light font-sans text-gray-800 overflow-x-hidden">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fa fa-star text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-display font-bold text-white text-shadow-lg">BoomRaveewit</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="home">首页</a>
+                    <a href="index.html#about" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="about">关于</a>
+                    <a href="index.html#works" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="works">作品</a>
+                    <a href="gallery.html" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="gallery">照片</a>
+                    <a href="all-news.html" class="text-secondary hover:text-secondary transition-custom font-medium" data-lang-key="news">动态</a>
+                      
+                    <!-- 语言切换下拉菜单 -->
+                    <div id="language-selector" class="relative ml-6">
+                        <button id="language-btn" class="flex items-center space-x-2 bg-white/10 hover:bg-primary px-3 py-1.5 rounded-full text-white transition-custom">
+                            <i class="fa fa-globe"></i>
+                            <span id="current-language">中文</span>
+                            <i class="fa fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 hidden">
+                            <a href="#" data-lang="zh" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇨🇳</span> 中文
+                            </a>
+                            <a href="#" data-lang="en" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇬🇧</span> English
+                            </a>
+                            <a href="#" data-lang="th" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇹🇭</span> ภาษาไทย
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-white text-2xl focus:outline-none">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>            
+        </div>
+    </header>
+
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 bg-dark/95 z-40 flex flex-col items-center justify-center transform translate-x-full transition-transform duration-300 md:hidden">
+        <button id="close-menu" class="absolute top-6 right-6 text-white text-3xl">
+            <i class="fa fa-times"></i>
+        </button>
+        <nav class="flex flex-col items-center space-y-8 mt-12">
+            <a href="index.html" class="text-white text-2xl hover:text-secondary transition-custom font-medium" data-lang-key="home">首页</a>
+            <a href="index.html#about" class="text-white text-2xl hover:text-secondary transition-custom font-medium" data-lang-key="about">关于</a>
+            <a href="index.html#works" class="text-white text-2xl hover:text-secondary transition-custom font-medium" data-lang-key="works">作品</a>
+            <a href="gallery.html" class="text-white text-2xl hover:text-secondary transition-custom font-medium" data-lang-key="gallery">照片</a>
+            <a href="all-news.html" class="text-secondary text-2xl hover:text-secondary transition-custom font-medium" data-lang-key="news">动态</a>
+        </nav>
+        
+        <!-- 移动端语言选择 -->
+        <div class="mt-12">
+            <button id="mobile-language-btn" class="flex items-center space-x-2 bg-white/10 hover:bg-primary px-3 py-2 rounded-full text-white transition-custom">
+                <i class="fa fa-globe"></i>
+                <span id="mobile-current-language" data-lang-key="language">语言</span>
+                <i class="fa fa-chevron-down text-xs"></i>
+            </button>
+            <div id="mobile-language-dropdown" class="absolute mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 hidden">
+                <a href="#" data-lang="zh" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                    <span class="flag-icon">🇨🇳</span> 中文
+                </a>
+                <a href="#" data-lang="en" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                    <span class="flag-icon">🇬🇧</span> English
+                </a>
+                <a href="#" data-lang="th" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                    <span class="flag-icon">🇹🇭</span> ภาษาไทย
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全部动态部分 -->
+    <section id="all-news" class="pt-32 pb-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-display font-bold mb-4" data-lang-key="all-news-title">全部动态</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto" data-lang-key="all-news-description">浏览明星的所有历史活动、作品动态和个人消息</p>
+                <div class="w-20 h-1 bg-primary mx-auto mt-4"></div>
+            </div>
+
+            <!-- 动态过滤器 -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="news-filter-btn active px-6 py-2 bg-primary text-white rounded-full font-medium transition-custom" data-filter="all">
+                    <i class="fa fa-filter mr-2"></i><span data-lang-key="all">全部</span>
+                </button>
+                <button class="news-filter-btn px-6 py-2 bg-white text-gray-800 hover:bg-primary hover:text-white rounded-full font-medium transition-custom" data-filter="commercial">
+                    <span data-lang-key="news-tag-commercial">商务活动</span>
+                </button>
+                <button class="news-filter-btn px-6 py-2 bg-white text-gray-800 hover:bg-primary hover:text-white rounded-full font-medium transition-custom" data-filter="new-work">
+                    <span data-lang-key="news-tag-new-work">新作品</span>
+                </button>
+                <button class="news-filter-btn px-6 py-2 bg-white text-gray-800 hover:bg-primary hover:text-white rounded-full font-medium transition-custom" data-filter="event">
+                    <span data-lang-key="news-tag-event">活动现场</span>
+                </button>
+                <button class="news-filter-btn px-6 py-2 bg-white text-gray-800 hover:bg-primary hover:text-white rounded-full font-medium transition-custom" data-filter="preview">
+                    <span data-lang-key="news-tag-preview">活动预告</span>
+                </button>
+            </div>
+
+            <!-- 动态列表 -->
+            <div class="news-container space-y-12 max-w-6xl mx-auto">
+                <!-- 新闻4 - 商务活动 -->
+                <div class="news-item bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg flex flex-col md:flex-row" data-category="commercial">
+                    <div class="relative w-full md:w-2/5 h-80 overflow-hidden">
+                        <img src="images/new4.jpg" alt="BOOM专属范趣町GISMOW搪胶毛绒娃娃盲盒" class="w-full h-full object-contain">
+                        <div class="absolute top-4 left-4 bg-purple-500 text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-commercial">
+                            商务活动
+                        </div>
+                    </div>
+                    <div class="p-8 md:p-10 w-full md:w-3/5 flex flex-col justify-center">
+                        <div class="flex items-center text-gray-500 text-xs mb-3">
+                            <i class="fa fa-calendar-o mr-2"></i>
+                            <span data-lang-key="news-date-4">2025年9月28日</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-6 group-hover:text-primary transition-custom" data-lang-key="news-title-4">
+                            【BOOM专属】范趣町GISMOW搪胶毛绒娃娃盲盒直发小憨包盲盒手办
+                        </h3>
+                        <p class="text-gray-600 mb-6" data-lang-key="news-content-4">
+                            Boom作为GISMOW品牌形象大使，为大家带来限量版盲盒系列，包括搪胶毛绒娃娃、直发小憨包等多款可爱造型。
+                        </p>
+                        <a href="https://v.douyin.com/MrsSsAA_NoI/" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom self-start" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
+                            点击获取
+                            <i class="fa fa-long-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 新闻3 - 活动预告 -->
+                <div class="news-item bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg flex flex-col md:flex-row" data-category="preview">
+                    <div class="relative w-full md:w-2/5 h-80 overflow-hidden">
+                        <img src="images/new3.jpg" alt="BoomRaveewit活动预告" class="w-full h-full object-contain">
+                        <div class="absolute top-4 left-4 bg-green-500 text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-preview">
+                            活动预告
+                        </div>
+                    </div>
+                    <div class="p-8 md:p-10 w-full md:w-3/5 flex flex-col justify-center">
+                        <div class="flex items-center text-gray-500 text-xs mb-3">
+                            <i class="fa fa-calendar-o mr-2"></i>
+                            <span data-lang-key="news-date-3">2025-10-12 (GMT+7)</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-6 group-hover:text-primary transition-custom" data-lang-key="news-title-3">
+                            新身份GISMOW小憨包灵感推荐官，正式解锁！  ✨
+                        </h3>
+                        <p class="text-gray-600 mb-6" data-lang-key="news-content-3">
+                            Boom将以全新身份担任GISMOW小憨包灵感推荐官，为粉丝带来更多精彩内容和独家周边。
+                        </p>
+                        <a href="https://weibo.com/7977907334/5215941505319759" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom self-start" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
+                            阅读更多
+                            <i class="fa fa-long-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 新闻2 - 活动现场 -->
+                <div class="news-item bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg flex flex-col md:flex-row" data-category="event">
+                    <div class="relative w-full md:w-2/5 h-80 overflow-hidden">
+                        <img src="images/new2.jpg" alt="Boom Europe Fan Meet Tour" class="w-full h-full object-contain">
+                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-event">
+                            活动现场
+                        </div>
+                    </div>
+                    <div class="p-8 md:p-10 w-full md:w-3/5 flex flex-col justify-center">
+                        <div class="flex items-center text-gray-500 text-xs mb-3">
+                            <i class="fa fa-calendar-o mr-2"></i>
+                            <span data-lang-key="news-date-2">2025-10-04 (CEST GMT+2)</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-6 group-hover:text-primary transition-custom" data-lang-key="news-title-2">
+                            Boom Europe Fan Meet Tour
+                        </h3>
+                        <p class="text-gray-600 mb-6" data-lang-key="news-content-2">
+                            Boom即将开启欧洲粉丝见面会巡演，与欧洲的粉丝们近距离互动，带来精彩表演。
+                        </p>
+                        <a href="https://x.com/HeadlinerTH/status/1974100411620704341?s=19" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom self-start" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
+                            阅读更多
+                            <i class="fa fa-long-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 新闻1 - 新作品 -->
+                <div class="news-item bg-white rounded-xl shadow-md overflow-hidden group transition-custom hover:shadow-lg flex flex-col md:flex-row" data-category="new-work">
+                    <div class="relative w-full md:w-2/5 h-80 overflow-hidden">
+                        <img src="images/new1.jpg" alt="BoomRaveewit日本初冠番組" class="w-full h-full object-contain">
+                        <div class="absolute top-4 left-4 bg-primary text-white text-sm px-3 py-1 rounded-full" data-lang-key="news-tag-new-work">
+                            新作品
+                        </div>
+                    </div>
+                    <div class="p-8 md:p-10 w-full md:w-3/5 flex flex-col justify-center">
+                        <div class="flex items-center text-gray-500 text-xs mb-3">
+                            <i class="fa fa-calendar-o mr-2"></i>
+                            <span data-lang-key="news-date-1">2005-10-11</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-6 group-hover:text-primary transition-custom" data-lang-key="news-title-1">
+                            タイ俳優 #BOOM のモッパン🍖
+                            ✨日本初✨冠番組👏
+                        </h3>
+                        <p class="text-gray-600 mb-6" data-lang-key="news-content-1">
+                            Boom将在日本推出首个冠名节目，展现其多才多艺的一面，与日本观众近距离互动。
+                        </p>
+                        <a href="https://x.com/nitteleplus/status/1959812981656813893?t=kbDmXf81Amz17dqViuhWSg&s=09" class="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-custom self-start" data-lang-key="read-more" target="_blank" rel="noopener noreferrer">
+                            阅读更多
+                            <i class="fa fa-long-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <a href="index.html" class="flex items-center space-x-2 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                            <i class="fa fa-star text-white text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-display font-bold">BoomRaveewit</span>
+                    </a>
+                    <p class="text-gray-400 mb-6" data-lang-key="footer-bio">
+                        泰国实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://x.com/search?q=BoomRaveewit&src=typed_query" class="text-gray-400 hover:text-primary transition-custom" target="_blank" rel="noopener noreferrer">
+                            <i class="fa fa-twitter text-xl"></i>
+                        </a>
+                        <a href="https://weibo.com/search?q=BoomRaveewit" class="text-gray-400 hover:text-primary transition-custom" target="_blank" rel="noopener noreferrer">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="https://instagram.com" class="text-gray-400 hover:text-primary transition-custom" target="_blank" rel="noopener noreferrer">
+                            <i class="fa fa-instagram text-xl"></i>
+                        </a>
+                        <a href="https://youtube.com" class="text-gray-400 hover:text-primary transition-custom" target="_blank" rel="noopener noreferrer">
+                            <i class="fa fa-youtube-play text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-6" data-lang-key="quick-links">快速链接</h3>
+                    <ul class="space-y-4">
+                        <li><a href="index.html" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="home">首页</a></li>
+                        <li><a href="index.html#about" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="about">关于</a></li>
+                        <li><a href="index.html#works" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="works">作品</a></li>
+                        <li><a href="gallery.html" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="gallery">照片</a></li>
+                        <li><a href="all-news.html" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="news">动态</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-6" data-lang-key="representative-works">代表作品</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="work-title-topform">TopForm</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="work-title-chainsofheart">Chains Of Heart</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="work-title-northstar">North Star</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="work-title-bt4u">Be there For You</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom" data-lang-key="work-title-star">以你为名的星</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-6" data-lang-key="about-star">关于明星</h3>
+                    <ul class="space-y-4 text-gray-400">
+                        <li><span data-lang-key="birthday">出生日期：</span>2002-03-25</li>
+                        <li><span data-lang-key="birthplace">出生地：</span>泰国</li>
+                        <li><span data-lang-key="constellation">星座：</span>白羊座</li>
+                        <li><span data-lang-key="fan-name">粉丝名：</span>Bloomers</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p data-lang-key="copyright">© 2023 BoomRaveewit 官方网站. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 多语言支持脚本 -->
+    <script>
+        // 定义多语言翻译
+        const translations = {
+            zh: {
+                home: '首页',
+                about: '关于',
+                works: '作品',
+                gallery: '照片',
+                news: '动态',
+                language: '语言',
+                'about-star': '关于明星',
+                birthday: '出生日期',
+                birthplace: '出生地',
+                'representative-works': '代表作品',
+                'music-works': '音乐作品',
+                constellation: '星座',
+                'favorite-color': '喜欢的颜色',
+                education: '学历',
+                'favorite-food': '喜欢的食物',
+                'disliked-food': '不喜欢的食物',
+                'fan-name': '粉丝名',
+                'tv-series': '电视剧',
+                'view-works': '查看代表作品',
+                'works-description': '明星精选代表作品展示，包括电视剧和音乐作品',
+                all: '全部',
+                movies: '电影',
+                music: '音乐',
+                'release-date': '播出时间',
+                role: '角色',
+                'view-details': '查看详情',
+                type: '类型',
+                'listen-music': '聆听音乐',
+                'view-more-works': '查看更多作品',
+                'wonderful-moments': '精彩瞬间',
+                'gallery-description': '记录明星在舞台、片场和生活中的精彩时刻',
+                'view-more-photos': '查看更多照片',
+                'latest-news': '最新动态',
+                'news-description': '了解明星的最新活动、作品动态和个人消息',
+                'read-more': '阅读更多',
+                'view-all-news': '查看全部动态',
+                'quick-links': '快速链接',
+                'work-title-topform': 'TopForm',
+                'work-rating-topform': '评分: IMDb 8.9',
+                'work-title-chainsofheart': 'Chains Of Heart',
+                'work-rating-chainsofheart': '评分: IMDb 6.4',
+                'work-title-northstar': 'North Star',
+                'work-views-northstar': '播放量142K',
+                'work-title-bt4u': 'Be there For You',
+                'work-views-bt4u': '播放量75K',
+                'work-title-star': '以你为名的星',
+                'work-views-star': '播放量88K',
+                'footer-bio': '泰国实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。',
+                'news-tag-new-work': '新作品',
+                'news-date-1': '2005-10-11',
+                'news-title-1': 'タイ俳優 #BOOM のモッパン🍖\n ✨日本初✨冠番組👏',
+                'news-tag-event': '活动现场',
+                'news-date-2': '2025-10-04 (CEST GMT+2)',
+                'news-title-2': 'Boom Europe Fan Meet Tour',
+                'news-tag-preview': '活动预告',
+                'news-date-3': '2025-10-12 (GMT+7)',
+                'news-title-3': '新身份GISMOW小憨包灵感推荐官，正式解锁！   ✨',
+                'news-tag-commercial': '商务活动',
+                'news-date-4': '2025年9月28日',
+                'news-title-4': '【BOOM专属】范趣町GISMOW搪胶毛绒娃娃盲盒直发小憨包盲盒手办',
+                'site-title': '星光闪耀 - 明星宣传网站',
+                'shining-star': '闪耀星光',
+                'scroll-down': '向下滚动',
+                'awards': '获得奖项',
+                'hero-description': '实力派演员/歌手，凭借出色的演技和独特的个人魅力，赢得了全球粉丝的喜爱与支持。',
+                'view-works-btn': '查看作品',
+                'browse-photos-btn': '浏览照片',
+                'copyright': '© 2023 BoomRaveewit 官方网站. 保留所有权利.',
+                'all-news-title': '全部动态',
+                'all-news-description': '浏览明星的所有历史活动、作品动态和个人消息',
+                'news-content-1': 'Boom将在日本推出首个冠名节目，展现其多才多艺的一面，与日本观众近距离互动。',
+                'news-content-2': 'Boom即将开启欧洲粉丝见面会巡演，与欧洲的粉丝们近距离互动，带来精彩表演。',
+                'news-content-3': 'Boom将以全新身份担任GISMOW小憨包灵感推荐官，为粉丝带来更多精彩内容和独家周边。',
+                'news-content-4': 'Boom作为GISMOW品牌形象大使，为大家带来限量版盲盒系列，包括搪胶毛绒娃娃、直发小憨包等多款可爱造型。'
+            },
+            en: {
+                home: 'Home',
+                about: 'About',
+                works: 'Works',
+                gallery: 'Gallery',
+                news: 'News',
+                language: 'Language',
+                'about-star': 'About Star',
+                birthday: 'Date of Birth',
+                birthplace: 'Birth Place',
+                'representative-works': 'Representative Works',
+                'music-works': 'Music Works',
+                constellation: 'Constellation',
+                'favorite-color': 'Favorite Color',
+                education: 'Education',
+                'favorite-food': 'Favorite Food',
+                'disliked-food': 'Disliked Food',
+                'fan-name': 'Fan Name',
+                'tv-series': 'TV Series',
+                'view-works': 'View Works',
+                'works-description': 'Selected works showcase, including TV series and music',
+                all: 'All',
+                movies: 'Movies',
+                music: 'Music',
+                'release-date': 'Release Date',
+                role: 'Role',
+                'view-details': 'View Details',
+                type: 'Type',
+                'listen-music': 'Listen to Music',
+                'view-more-works': 'View More Works',
+                'wonderful-moments': 'Wonderful Moments',
+                'gallery-description': 'Recording wonderful moments of the star on stage, set and in life',
+                'view-more-photos': 'View More Photos',
+                'latest-news': 'Latest News',
+                'news-description': 'Learn about the star\'s latest activities, works and personal news',
+                'read-more': 'Read More',
+                'view-all-news': 'View All News',
+                'quick-links': 'Quick Links',
+                'work-title-topform': 'TopForm',
+                'work-rating-topform': 'Rating: IMDb 8.9',
+                'work-title-chainsofheart': 'Chains Of Heart',
+                'work-rating-chainsofheart': 'Rating: IMDb 6.4',
+                'work-title-northstar': 'North Star',
+                'work-views-northstar': 'Views: 142K',
+                'work-title-bt4u': 'Be there For You',
+                'work-views-bt4u': 'Views: 75K',
+                'work-title-star': 'Star Named After You',
+                'work-views-star': 'Views: 88K',
+                'footer-bio': 'A powerful Thai actor/singer who has won the love and support of fans worldwide with his outstanding acting skills and unique personal charm.',
+                'news-tag-new-work': 'New Work',
+                'news-date-1': '2005-10-11',
+                'news-title-1': 'Thai Actor #BOOM\'s Moppan🍖\n ✨First Japanese Regular Show✨👏',
+                'news-tag-event': 'Event Scene',
+                'news-date-2': '2025-10-04 (CEST GMT+2)',
+                'news-title-2': 'Boom Europe Fan Meet Tour',
+                'news-tag-preview': 'Event Preview',
+                'news-date-3': '2025-10-12 (GMT+7)',
+                'news-title-3': 'New role as GISMOW brand ambassador officially unlocked!   ✨',
+                'news-tag-commercial': 'Commercial Event',
+                'news-date-4': '2025-09-28',
+                'news-title-4': '【BOOM Exclusive】GISMOW Vinyl Plush Doll Blind Box Straight Hair Little Chubby Bag Blind Box Figure',
+                'site-title': 'Starlight - Celebrity Promotion Website',
+                'shining-star': 'Shining Star',
+                'scroll-down': 'Scroll Down',
+                'awards': 'Awards Won',
+                'hero-description': 'A powerful actor/singer who has won the love and support of fans worldwide with outstanding acting skills and unique personal charm.',
+                'view-works-btn': 'View Works',
+                'browse-photos-btn': 'Browse Photos',
+                'copyright': '© 2023 BoomRaveewit Official Website. All rights reserved.',
+                'all-news-title': 'All News',
+                'all-news-description': 'Browse all historical activities, works updates and personal news of the star',
+                'news-content-1': 'Boom will launch his first regular show in Japan, showcasing his versatility and interacting closely with Japanese audiences.',
+                'news-content-2': 'Boom will start his Europe Fan Meet Tour, interacting closely with fans in Europe and bringing wonderful performances.',
+                'news-content-3': 'Boom will take on a new role as GISMOW brand ambassador, bringing more exciting content and exclusive merchandise to fans.',
+                'news-content-4': 'As GISMOW brand ambassador, Boom brings limited edition blind box series, including vinyl plush dolls, straight hair chubby bags and other cute designs.'
+            },
+            th: {
+                home: 'หน้าแรก',
+                about: 'เกี่ยวกับ',
+                works: 'ผลงาน',
+                gallery: 'รูปภาพ',
+                news: 'ข่าวสาร',
+                language: 'ภาษา',
+                'about-star': 'เกี่ยวกับดารา',
+                birthday: 'วันเกิด',
+                birthplace: 'สถานที่เกิด',
+                'representative-works': 'ผลงาน代表性',
+                'music-works': 'ผลงานดนตรี',
+                constellation: 'ราศี',
+                'favorite-color': 'สีโปรด',
+                education: 'การศึกษา',
+                'favorite-food': 'อาหารโปรด',
+                'disliked-food': 'อาหารที่ไม่ชอบ',
+                'fan-name': 'ชื่อแฟนคลับ',
+                'tv-series': 'ซีรีส์โทรทัศน์',
+                'view-works': 'ดูผลงาน',
+                'works-description': 'แสดงผลงาน代表性ของดารา รวมถึงซีรีส์โทรทัศน์และดนตรี',
+                all: 'ทั้งหมด',
+                movies: 'ภาพยนตร์',
+                music: 'ดนตรี',
+                'release-date': 'วันที่ออกอากาศ',
+                role: 'บทบาท',
+                'view-details': 'ดูรายละเอียด',
+                type: 'ประเภท',
+                'listen-music': 'ฟังเพลง',
+                'view-more-works': 'ดูผลงานเพิ่มเติม',
+                'wonderful-moments': 'ช่วงเวลาที่ดีงาม',
+                'gallery-description': 'บันทึกช่วงเวลาที่ดีงามของดาราในเวทีชุดถ่ายและชีวิตประจำวัน',
+                'view-more-photos': 'ดูรูปภาพเพิ่มเติม',
+                'latest-news': 'ข่าวสารล่าสุด',
+                'news-description': '了解明星的最新活动、作品动态和个人消息',
+                'read-more': 'อ่านเพิ่มเติม',
+                'view-all-news': 'ดูข่าวสารทั้งหมด',
+                'quick-links': 'ลิงก์ด่วน',
+                'work-title-topform': 'TopForm',
+                'work-rating-topform': 'อันดับ: IMDb 8.9',
+                'work-title-chainsofheart': 'Chains Of Heart',
+                'work-rating-chainsofheart': 'อันดับ: IMDb 6.4',
+                'work-title-northstar': 'North Star',
+                'work-views-northstar': 'จำนวนการชม: 142K',
+                'work-title-bt4u': 'Be there For You',
+                'work-views-bt4u': 'จำนวนการชม: 75K',
+                'work-title-star': 'ดาวที่ใช้ชื่อเธอ',
+                'work-views-star': 'จำนวนการชม: 88K',
+                'footer-bio': 'นักแสดงที่มีพลัง/นักร้องชาวไทย ที่ได้รับความรักและการสนับสนุนจากแฟน ๆ ทั่วโลกด้วยทักษะการแสดงที่ยอดเยี่ยมและบุคลิกพิเศษเฉพาะตัว',
+                'news-tag-new-work': 'ผลงานใหม่',
+                'news-date-1': '2005-10-11',
+                'news-title-1': 'นักแสดงไทย #BOOM งานมอปปัน🍖\n ✨ครั้งแรกในญี่ปุ่น✨รายการปกติ👏',
+                'news-tag-event': 'งาน现场',
+                'news-date-2': '2025-10-04 (CEST GMT+2)',
+                'news-title-2': 'Boom Europe Fan Meet Tour',
+                'news-tag-preview': 'ตัวอย่างกิจกรรม',
+                'news-date-3': '2025-10-12 (GMT+7)',
+                'news-title-3': 'ตำแหน่งใหม่เป็นผู้แนะนำความ灵感应ของ GISMOW ข正式ปลดล็อคแล้ว！   ✨',
+                'news-tag-commercial': 'กิจกรรมการตลาด',
+                'news-date-4': '2568-09-28',
+                'news-title-4': '【ส่วนตัว BOOM】GISMOW Vinyl Plush Doll Blind Box Straight Hair Little Chubby Bag Blind Box Figure',
+                'site-title': 'ดวงดาวสด - เว็บไซต์โปรโมชั่นดารา',
+                'shining-star': 'ดาวประดับ',
+                'scroll-down': 'เลื่อนลง',
+                'awards': 'รางวัลที่ได้รับ',
+                'hero-description': 'นักแสดงที่มีพลัง/นักร้อง ที่ได้รับความรักและการสนับสนุนจากแฟน ๆ ทั่วโลกด้วยทักษะการแสดงที่ยอดเยี่ยมและบุคลิกพิเศษเฉพาะตัว',
+                'view-works-btn': 'ดูผลงาน',
+                'browse-photos-btn': 'เรียบดูรูปภาพ',
+                'copyright': '© 2023 เว็บไซต์ทางการ BoomRaveewit. สงวนลิขสิทธิ์ทั้งหมด',
+                'all-news-title': 'ข่าวสารทั้งหมด',
+                'all-news-description': 'เรียบดูกิจกรรมประวัติทั้งหมด ผลงานและข่าวสารส่วนตัวของดารา',
+                'news-content-1': 'บูมจะเปิดตัวรายการปกติครั้งแรกในญี่ปุ่น แสดงทักษะความหลากหลายของเขาและโต้ตอบอย่างใกล้ชิดกับผู้ชมญี่ปุ่น',
+                'news-content-2': 'บูมจะเริ่มทัวร์คานพี่แฟนในยุโรป โต้ตอบอย่างใกล้ชิดกับแฟน ๆ ในยุโรปและนำเสนอการแสดงที่น่าตื่นเต้น',
+                'news-content-3': 'บูมจะรับบทบาทใหม่เป็นผู้แทนด้านแบรนด์ GISMOW นำเสนอเนื้อหาที่น่าตื่นเต้นและสินค้าพิเศษสำหรับแฟน ๆ เพิ่มเติม',
+                'news-content-4': 'ในฐานะผู้แทนด้านแบรนด์ GISMOW บูมนำเสนอชุดกล่องตาแฝงจำกัดจำนวน รวมถึงตุ๊กตาเทปทรงพลูช เสื้อถุงอ้วนผมตรงและดีไซน์น่ารักอื่น ๆ'
+            }
+        };
+
+        // 获取当前语言或默认使用中文
+        let currentLang = localStorage.getItem('language') || 'zh';
+
+        // 切换语言函数
+        function changeLanguage(lang) {
+            if (!translations[lang]) return;
+            
+            currentLang = lang;
+            localStorage.setItem('language', lang);
+            
+            // 更新所有带data-lang-key属性的元素
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang][key]) {
+                    // 处理换行符
+                    el.innerHTML = translations[lang][key].replace(/\\n/g, '<br>');
+                }
+            });
+            
+            // 更新当前语言显示
+            document.getElementById('current-language').textContent = lang === 'zh' ? '中文' : lang === 'en' ? 'English' : 'ภาษาไทย';
+            document.getElementById('mobile-current-language').textContent = translations[lang]['language'];
+            
+            // 关闭下拉菜单
+            document.getElementById('language-dropdown').classList.add('hidden');
+            document.getElementById('mobile-language-dropdown').classList.add('hidden');
+        }
+
+        // 初始化语言
+        changeLanguage(currentLang);
+
+        // 语言切换事件监听
+        document.querySelectorAll('#language-dropdown a, #mobile-language-dropdown a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+                changeLanguage(lang);
+            });
+        });
+
+        // 语言按钮点击事件
+        document.getElementById('language-btn').addEventListener('click', function() {
+            document.getElementById('language-dropdown').classList.toggle('hidden');
+        });
+
+        document.getElementById('mobile-language-btn').addEventListener('click', function() {
+            document.getElementById('mobile-language-dropdown').classList.toggle('hidden');
+        });
+
+        // 点击其他区域关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            const languageSelector = document.getElementById('language-selector');
+            const languageDropdown = document.getElementById('language-dropdown');
+            const mobileLanguageBtn = document.getElementById('mobile-language-btn');
+            const mobileLanguageDropdown = document.getElementById('mobile-language-dropdown');
+            
+            if (!languageSelector.contains(e.target) && !languageDropdown.contains(e.target)) {
+                languageDropdown.classList.add('hidden');
+            }
+            
+            if (!mobileLanguageBtn.contains(e.target) && !mobileLanguageDropdown.contains(e.target)) {
+                mobileLanguageDropdown.classList.add('hidden');
+            }
+        });
+
+        // 移动端菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.remove('translate-x-full');
+        });
+
+        document.getElementById('close-menu').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.add('translate-x-full');
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-dark/95', 'shadow-lg');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('bg-dark/95', 'shadow-lg');
+                navbar.classList.add('bg-transparent');
+            }
+        });
+
+        // 动态过滤器功能
+        document.querySelectorAll('.news-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 移除所有按钮的active状态
+                document.querySelectorAll('.news-filter-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-primary', 'text-white');
+                    b.classList.add('bg-white', 'text-gray-800');
+                });
+                
+                // 添加当前按钮的active状态
+                this.classList.add('active', 'bg-primary', 'text-white');
+                this.classList.remove('bg-white', 'text-gray-800');
+                
+                // 获取过滤类别
+                const filter = this.getAttribute('data-filter');
+                
+                // 过滤新闻项
+                document.querySelectorAll('.news-item').forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.style.display = 'flex';
+                        // 添加淡入动画
+                        item.classList.add('opacity-0');
+                        setTimeout(() => {
+                            item.classList.remove('opacity-0');
+                        }, 50);
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
