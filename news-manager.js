@@ -415,8 +415,8 @@ function initHomePageNews() {
     container.insertBefore(commercialSection, container.querySelector('.text-center'));
   }
   
-  // 创建其他三类新闻的网格（新作品、活动现场、活动预告）
-  const otherCategories = ['new-work', 'event', 'preview'];
+  // 创建其他三类新闻和商务活动的网格
+  const otherCategories = ['new-work', 'event', 'preview', 'commercial'];
   const gridSection = document.createElement('div');
   gridSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-8';
   
