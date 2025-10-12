@@ -30,34 +30,6 @@ const newsData = {
         th: 'อ่านเพิ่มเติม'
       },
       isLatest: true
-    },
-    {
-      id: 'news-commercial-old-1',
-      title: {
-        zh: '【品牌代言】BOOM成为国际知名时尚品牌形象大使',
-        en: '【Brand Ambassador】BOOM becomes ambassador for international fashion brand',
-        th: '【ผู้แทนแบรนด์】BOOM เป็นผู้แทนแบรนด์แฟชั่นระดับนานาชาติ'
-      },
-      date: '2025-08-15',
-      dateDisplay: {
-        zh: '2025年8月15日',
-        en: '2025-08-15',
-        th: '2568-08-15'
-      },
-      content: {
-        zh: 'BOOM正式成为国际知名时尚品牌的亚洲区形象大使，将参与品牌多项全球活动。',
-        en: 'BOOM officially becomes the Asian ambassador for an internationally renowned fashion brand and will participate in multiple global brand activities.',
-        th: 'BOOM เป็นผู้แทนเอเชียสำหรับแบรนด์แฟชั่นระดับนานาชาติอย่างเป็นทางการ และจะมีส่วนร่วมในกิจกรรมโลกของแบรนด์หลายรายการ'
-      },
-      image: 'images/new4.jpg',
-      alt: 'BOOM成为国际知名时尚品牌形象大使',
-      link: '#',
-      linkText: {
-        zh: '阅读更多',
-        en: 'Read More',
-        th: 'อ่านเพิ่มเติม'
-      },
-      isLatest: false
     }
   ],
   
@@ -90,34 +62,6 @@ const newsData = {
         th: 'อ่านเพิ่มเติม'
       },
       isLatest: true
-    },
-    {
-      id: 'news-new-work-old-1',
-      title: {
-        zh: '新剧《星光之路》开机，BOOM饰演男主角',
-        en: 'New drama "Starlight Road" starts filming, BOOM plays the leading role',
-        th: 'ละครใหม่ "ทางดวงดาว" เริ่มถ่ายทำ BOOM รับบทนำชาย'
-      },
-      date: '2025-07-20',
-      dateDisplay: {
-        zh: '2025年7月20日',
-        en: '2025-07-20',
-        th: '2568-07-20'
-      },
-      content: {
-        zh: 'BOOM确认出演新剧《星光之路》男主角，饰演一位追逐音乐梦想的年轻人。',
-        en: 'BOOM confirmed to star in the new drama "Starlight Road" as the leading actor, playing a young man pursuing his music dreams.',
-        th: 'BOOM ยืนยันรับบทนำในละครใหม่ "ทางดวงดาว" ในบทชายหนุ่มที่ตามความฝันในด้านดนตรี'
-      },
-      image: 'images/new1.jpg',
-      alt: '新剧《星光之路》开机',
-      link: '#',
-      linkText: {
-        zh: '阅读更多',
-        en: 'Read More',
-        th: 'อ่านเพิ่มเติม'
-      },
-      isLatest: false
     }
   ],
   
@@ -150,34 +94,6 @@ const newsData = {
         th: 'อ่านเพิ่มเติม'
       },
       isLatest: true
-    },
-    {
-      id: 'news-event-old-1',
-      title: {
-        zh: '泰国粉丝见面会圆满结束，现场气氛热烈',
-        en: 'Thailand Fan Meeting successfully concluded with warm atmosphere',
-        th: 'การประชุมแฟนไทยสิ้นสุดลงที่สมบูรณ์ ด้วยบรรยากาศอบอุ่น'
-      },
-      date: '2025-09-10',
-      dateDisplay: {
-        zh: '2025年9月10日',
-        en: '2025-09-10',
-        th: '2568-09-10'
-      },
-      content: {
-        zh: 'BOOM在曼谷举办的粉丝见面会吸引了超过5000名粉丝参加，现场互动环节温馨感人。',
-        en: 'BOOM\'s fan meeting in Bangkok attracted over 5,000 fans, with warm and touching interactive sessions.',
-        th: 'การประชุมแฟนของ BOOM ในกรุงเทพฯ ได้รับความสนใจจากแฟนกว่า 5,000 คน โดยมีกิจกรรมโต้ตอบที่อบอุ่นและสังเกตใจ'
-      },
-      image: 'images/new2.jpg',
-      alt: '泰国粉丝见面会',
-      link: '#',
-      linkText: {
-        zh: '阅读更多',
-        en: 'Read More',
-        th: 'อ่านเพิ่มเติม'
-      },
-      isLatest: false
     }
   ],
   
@@ -232,34 +148,6 @@ const newsData = {
       image: 'images/new3.jpg',
       alt: 'BoomRaveewit活动预告',
       link: 'https://weibo.com/7977907334/5215941505319759',
-      linkText: {
-        zh: '阅读更多',
-        en: 'Read More',
-        th: 'อ่านเพิ่มเติม'
-      },
-      isLatest: false
-    },
-    {
-      id: 'news-preview-old-1',
-      title: {
-        zh: '亚洲巡演计划公布，将到访多个城市',
-        en: 'Asia Tour plan announced, will visit multiple cities',
-        th: 'แผนการทัวร์เอเชียถูกประกาศ โดยจะไปเยี่ยมเยาวntown หลายแห่ง'
-      },
-      date: '2025-09-05',
-      dateDisplay: {
-        zh: '2025年9月5日',
-        en: '2025-09-05',
-        th: '2568-09-05'
-      },
-      content: {
-        zh: 'BOOM亚洲巡演计划正式公布，将到访北京、上海、台北、首尔、东京等多个城市。',
-        en: 'BOOM\'s Asia Tour plan officially announced, will visit Beijing, Shanghai, Taipei, Seoul, Tokyo and other cities.',
-        th: 'แผนการทัวร์เอเชียของ BOOM ถูกประกาศอย่างเป็นทางการ โดยจะไปเยี่ยมเยาวntown Beijing, Shanghai, Taipei, Seoul, Tokyo และเมืองอื่น ๆ'
-      },
-      image: 'images/new3.jpg',
-      alt: '亚洲巡演计划公布',
-      link: '#',
       linkText: {
         zh: '阅读更多',
         en: 'Read More',
