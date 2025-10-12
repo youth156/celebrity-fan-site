@@ -414,20 +414,12 @@ function initHomePageNews() {
   const dynamicContentContainer = document.createElement('div');
   dynamicContentContainer.className = 'dynamic-news-content';
   
-  // 添加商务活动部分（大尺寸样式） - 主要位置显示商务活动
-  if (latestNews.commercial) {
-    const commercialSection = document.createElement('div');
-    commercialSection.className = 'mb-10 max-w-6xl mx-auto w-full';
-    commercialSection.innerHTML = generateNewsHtml(latestNews.commercial, false, true);
-    dynamicContentContainer.appendChild(commercialSection);
-  }
-  
-  // 创建新闻的网格（新作品、活动现场、活动预告）在一行显示
-  const otherCategories = ['new-work', 'event', 'preview'];
+  // 创建新闻的网格，按照全部动态页面的分类顺序显示
+  const categories = ['commercial', 'new-work', 'event', 'preview'];
   const gridSection = document.createElement('div');
-  gridSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-8';
+  gridSection.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8';
   
-  otherCategories.forEach(category => {
+  categories.forEach(category => {
     if (latestNews[category]) {
       const newsDiv = document.createElement('div');
       newsDiv.innerHTML = generateNewsHtml(latestNews[category]);
