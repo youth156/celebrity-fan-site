@@ -414,16 +414,16 @@ function initHomePageNews() {
   const dynamicContentContainer = document.createElement('div');
   dynamicContentContainer.className = 'dynamic-news-content';
   
-  // 添加商务活动部分（大尺寸样式）
-  if (latestNews.commercial) {
-    const commercialSection = document.createElement('div');
-    commercialSection.className = 'mb-10 max-w-6xl mx-auto w-full';
-    commercialSection.innerHTML = generateNewsHtml(latestNews.commercial, false, true);
-    dynamicContentContainer.appendChild(commercialSection);
+  // 添加新作品部分（大尺寸样式） - 第二个位置改为新作品
+  if (latestNews['new-work']) {
+    const newWorkSection = document.createElement('div');
+    newWorkSection.className = 'mb-10 max-w-6xl mx-auto w-full';
+    newWorkSection.innerHTML = generateNewsHtml(latestNews['new-work'], false, true);
+    dynamicContentContainer.appendChild(newWorkSection);
   }
   
-  // 创建其他三类新闻的网格（新作品、活动现场、活动预告）
-  const otherCategories = ['new-work', 'event', 'preview'];
+  // 创建新闻的网格（活动现场、活动预告、商务活动）
+  const otherCategories = ['event', 'preview', 'commercial'];
   const gridSection = document.createElement('div');
   gridSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-8';
   
