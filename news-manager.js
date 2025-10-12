@@ -401,22 +401,29 @@ function initHomePageNews() {
   
   if (!container) return;
   
-  // 清空现有的新闻内容
-  const existingNews = container.querySelector('.mb-10');
-  const existingNewsRow = container.querySelector('.grid');
-  if (existingNews) existingNews.remove();
-  if (existingNewsRow) existingNewsRow.remove();
+  // 获取标题和描述部分
+  const titleSection = container.querySelector('.text-center.mb-16');
+  // 获取查看全部动态按钮部分
+  const viewAllButtonSection = container.querySelector('.text-center.mt-12');
   
-  // 创建商务活动部分（大尺寸样式）
+  // 清空现有的新闻内容（保留标题和按钮部分）
+  const existingContent = container.querySelectorAll('div:not(.text-center.mb-16):not(.text-center.mt-12)');
+  existingContent.forEach(el => el.remove());
+  
+  // 创建动态内容容器
+  const dynamicContentContainer = document.createElement('div');
+  dynamicContentContainer.className = 'dynamic-news-content';
+  
+  // 添加商务活动部分（大尺寸样式）
   if (latestNews.commercial) {
     const commercialSection = document.createElement('div');
     commercialSection.className = 'mb-10 max-w-6xl mx-auto w-full';
     commercialSection.innerHTML = generateNewsHtml(latestNews.commercial, false, true);
-    container.insertBefore(commercialSection, container.querySelector('.text-center'));
+    dynamicContentContainer.appendChild(commercialSection);
   }
   
-  // 创建其他三类新闻和商务活动的网格
-  const otherCategories = ['new-work', 'event', 'preview', 'commercial'];
+  // 创建其他三类新闻的网格（新作品、活动现场、活动预告）
+  const otherCategories = ['new-work', 'event', 'preview'];
   const gridSection = document.createElement('div');
   gridSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-8';
   
@@ -428,7 +435,12 @@ function initHomePageNews() {
     }
   });
   
-  container.insertBefore(gridSection, container.querySelector('.text-center'));
+  dynamicContentContainer.appendChild(gridSection);
+  
+  // 按照要求的顺序插入内容：标题和描述 -> 动态内容 -> 查看全部动态按钮
+  if (titleSection && viewAllButtonSection) {
+    container.insertBefore(dynamicContentContainer, viewAllButtonSection);
+  }
 }
 
 // 初始化全部动态页面
