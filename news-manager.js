@@ -172,7 +172,9 @@ function getLatestNewsByCategory() {
       // 筛选出该类别中isLatest为true的新闻
       const latestItems = newsData[category].filter(item => item.isLatest);
       if (latestItems.length > 0) {
-        latestNews[category] = latestItems[0];
+        // 为新闻项设置正确的category属性
+        const newsWithCategory = {...latestItems[0], category};
+        latestNews[category] = newsWithCategory;
       }
     }
   }
