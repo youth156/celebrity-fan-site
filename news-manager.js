@@ -4,6 +4,34 @@ const newsData = {
   // 商务活动 - 分类
   commercial: [
     {
+      id: 'news-6',
+      title: {
+        zh: '《风度men\'s uno Young！》10月封面大片',
+        en: 'men\'s uno Young! October Cover Photo',
+        th: 'men\'s uno Young! ภาพปกเดือนตุลาคม'
+      },
+      date: '2025-10-17',
+      dateDisplay: {
+        zh: '2025年10月17日',
+        en: '2025-10-17',
+        th: '2568-10-17'
+      },
+      content: {
+        zh: '10月封面大片即将于10月17日（周五）13:14正式揭晓，《风度men\'s uno Young！》10月同步上市，敬请期待',
+        en: 'October cover photo will be officially revealed on October 17th (Friday) at 13:14, men\'s uno Young! will be on sale in October, stay tuned',
+        th: 'ภาพปกเดือนตุลาคมจะถูกเปิดเผยอย่างเป็นทางการในวันที่ 17 ตุลาคม (วันศุกร์) เวลา 13:14 men\'s uno Young! จะวางจำหน่ายในเดือนตุลาคม โปรดรอคอย'
+      },
+      image: 'images/new6.jpg',
+      alt: '《风度men\'s uno Young！》10月封面大片',
+      link: 'https://k.youshop10.com/Q0Yjm=er?share_relation=60acd609a06ff9a7_1981041900_1&a=b&wfr=BuyercopyURL',
+      linkText: {
+        zh: '点击查看',
+        en: 'View Now',
+        th: 'ดูเดี๋ยวนี้'
+      },
+      isLatest: true
+    },
+    {
       id: 'news-4',
       title: {
         zh: '【BOOM专属】范趣町GISMOW搪胶毛绒娃娃盲盒直发小憨包盲盒手办直播',
@@ -29,7 +57,7 @@ const newsData = {
         en: 'Read More',
         th: 'อ่านเพิ่มเติม'
       },
-      isLatest: true
+      isLatest: false
     }
   ],
   
