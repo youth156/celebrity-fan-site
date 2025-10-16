@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="login-title">粉丝社区 - 登录注册</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6C38FF', // 主色调：紫色，代表创造力和独特性
+                        secondary: '#FF5E7D', // 辅助色：粉色，代表热情和活力
+                        dark: '#1A1A2E', // 深色背景
+                        light: '#F7F7F9', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .transition-custom {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+        }
+    </style>
+    <!-- 预加载字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-dark to-dark/90 min-h-screen flex items-center justify-center font-sans text-white overflow-x-hidden">
+    <!-- 导航栏 -->
+    <header class="fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fa fa-star text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-display font-bold text-white text-shadow">BoomRaveewit</span>
+                </a>
+                
+                <!-- 语言切换下拉菜单 -->
+                <div id="language-selector" class="relative">
+                    <button id="language-btn" class="flex items-center space-x-2 bg-white/10 hover:bg-primary px-3 py-1.5 rounded-full text-white transition-custom">
+                        <i class="fa fa-globe"></i>
+                        <span id="current-language">中文</span>
+                        <i class="fa fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 hidden">
+                        <a href="#" data-lang="zh" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                            <span class="flag-icon">🇨🇳</span> 中文
+                        </a>
+                        <a href="#" data-lang="en" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                            <span class="flag-icon">🇬🇧</span> English
+                        </a>
+                        <a href="#" data-lang="th" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                            <span class="flag-icon">🇹🇭</span> ภาษาไทย
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 登录/注册表单容器 -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="max-w-md mx-auto bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden">
+            <!-- 表单头部 -->
+            <div class="bg-primary p-6 text-center">
+                <h2 class="text-2xl font-display font-bold" data-lang-key="community-title">粉丝社区</h2>
+                <p class="text-white/80 mt-1" data-lang-key="community-welcome">加入我们的社区，与其他粉丝一起互动</p>
+            </div>
+            
+            <!-- 表单标签切换 -->
+            <div class="flex border-b border-white/20">
+                <button id="login-tab" class="flex-1 py-4 px-6 font-medium text-white border-b-2 border-primary transition-custom" data-lang-key="login">登录</button>
+                <button id="register-tab" class="flex-1 py-4 px-6 font-medium text-white/70 hover:text-white transition-custom" data-lang-key="register">注册</button>
+            </div>
+            
+            <!-- 登录表单 -->
+            <div id="login-form" class="p-6">
+                <!-- 错误提示区域 -->
+                <div id="login-error" class="mb-4 p-3 bg-red-500/20 border border-red-500/40 rounded-lg hidden">
+                    <i class="fa fa-exclamation-circle mr-2"></i>
+                    <span id="login-error-message"></span>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="login-username" class="block text-sm font-medium mb-2" data-lang-key="username">用户名</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="login-username" class="w-full pl-10 pr-3 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder-white/50" placeholder="请输入用户名" data-lang-key="username-placeholder">
+                    </div>
+                    <p class="mt-1 text-xs text-red-400 hidden" id="login-username-error" data-lang-key="username-required">用户名不能为空</p>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="login-password" class="block text-sm font-medium mb-2" data-lang-key="password">密码</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" id="login-password" class="w-full pl-10 pr-10 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder-white/50" placeholder="请输入密码" data-lang-key="password-placeholder">
+                        <button type="button" id="toggle-login-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-custom">
+                            <i class="fa fa-eye-slash"></i>
+                        </button>
+                    </div>
+                    <p class="mt-1 text-xs text-red-400 hidden" id="login-password-error" data-lang-key="password-required">密码不能为空</p>
+                </div>
+                
+                <div class="flex items-center justify-between mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="remember-me" class="form-checkbox rounded bg-white/20 text-primary focus:ring-primary h-4 w-4">
+                        <span class="ml-2 text-sm text-white/80" data-lang-key="remember-me">记住我</span>
+                    </label>
+                    <button id="forgot-password" class="text-sm text-primary hover:text-secondary transition-custom" data-lang-key="forgot-password">忘记密码？</button>
+                </div>
+                
+                <button id="login-submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-custom transform hover:scale-[1.02] flex items-center justify-center">
+                    <i class="fa fa-sign-in mr-2"></i>
+                    <span data-lang-key="login-btn">登录</span>
+                </button>
+            </div>
+            
+            <!-- 注册表单 (初始隐藏) -->
+            <div id="register-form" class="p-6 hidden">
+                <!-- 错误提示区域 -->
+                <div id="register-error" class="mb-4 p-3 bg-red-500/20 border border-red-500/40 rounded-lg hidden">
+                    <i class="fa fa-exclamation-circle mr-2"></i>
+                    <span id="register-error-message"></span>
+                </div>
+                
+                <!-- 成功提示区域 -->
+                <div id="register-success" class="mb-4 p-3 bg-green-500/20 border border-green-500/40 rounded-lg hidden">
+                    <i class="fa fa-check-circle mr-2"></i>
+                    <span id="register-success-message" data-lang-key="register-success">注册成功！正在跳转到登录...</span>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="register-username" class="block text-sm font-medium mb-2" data-lang-key="username">用户名</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="register-username" class="w-full pl-10 pr-3 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder-white/50" placeholder="请输入用户名" data-lang-key="username-placeholder">
+                    </div>
+                    <p class="mt-1 text-xs text-red-400 hidden" id="register-username-error"></p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="register-email" class="block text-sm font-medium mb-2" data-lang-key="email">邮箱</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa fa-envelope text-gray-400"></i>
+                        </div>
+                        <input type="email" id="register-email" class="w-full pl-10 pr-3 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder-white/50" placeholder="请输入邮箱" data-lang-key="email-placeholder">
+                    </div>
+                    <p class="mt-1 text-xs text-red-400 hidden" id="register-email-error"></p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="register-password" class="block text-sm font-medium mb-2" data-lang-key="password">密码</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" id="register-password" class="w-full pl-10 pr-10 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder-white/50" placeholder="请设置密码" data-lang-key="set-password-placeholder">
+                        <button type="button" id="toggle-register-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-custom">
+                            <i class="fa fa-eye-slash"></i>
+                        </button>
+                    </div>
+                    <p class="mt-1 text-xs text-red-400 hidden" id="register-password-error"></p>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="flex items-start">
+                        <input type="checkbox" id="agree-terms" class="form-checkbox rounded bg-white/20 text-primary focus:ring-primary h-4 w-4 mt-1">
+                        <span class="ml-2 text-sm text-white/80" data-lang-key="agree-terms">我已阅读并同意<a href="#" class="text-primary hover:underline">用户协议</a>和<a href="#" class="text-primary hover:underline">隐私政策</a></span>
+                    </label>
+                    <p class="mt-1 text-xs text-red-400 hidden" id="terms-error" data-lang-key="agree-terms-required">请阅读并同意用户协议和隐私政策</p>
+                </div>
+                
+                <button id="register-submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-custom transform hover:scale-[1.02] flex items-center justify-center">
+                    <i class="fa fa-user-plus mr-2"></i>
+                    <span data-lang-key="register-btn">注册</span>
+                </button>
+            </div>
+            
+            <!-- 分隔线 -->
+            <div class="relative py-4">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-white/20"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-dark text-white/70" data-lang-key="or">或</span>
+                </div>
+            </div>
+            
+            <!-- 第三方登录 -->
+            <div class="px-6 pb-6 grid grid-cols-3 gap-3">
+                <button class="flex items-center justify-center w-full h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-custom">
+                    <i class="fa fa-weibo text-white text-xl"></i>
+                </button>
+                <button class="flex items-center justify-center w-full h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-custom">
+                    <i class="fa fa-wechat text-white text-xl"></i>
+                </button>
+                <button class="flex items-center justify-center w-full h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-custom">
+                    <i class="fa fa-qq text-white text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 社区特色 -->
+        <div class="mt-16 max-w-3xl mx-auto">
+            <h3 class="text-2xl font-display font-bold text-center mb-10" data-lang-key="community-features">社区特色</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white/5 backdrop-blur-sm p-6 rounded-xl text-center transform transition-custom hover:-translate-y-1 hover:bg-white/10">
+                    <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-users text-primary text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold mb-2" data-lang-key="fan-interaction">粉丝互动</h4>
+                    <p class="text-white/70 text-sm" data-lang-key="fan-interaction-desc">与其他粉丝交流，分享对Boom的喜爱</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm p-6 rounded-xl text-center transform transition-custom hover:-translate-y-1 hover:bg-white/10">
+                    <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-bullhorn text-primary text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold mb-2" data-lang-key="exclusive-news">独家动态</h4>
+                    <p class="text-white/70 text-sm" data-lang-key="exclusive-news-desc">获取Boom的最新消息和独家内容</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm p-6 rounded-xl text-center transform transition-custom hover:-translate-y-1 hover:bg-white/10">
+                    <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-gift text-primary text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold mb-2" data-lang-key="fan-benefits">粉丝福利</h4>
+                    <p class="text-white/70 text-sm" data-lang-key="fan-benefits-desc">参与活动赢取周边，有机会与Boom近距离接触</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <a href="#" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg hover:bg-secondary transition-custom z-40">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+
+    <!-- JavaScript -->
+    <script>
+        // 标签切换功能
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('border-primary', 'text-white');
+            loginTab.classList.remove('text-white/70');
+            registerTab.classList.remove('border-primary', 'text-white');
+            registerTab.classList.add('text-white/70');
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            // 隐藏所有消息
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('register-error').classList.add('hidden');
+            document.getElementById('register-success').classList.add('hidden');
+        });
+        
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('border-primary', 'text-white');
+            registerTab.classList.remove('text-white/70');
+            loginTab.classList.remove('border-primary', 'text-white');
+            loginTab.classList.add('text-white/70');
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            // 隐藏所有消息
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('register-error').classList.add('hidden');
+            document.getElementById('register-success').classList.add('hidden');
+        });
+        
+        // 密码可见性切换
+        function setupPasswordToggle(toggleBtnId, passwordInputId) {
+            const toggleBtn = document.getElementById(toggleBtnId);
+            const passwordInput = document.getElementById(passwordInputId);
+            
+            toggleBtn.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // 切换图标
+                const icon = toggleBtn.querySelector('i');
+                if (type === 'text') {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                } else {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            });
+        }
+        
+        setupPasswordToggle('toggle-login-password', 'login-password');
+        setupPasswordToggle('toggle-register-password', 'register-password');
+        
+        // 表单验证函数
+        function showError(element, message) {
+            const errorElement = document.getElementById(element);
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+            return false;
+        }
+        
+        function hideError(element) {
+            const errorElement = document.getElementById(element);
+            errorElement.classList.add('hidden');
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function validatePassword(password) {
+            // 密码至少包含8个字符，至少包含一个字母和一个数字
+            return password.length >= 8 && /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
+        }
+        
+        // 模拟用户数据库
+        const mockUsers = [];
+        
+        // 加载保存的用户数据
+        function loadUsers() {
+            const savedUsers = localStorage.getItem('mockUsers');
+            if (savedUsers) {
+                try {
+                    Object.assign(mockUsers, JSON.parse(savedUsers));
+                } catch (e) {
+                    console.error('加载用户数据失败:', e);
+                }
+            }
+        }
+        
+        // 保存用户数据
+        function saveUsers() {
+            localStorage.setItem('mockUsers', JSON.stringify(mockUsers));
+        }
+        
+        // 初始化用户数据
+        loadUsers();
+        
+        // 登录功能
+        document.getElementById('login-submit').addEventListener('click', function() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            
+            let isValid = true;
+            
+            // 清空之前的错误
+            hideError('login-username-error');
+            hideError('login-password-error');
+            document.getElementById('login-error').classList.add('hidden');
+            
+            // 验证用户名
+            if (!username) {
+                showError('login-username-error', translations[currentLang]['username-required'] || '用户名不能为空');
+                isValid = false;
+            }
+            
+            // 验证密码
+            if (!password) {
+                showError('login-password-error', translations[currentLang]['password-required'] || '密码不能为空');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // 查找用户
+            const user = mockUsers.find(u => u.username === username);
+            
+            if (user && user.password === password) {
+                // 保存登录状态
+                const userData = { username: user.username, email: user.email };
+                
+                if (rememberMe) {
+                    localStorage.setItem('user', JSON.stringify(userData));
+                } else {
+                    sessionStorage.setItem('user', JSON.stringify(userData));
+                }
+                
+                // 显示成功提示
+                alert(translations[currentLang]['login-success'] || '登录成功！');
+                
+                // 跳转回首页
+                window.location.href = 'index.html';
+            } else {
+                // 显示登录错误
+                const errorElement = document.getElementById('login-error');
+                const errorMessage = document.getElementById('login-error-message');
+                errorMessage.textContent = translations[currentLang]['login-error'] || '用户名或密码错误';
+                errorElement.classList.remove('hidden');
+            }
+        });
+        
+        // 注册功能
+        document.getElementById('register-submit').addEventListener('click', function() {
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const agreeTerms = document.getElementById('agree-terms').checked;
+            
+            let isValid = true;
+            
+            // 清空之前的错误
+            hideError('register-username-error');
+            hideError('register-email-error');
+            hideError('register-password-error');
+            hideError('terms-error');
+            document.getElementById('register-error').classList.add('hidden');
+            document.getElementById('register-success').classList.add('hidden');
+            
+            // 验证用户名
+            if (!username) {
+                showError('register-username-error', translations[currentLang]['username-required'] || '用户名不能为空');
+                isValid = false;
+            } else if (username.length < 3) {
+                showError('register-username-error', translations[currentLang]['username-too-short'] || '用户名至少需要3个字符');
+                isValid = false;
+            } else if (mockUsers.some(u => u.username === username)) {
+                showError('register-username-error', translations[currentLang]['username-exists'] || '用户名已存在');
+                isValid = false;
+            }
+            
+            // 验证邮箱
+            if (!email) {
+                showError('register-email-error', translations[currentLang]['email-required'] || '邮箱不能为空');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError('register-email-error', translations[currentLang]['email-invalid'] || '请输入有效的邮箱地址');
+                isValid = false;
+            } else if (mockUsers.some(u => u.email === email)) {
+                showError('register-email-error', translations[currentLang]['email-exists'] || '该邮箱已被注册');
+                isValid = false;
+            }
+            
+            // 验证密码
+            if (!password) {
+                showError('register-password-error', translations[currentLang]['password-required'] || '密码不能为空');
+                isValid = false;
+            } else if (!validatePassword(password)) {
+                showError('register-password-error', translations[currentLang]['password-weak'] || '密码至少需要8个字符，包含字母和数字');
+                isValid = false;
+            }
+            
+            // 验证同意条款
+            if (!agreeTerms) {
+                showError('terms-error', translations[currentLang]['agree-terms-required'] || '请阅读并同意用户协议和隐私政策');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // 添加新用户
+            mockUsers.push({ username, email, password });
+            saveUsers();
+            
+            // 显示注册成功
+            document.getElementById('register-success').classList.remove('hidden');
+            
+            // 3秒后切换到登录表单
+            setTimeout(() => {
+                loginTab.click();
+                // 自动填充用户名到登录表单
+                document.getElementById('login-username').value = username;
+                document.getElementById('login-password').focus();
+            }, 3000);
+        });
+        
+        // 忘记密码功能
+        document.getElementById('forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert(translations[currentLang]['forgot-password-message'] || '请联系管理员重置密码。');
+        });
+        
+        // 检查用户是否已登录
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user') || sessionStorage.getItem('user');
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    console.log('用户已登录:', userData);
+                    // 这里可以根据需要显示用户信息或执行其他操作
+                } catch (e) {
+                    console.error('解析用户数据失败:', e);
+                }
+            }
+        }
+        
+        // 初始检查登录状态
+        checkLoginStatus();
+        
+        // 语言切换功能
+        const languageBtn = document.getElementById('language-btn');
+        const languageDropdown = document.getElementById('language-dropdown');
+        const currentLanguage = document.getElementById('current-language');
+        const languageOptions = document.querySelectorAll('#language-dropdown a');
+        let currentLang = localStorage.getItem('preferredLanguage') || 'zh';
+        
+        languageBtn.addEventListener('click', () => {
+            languageDropdown.classList.toggle('hidden');
+        });
+        
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', (e) => {
+            if (!languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
+                languageDropdown.classList.add('hidden');
+            }
+        });
+        
+        // 语言数据 - 添加更多验证错误信息和功能提示
+        const translations = {
+            zh: {
+                'login-title': '粉丝社区 - 登录注册',
+                'community-title': '粉丝社区',
+                'community-welcome': '加入我们的社区，与其他粉丝一起互动',
+                'login': '登录',
+                'register': '注册',
+                'username': '用户名',
+                'username-placeholder': '请输入用户名',
+                'email': '邮箱',
+                'email-placeholder': '请输入邮箱',
+                'password': '密码',
+                'password-placeholder': '请输入密码',
+                'set-password-placeholder': '请设置密码',
+                'remember-me': '记住我',
+                'forgot-password': '忘记密码？',
+                'agree-terms': '我已阅读并同意用户协议和隐私政策',
+                'login-btn': '登录',
+                'register-btn': '注册',
+                'or': '或',
+                'community-features': '社区特色',
+                'fan-interaction': '粉丝互动',
+                'fan-interaction-desc': '与其他粉丝交流，分享对Boom的喜爱',
+                'exclusive-news': '独家动态',
+                'exclusive-news-desc': '获取Boom的最新消息和独家内容',
+                'fan-benefits': '粉丝福利',
+                'fan-benefits-desc': '参与活动赢取周边，有机会与Boom近距离接触',
+                // 验证错误信息
+                'username-required': '用户名不能为空',
+                'username-too-short': '用户名至少需要3个字符',
+                'username-exists': '用户名已存在',
+                'email-required': '邮箱不能为空',
+                'email-invalid': '请输入有效的邮箱地址',
+                'email-exists': '该邮箱已被注册',
+                'password-required': '密码不能为空',
+                'password-weak': '密码至少需要8个字符，包含字母和数字',
+                'agree-terms-required': '请阅读并同意用户协议和隐私政策',
+                'login-error': '用户名或密码错误',
+                'login-success': '登录成功！',
+                'register-success': '注册成功！正在跳转到登录...',
+                'forgot-password-message': '请联系管理员重置密码。'
+            },
+            en: {
+                'login-title': 'Fan Community - Login/Register',
+                'community-title': 'Fan Community',
+                'community-welcome': 'Join our community and interact with other fans',
+                'login': 'Login',
+                'register': 'Register',
+                'username': 'Username',
+                'username-placeholder': 'Enter username',
+                'email': 'Email',
+                'email-placeholder': 'Enter email',
+                'password': 'Password',
+                'password-placeholder': 'Enter password',
+                'set-password-placeholder': 'Set password',
+                'remember-me': 'Remember me',
+                'forgot-password': 'Forgot Password?',
+                'agree-terms': 'I have read and agree to the Terms of Service and Privacy Policy',
+                'login-btn': 'Login',
+                'register-btn': 'Register',
+                'or': 'Or',
+                'community-features': 'Community Features',
+                'fan-interaction': 'Fan Interaction',
+                'fan-interaction-desc': 'Connect with other fans and share your love for Boom',
+                'exclusive-news': 'Exclusive Updates',
+                'exclusive-news-desc': 'Get the latest news and exclusive content about Boom',
+                'fan-benefits': 'Fan Benefits',
+                'fan-benefits-desc': 'Participate in events to win merchandise and meet Boom',
+                // Validation error messages
+                'username-required': 'Username is required',
+                'username-too-short': 'Username must be at least 3 characters',
+                'username-exists': 'Username already exists',
+                'email-required': 'Email is required',
+                'email-invalid': 'Please enter a valid email address',
+                'email-exists': 'This email is already registered',
+                'password-required': 'Password is required',
+                'password-weak': 'Password must be at least 8 characters with letters and numbers',
+                'agree-terms-required': 'Please read and agree to the Terms of Service and Privacy Policy',
+                'login-error': 'Invalid username or password',
+                'login-success': 'Login successful!',
+                'register-success': 'Registration successful! Redirecting to login...',
+                'forgot-password-message': 'Please contact admin to reset your password.'
+            },
+            th: {
+                'login-title': 'ชุมชนแฟนคลับ - เข้าสู่ระบบ/ลงทะเบียน',
+                'community-title': 'ชุมชนแฟนคลับ',
+                'community-welcome': 'เข้าร่วมชุมชนของเราและสนทนากับแฟนอื่นๆ',
+                'login': 'เข้าสู่ระบบ',
+                'register': 'ลงทะเบียน',
+                'username': 'ชื่อผู้ใช้',
+                'username-placeholder': 'ใส่ชื่อผู้ใช้',
+                'email': 'อีเมล',
+                'email-placeholder': 'ใส่อีเมล',
+                'password': 'รหัสผ่าน',
+                'password-placeholder': 'ใส่รหัสผ่าน',
+                'set-password-placeholder': 'ตั้งรหัสผ่าน',
+                'remember-me': 'จดจำฉัน',
+                'forgot-password': 'ลืมรหัสผ่าน?',
+                'agree-terms': 'ฉันได้อ่านและยอมรับเงื่อนไขการใช้บริการและนโยบายความเป็นส่วนตัว',
+                'login-btn': 'เข้าสู่ระบบ',
+                'register-btn': 'ลงทะเบียน',
+                'or': 'หรือ',
+                'community-features': 'คุณสมบัติของชุมชน',
+                'fan-interaction': 'ปฏิสัมพันธ์ระหว่างแฟน',
+                'fan-interaction-desc': 'เชื่อมต่อกับแฟนอื่นๆ และแบ่งปันความรักต่อ Boom',
+                'exclusive-news': 'ข่าวสารพิเศษ',
+                'exclusive-news-desc': 'รับข่าวสารล่าสุดและเนื้อหาเฉพาะเกี่ยวกับ Boom',
+                'fan-benefits': 'สิทธิพิเศษของแฟน',
+                'fan-benefits-desc': 'เข้าร่วมกิจกรรมเพื่อรับของสะสมและได้พบ Boom ในแบบใกล้ชิด',
+                // ข้อความแจ้งเตือนความผิดพลาด
+                'username-required': 'กรุณากรอกชื่อผู้ใช้',
+                'username-too-short': 'ชื่อผู้ใช้ต้องมีความยาวอย่างน้อย 3 ตัวอักษร',
+                'username-exists': 'ชื่อผู้ใช้นี้มีอยู่แล้ว',
+                'email-required': 'กรุณากรอกอีเมล',
+                'email-invalid': 'โปรดป้อนที่อยู่อีเมลที่ถูกต้อง',
+                'email-exists': 'อีเมลนี้ถูกลงทะเบียนแล้ว',
+                'password-required': 'กรุณากรอกรหัสผ่าน',
+                'password-weak': 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร ประกอบด้วยตัวอักษรและตัวเลข',
+                'agree-terms-required': 'โปรดอ่านและยอมรับเงื่อนไขการใช้บริการและนโยบายความเป็นส่วนตัว',
+                'login-error': 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+                'login-success': 'เข้าสู่ระบบสำเร็จ!',
+                'register-success': 'ลงทะเบียนสำเร็จ! กำลังเปลี่ยนไปยังหน้าล็อกอิน...',
+                'forgot-password-message': 'กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่านของคุณ.'
+            }
+        };
+
+        // 切换语言函数
+        function changeLanguage(lang) {
+            if (!translations[lang]) return;
+            
+            // 更新页面上所有带有data-lang-key属性的元素
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            let langText = '中文';
+            if (lang === 'en') {
+                langText = 'English';
+            } else if (lang === 'th') {
+                langText = 'ภาษาไทย';
+            }
+            
+            currentLanguage.textContent = langText;
+            languageDropdown.classList.add('hidden');
+            
+            // 保存语言偏好到localStorage
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // 初始化语言
+        const savedLang = localStorage.getItem('preferredLanguage') || 'zh';
+        changeLanguage(savedLang);
+        
+        // 语言选项点击事件
+        languageOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = option.getAttribute('data-lang');
+                changeLanguage(lang);
+            });
+        });
+    </script>
+</body>
+</html>
