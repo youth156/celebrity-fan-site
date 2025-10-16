@@ -7,27 +7,27 @@ const newsData = {
       id: 'news-6',
       title: {
         zh: '《风度men\'s uno Young！》10月封面大片',
-        en: 'men\'s uno Young! October Cover Photo',
-        th: 'men\'s uno Young! ภาพปกเดือนตุลาคม'
+        en: 'Men\'s Uno Young! October Cover Feature',
+        th: 'Men\'s Uno Young! October Cover Feature'
       },
       date: '2025-10-17',
       dateDisplay: {
-        zh: '2025年10月17日',
-        en: '2025-10-17',
-        th: '2568-10-17'
+        zh: '2025年10月17日（周五）13:14',
+        en: '2025-10-17 (Friday) 13:14',
+        th: '2568-10-17 (วันศุกร์) 13:14'
       },
       content: {
         zh: '10月封面大片即将于10月17日（周五）13:14正式揭晓，《风度men\'s uno Young！》10月同步上市，敬请期待',
-        en: 'October cover photo will be officially revealed on October 17th (Friday) at 13:14, men\'s uno Young! will be on sale in October, stay tuned',
-        th: 'ภาพปกเดือนตุลาคมจะถูกเปิดเผยอย่างเป็นทางการในวันที่ 17 ตุลาคม (วันศุกร์) เวลา 13:14 men\'s uno Young! จะวางจำหน่ายในเดือนตุลาคม โปรดรอคอย'
+        en: 'The October cover feature will be officially revealed on October 17th (Friday) at 13:14. Men\'s uno Young! October issue is now available. Stay tuned!',
+        th: 'คาเวอร์ตุลาคมจะถูกเปิดเผยอย่างเป็นทางการในวันที่ 17 ตุลาคม (วันศุกร์) เวลา 13:14 หนังสือพิมพ์ Men\'s uno Young! ฉบับตุลาคมพร้อมจำหน่ายแล้ว อย่าลืมติดตาม!'
       },
       image: 'images/new6.jpg',
       alt: '《风度men\'s uno Young！》10月封面大片',
       link: 'https://k.youshop10.com/Q0Yjm=er?share_relation=60acd609a06ff9a7_1981041900_1&a=b&wfr=BuyercopyURL',
       linkText: {
-        zh: '点击查看',
-        en: 'View Now',
-        th: 'ดูเดี๋ยวนี้'
+        zh: '点击获取',
+        en: 'Read More',
+        th: 'อ่านเพิ่มเติม'
       },
       isLatest: true
     },
@@ -444,20 +444,28 @@ function initHomePageNews() {
   const dynamicContentContainer = document.createElement('div');
   dynamicContentContainer.className = 'dynamic-news-content';
   
-  // 创建新闻的网格，按照全部动态页面的分类顺序显示
-  const categories = ['commercial', 'new-work', 'event', 'preview'];
-  const gridSection = document.createElement('div');
-  gridSection.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8';
+  // 1. 首先创建商务活动的主要展示区
+  if (latestNews.commercial) {
+    const commercialSection = document.createElement('div');
+    commercialSection.className = 'mb-10';
+    commercialSection.innerHTML = generateNewsHtml(latestNews.commercial, false, true);
+    dynamicContentContainer.appendChild(commercialSection);
+  }
   
-  categories.forEach(category => {
+  // 2. 创建其他三类的水平布局
+  const otherCategories = ['new-work', 'event', 'preview'];
+  const otherCategoriesSection = document.createElement('div');
+  otherCategoriesSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-6';
+  
+  otherCategories.forEach(category => {
     if (latestNews[category]) {
       const newsDiv = document.createElement('div');
       newsDiv.innerHTML = generateNewsHtml(latestNews[category]);
-      gridSection.appendChild(newsDiv);
+      otherCategoriesSection.appendChild(newsDiv);
     }
   });
   
-  dynamicContentContainer.appendChild(gridSection);
+  dynamicContentContainer.appendChild(otherCategoriesSection);
   
   // 按照要求的顺序插入内容：标题和描述 -> 动态内容 -> 查看全部动态按钮
   if (titleSection && viewAllButtonSection) {
