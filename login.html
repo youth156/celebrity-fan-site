@@ -412,8 +412,12 @@
                 // 显示成功提示
                 alert(translations[currentLang]['login-success'] || '登录成功！');
                 
-                // 跳转回首页
-                window.location.href = 'index.html';
+                // 检查是否有返回URL参数
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirectUrl = urlParams.get('redirect') || 'index.html';
+                
+                // 跳转到指定页面或首页
+                window.location.href = redirectUrl;
             } else {
                 // 显示登录错误
                 const errorElement = document.getElementById('login-error');
