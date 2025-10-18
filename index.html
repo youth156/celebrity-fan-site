@@ -44,6 +44,9 @@
             }
         }
     </style>
+    
+    <!-- 引入模态窗工具脚本 -->
+    <script src="modal-utils.js" defer></script>
     <!-- 预加载字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,6 +71,7 @@
                     <a href="#works" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="works">作品</a>
                     <a href="#gallery" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="gallery">照片</a>
                     <a href="#news" class="text-white hover:text-secondary transition-custom font-medium" data-lang-key="news">动态</a>
+                    <button id="community-btn" class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-full font-medium transition-custom transform hover:scale-105" data-lang-key="community">粉丝社区</button>
                      
                     <!-- 语言切换下拉菜单 -->
                     <div id="language-selector" class="relative ml-6">
@@ -119,6 +123,7 @@
                     <a href="#works" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="works">作品</a>
                     <a href="#gallery" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="gallery">照片</a>
                     <a href="#news" class="block text-white hover:text-secondary py-2 transition-custom" data-lang-key="news">动态</a>
+                    <button id="mobile-community-btn" class="block bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg font-medium transition-custom text-center mt-2 w-full text-left" data-lang-key="community">粉丝社区</button>
                     
                     <!-- 移动端语言切换 -->
                     <div class="pt-2 border-t border-white/10">
@@ -599,6 +604,7 @@
                 works: '作品',
                 gallery: '照片',
                 news: '动态',
+                community: '粉丝社区',
                 language: '语言',
                 'about-star': '关于明星',
                 birthday: '出生日期',
@@ -679,6 +685,7 @@
                 works: 'Works',
                 gallery: 'Gallery',
                 news: 'News',
+                community: 'Fan Community',
                 language: 'Language',
                 'about-star': 'About Star',
                 birthday: 'Date of Birth',
@@ -754,11 +761,12 @@
                 'star-bio-2': 'Not only has he achieved remarkable success in his acting career, but he has also shown extraordinary talent in the music field. He is an artist who loves sports and fitness, especially badminton.'
             },
             th: {
-                home: 'หน้าแรก',
+                home: 'หน้าหลัก',
                 about: 'เกี่ยวกับ',
                 works: 'ผลงาน',
-                gallery: 'รูปภาพ',
+                gallery: 'แกลเลอรี่',
                 news: 'ข่าวสาร',
+                community: 'ชุมชนแฟนคลับ',
                 language: 'ภาษา',
                 'about-star': 'เกี่ยวกับดารา',
                 birthday: 'วันเกิด',
