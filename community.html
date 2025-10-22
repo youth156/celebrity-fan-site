@@ -15,40 +15,10 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
     <!-- 引入社区功能增强模块 -->
     <script src="community-features.js" defer></script>
+    <!-- 引入星光地图功能模块 -->
+    <script src="map.js" type="module"></script>
     <!-- 配置Tailwind自定义颜色和字体 -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#6C38FF', // 主色调：紫色，代表创造力和独特性
-                        secondary: '#FF5E7D', // 辅助色：粉色，代表热情和活力
-                        dark: '#1A1A2E', // 深色背景
-                        light: '#F7F7F9', // 浅色背景
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        display: ['Montserrat', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.5s ease-out',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="./tailwind-fix.js"></script>
     <!-- 自定义工具类 -->
     <style type="text/tailwindcss">
         @layer utilities {
@@ -517,12 +487,25 @@
                         </div>
 
                         <!-- 地图容器 -->
-                        <div class="bg-white rounded-2xl shadow-md overflow-hidden card">
+                        <div class="bg-white rounded-2xl shadow-md overflow-hidden card relative transition-all duration-500 hover:shadow-xl">
                             <div id="map" class="w-full h-[60vh] min-h-[500px]"></div>
                             <!-- 地图加载状态 -->
-                            <div id="map-loading" class="absolute inset-0 bg-white/80 flex flex-col items-center justify-center z-10 hidden">
-                                <div class="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full loader"></div>
-                                <p class="text-gray-600 mt-4" data-lang-key="loading">地图加载中...</p>
+                            <div id="map-loading" class="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-10 hidden transition-opacity duration-500">
+                                <div class="w-16 h-16 border-4 border-gray-200 border-t-primary rounded-full animate-spin mb-4"></div>
+                                <p class="text-gray-600 mt-4 text-lg" data-lang-key="loading">地图加载中...</p>
+                                <p class="text-gray-400 text-sm mt-2">连接全球粉丝，点亮明星梦想</p>
+                            </div>
+                            
+                            <!-- 地图操作按钮 -->
+                            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg flex gap-4 z-5 transition-all duration-300 hover:bg-white">
+                                <button id="add-marker-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                    <i class="fa fa-plus"></i>
+                                    <span>添加标记</span>
+                                </button>
+                                <button id="my-location-btn" class="flex items-center gap-1 px-3 py-2 bg-white text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition-all duration-300 shadow-sm transform hover:-translate-y-0.5">
+                                    <i class="fa fa-location-arrow"></i>
+                                    <span>我的位置</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -637,11 +620,14 @@
     </main>
 
     <!-- 添加标记模态框 -->
-    <div id="add-marker-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 modal-backdrop-enter">
-        <div class="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl modal-enter">
+    <div id="add-marker-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
             <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold" data-lang-key="add-your-marker">添加你的标记</h3>
-                <button id="close-marker-modal" class="text-gray-500 hover:text-gray-700">
+                <h3 class="text-xl font-bold flex items-center" data-lang-key="add-your-marker">
+                    <i class="fa fa-map-marker-alt text-primary mr-2"></i>
+                    添加你的标记
+                </h3>
+                <button id="close-marker-modal" class="text-gray-500 hover:text-gray-700 transition-colors">
                     <i class="fa fa-times text-xl"></i>
                 </button>
             </div>
@@ -649,31 +635,35 @@
                 <div class="space-y-4">
                     <div>
                         <label for="marker-city" class="block text-gray-700 font-medium mb-1" data-lang-key="city">城市</label>
-                        <input type="text" id="marker-city" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="输入你的城市">
+                        <input type="text" id="marker-city" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="输入你的城市">
                     </div>
                     <div>
                         <label for="marker-message" class="block text-gray-700 font-medium mb-1" data-lang-key="your-message">留言</label>
-                        <textarea id="marker-message" rows="3" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none" placeholder="给Boom的留言..."></textarea>
+                        <textarea id="marker-message" rows="3" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-300" placeholder="给Boom的留言..."></textarea>
+                        <p class="text-xs text-gray-400 mt-1"><i class="fa fa-info-circle"></i> 分享你的故事，让全球粉丝看到</p>
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-1" data-lang-key="add-photo">添加照片（可选）</label>
-                        <div class="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-primary transition-custom cursor-pointer" id="marker-photo-upload-area">
+                        <div id="marker-photo-upload-area" class="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-primary hover:bg-gray-50 transition-all duration-300 cursor-pointer">
                             <input type="file" id="marker-photo-upload" accept="image/*" class="hidden">
                             <i class="fa fa-cloud-upload text-4xl text-gray-300 mb-2"></i>
                             <p class="text-gray-500" data-lang-key="upload-photo">点击上传照片</p>
-                            <p class="text-gray-400 text-sm mt-1" data-lang-key="photo-format">支持JPG、PNG格式</p>
+                            <p class="text-gray-400 text-sm mt-1" data-lang-key="photo-format">支持JPG、PNG格式，最大5MB</p>
                         </div>
                         <div id="marker-photo-preview" class="mt-3 hidden">
-                            <img id="marker-preview-img" src="" alt="预览" class="w-full h-48 object-cover rounded-lg">
-                            <button id="remove-marker-photo" class="mt-2 text-red-500 hover:text-red-700">
-                                <i class="fa fa-times mr-1"></i>
-                                <span data-lang-key="remove-photo">移除照片</span>
-                            </button>
+                            <div class="relative group">
+                                <img id="marker-preview-img" src="" alt="预览" class="w-full h-48 object-cover rounded-lg transition-all duration-300 group-hover:brightness-90">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <button id="remove-marker-photo" class="text-white hover:text-gray-200">
+                                        <i class="fa fa-times-circle text-2xl"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="mt-6">
-                    <button id="submit-marker-btn" class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-medium transition-custom">
+                    <button id="submit-marker-btn" class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                         <span data-lang-key="submit-marker">提交标记</span>
                     </button>
                 </div>
@@ -1326,8 +1316,7 @@
 
             // 添加事件监听器
             addMessageEventListeners();
-            }, 500); // 500ms延迟，模拟网络加载
-        }
+        }, 500); // 500ms延迟，模拟网络加载
 
         // 添加排序和搜索事件监听器
         function addSortAndSearchListeners() {
@@ -1573,147 +1562,160 @@
             this.value = '';
         });
 
-        // 星光地图功能
-        const markersKey = 'fanMapMarkers';
-        let map, userMarkers = [];
-        window.mapInitialized = false;
-
-        // 获取保存的标记数据
-        function getMarkers() {
-            const markers = localStorage.getItem(markersKey);
-            return markers ? JSON.parse(markers) : [];
+        // 使用模块化的星光地图功能
+        // 显示通知的辅助函数
+        function showNotification(message, type = 'info') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-20 opacity-0 z-50`;
+            
+            // 根据类型设置样式
+            let bgColor, textColor, icon;
+            switch(type) {
+                case 'success':
+                    bgColor = 'bg-green-500';
+                    textColor = 'text-white';
+                    icon = 'fa-check-circle';
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-500';
+                    textColor = 'text-white';
+                    icon = 'fa-exclamation-circle';
+                    break;
+                case 'warning':
+                    bgColor = 'bg-yellow-500';
+                    textColor = 'text-white';
+                    icon = 'fa-exclamation-triangle';
+                    break;
+                default:
+                    bgColor = 'bg-primary';
+                    textColor = 'text-white';
+                    icon = 'fa-info-circle';
+            }
+            
+            notification.classList.add(...bgColor.split(' '), ...textColor.split(' '));
+            
+            // 设置通知内容
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fa ${icon} mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 显示动画
+            setTimeout(() => {
+                notification.classList.remove('translate-y-20', 'opacity-0');
+            }, 10);
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                notification.classList.add('translate-y-20', 'opacity-0');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
         }
 
-        // 保存标记数据
-        function saveMarkers(markers) {
-            localStorage.setItem(markersKey, JSON.stringify(markers));
-        }
-
-        // 初始化地图
-        function initializeMap() {
-            // 由于我们使用的是免费的Mapbox，这里使用简单的地图模拟
-            // 实际项目中应该使用真实的地图API密钥
-            mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZXVzZXIiLCJhIjoiY2wxeXpldGhtMDNvNjNqcW1iNjc5OGZrbSJ9.2X83XK9Vf5gO9jK9qDcQIw'; // 示例密钥
-            
-            map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/light-v10',
-                center: [105.8412, 21.0285], // 北京作为默认中心
-                zoom: 3,
-                attributionControl: false // 隐藏默认的版权信息
-            });
-            
-            // 添加自定义版权控制
-            map.addControl(new mapboxgl.AttributionControl({
-                customAttribution: '© 2023 BoomRaveewit Fan Community'
-            }));
-            
-            // 添加导航控制
-            map.addControl(new mapboxgl.NavigationControl({
-                showCompass: true,
-                showZoom: true,
-                visualizePitch: false
-            }));
-            
-            map.on('load', function() {
-                // 隐藏加载状态
+        // 初始化星光地图
+        async function initStarMap() {
+            try {
+                // 显示加载状态
                 const mapLoading = document.getElementById('map-loading');
-                if (mapLoading) mapLoading.classList.add('hidden');
+                if (mapLoading) mapLoading.classList.remove('hidden');
                 
-                // 加载已保存的标记
-                loadMarkers();
+                // 初始化地图
+                const map = await window.starMap.initializeMap('map', {
+                    accessToken: 'pk.eyJ1IjoiZXhhbXBsZXVzZXIiLCJhIjoiY2wxeXpldGhtMDNvNjNqcW1iNjc5OGZrbSJ9.2X83XK9Vf5gO9jK9qDcQIw', // 示例密钥
+                    style: 'mapbox://styles/mapbox/light-v10',
+                    center: [105.8412, 21.0285], // 北京作为默认中心
+                    zoom: 3,
+                    // 添加星空背景效果
+                    enableStarBackground: true
+                });
+                
+                // 添加示例标记数据（仅在没有标记时）
+                window.starMap.addExampleMarkers();
+                
+                // 加载标记
+                window.starMap.loadMarkers(currentUser, showNotification);
                 
                 // 更新统计信息
-                updateMapStats();
+                window.starMap.updateMapStats();
                 
-                window.mapInitialized = true;
+                // 更新统计数字动画
+                const stats = window.starMap.getStats();
+                window.starMap.animateNumber(document.getElementById('total-fans'), 0, stats.totalUsers || 15234);
+                window.starMap.animateNumber(document.getElementById('total-markers'), 0, stats.totalMarkers || 8765);
+                window.starMap.animateNumber(document.getElementById('total-cities'), 0, stats.totalCities || 234);
+                window.starMap.animateNumber(document.getElementById('total-countries'), 0, stats.totalCountries || 45);
                 
-                // 添加地图加载完成动画效果
+                // 隐藏加载状态
+                if (mapLoading) {
+                    mapLoading.style.opacity = '0';
+                    setTimeout(() => {
+                        mapLoading.classList.add('hidden');
+                    }, 500);
+                }
+                
+                // 地图加载完成动画
                 const mapContainer = document.getElementById('map');
                 mapContainer.style.opacity = '0';
                 mapContainer.style.transition = 'opacity 0.5s ease';
                 setTimeout(() => {
                     mapContainer.style.opacity = '1';
                 }, 100);
-            });
-            
-            // 地图加载错误处理
-            map.on('error', function(e) {
-                console.error('地图加载错误:', e);
+                
+            } catch (error) {
+                console.error('地图初始化失败:', error);
                 const mapLoading = document.getElementById('map-loading');
                 if (mapLoading) {
                     mapLoading.innerHTML = `
                         <i class="fa fa-exclamation-circle text-red-500 text-4xl mb-2"></i>
                         <p class="text-gray-600" data-lang-key="map-error">地图加载失败，请刷新页面重试</p>
+                        <p class="text-sm text-gray-500 mt-2">错误详情: ${error.message}</p>
                     `;
                 }
-            });
-        }
-
-        // 加载标记
-        function loadMarkers() {
-            const markers = getMarkers();
-            
-            // 清除现有标记
-            userMarkers.forEach(marker => marker.remove());
-            userMarkers = [];
-            
-            // 添加新标记
-            markers.forEach(marker => {
-                const popup = new mapboxgl.Popup({
-                    offset: 25,
-                    maxWidth: '300px'
-                }).setHTML(`
-                    <div class="p-2">
-                        <h4 class="font-semibold text-gray-900 mb-1">${marker.username}</h4>
-                        <p class="text-gray-500 text-sm mb-2">${marker.city}</p>
-                        <p class="text-gray-700 text-sm mb-2">${escapeHTML(marker.message)}</p>
-                        ${marker.photo ? `
-                            <img src="${marker.photo}" alt="用户照片" class="w-full h-32 object-cover rounded-lg mb-2">
-                        ` : ''}
-                        <p class="text-gray-400 text-xs">${formatDate(marker.timestamp)}</p>
-                    </div>
-                `);
-                
-                // 创建自定义标记元素
-                const el = document.createElement('div');
-                el.className = 'w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer hover:scale-110 transition-transform';
-                el.style.boxShadow = '0 0 15px rgba(108, 56, 255, 0.6)';
-                el.innerHTML = '<i class="fa fa-star"></i>';
-                
-                const mapMarker = new mapboxgl.Marker(el)
-                    .setLngLat([marker.lng, marker.lat])
-                    .setPopup(popup)
-                    .addTo(map);
-                
-                userMarkers.push(mapMarker);
-            });
-        }
-
-        // 更新地图统计信息
-        function updateMapStats() {
-            const markers = getMarkers();
-            const cities = new Set(markers.map(m => m.city));
-            
-            // 模拟国家数据（实际项目中应该使用真实的地理数据）
-            const countries = new Set(markers.map(m => '中国'));
-            
-            document.getElementById('total-fans').textContent = markers.length;
-            document.getElementById('total-markers').textContent = markers.length;
-            document.getElementById('total-cities').textContent = cities.size;
-            document.getElementById('total-countries').textContent = countries.size;
+            }
         }
 
         // 打开添加标记模态框
         document.getElementById('add-marker-btn').addEventListener('click', function() {
-            document.getElementById('add-marker-modal').classList.remove('hidden');
+            const modal = document.getElementById('add-marker-modal');
+            const modalContent = modal.querySelector('.scale-95');
+            
+            modal.classList.remove('hidden');
+            // 触发重排，确保动画生效
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+            }, 10);
         });
 
         // 关闭添加标记模态框
         document.getElementById('close-marker-modal').addEventListener('click', function() {
-            document.getElementById('add-marker-modal').classList.add('hidden');
-            resetMarkerForm();
+            closeMarkerModal();
         });
+        
+        function closeMarkerModal() {
+            const modal = document.getElementById('add-marker-modal');
+            const modalContent = modal.querySelector('.scale-95');
+            
+            modalContent.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    resetMarkerForm();
+                }, 300);
+            }, 10);
+        }
 
         // 重置标记表单
         function resetMarkerForm() {
@@ -1730,15 +1732,39 @@
 
         document.getElementById('marker-photo-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
+            if (!file) return;
+            
+            // 检查文件大小（5MB限制）
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification(translations[currentLang]['file-too-large'] || '照片大小不能超过5MB', 'error');
+                this.value = '';
+                return;
+            }
+            
+            // 检查文件类型
+            const validTypes = ['image/jpeg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                showNotification(translations[currentLang]['invalid-file-type'] || '请上传JPG或PNG格式的图片', 'error');
+                this.value = '';
+                return;
+            }
+            
+            if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     document.getElementById('marker-preview-img').src = event.target.result;
                     document.getElementById('marker-photo-preview').classList.remove('hidden');
+                    
+                    // 添加淡入动画
+                    const preview = document.getElementById('marker-photo-preview');
+                    preview.style.opacity = '0';
+                    preview.style.transition = 'opacity 0.3s ease';
+                    void preview.offsetWidth;
+                    preview.style.opacity = '1';
                 };
                 reader.readAsDataURL(file);
             }
-        });
+        }
 
         // 移除标记照片
         document.getElementById('remove-marker-photo').addEventListener('click', function() {
@@ -1747,63 +1773,113 @@
         });
 
         // 提交标记
-        document.getElementById('submit-marker-btn').addEventListener('click', function() {
+        document.getElementById('submit-marker-btn').addEventListener('click', async function() {
             const city = document.getElementById('marker-city').value.trim();
             const message = document.getElementById('marker-message').value.trim();
             const previewImg = document.getElementById('marker-preview-img');
             const photo = previewImg.classList.contains('hidden') ? null : previewImg.src;
+            const submitBtn = this;
             
             if (!city) {
-                alert(translations[currentLang]['city-required']);
+                showNotification(translations[currentLang]['city-required'] || '请输入城市', 'error');
                 return;
             }
             
             if (!message) {
-                alert(translations[currentLang]['message-required']);
+                showNotification(translations[currentLang]['message-required'] || '请输入留言', 'error');
                 return;
             }
             
-            // 模拟地理位置（实际项目中应该使用真实的地理位置API）
-            // 这里使用简单的随机位置作为示例
-            const lng = 73 + Math.random() * 50; // 中国经度范围
-            const lat = 18 + Math.random() * 30; // 中国纬度范围
+            // 禁用提交按钮防止重复提交
+            submitBtn.disabled = true;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 提交中...';
             
-            // 获取现有标记
-            const markers = getMarkers();
-            
-            // 添加新标记
-            markers.push({
-                id: Date.now().toString(),
-                username: currentUser.username,
-                city: city,
-                message: message,
-                photo: photo,
-                lng: lng,
-                lat: lat,
-                timestamp: new Date().toISOString()
-            });
-            
-            // 保存标记
-            saveMarkers(markers);
-            
-            // 更新地图
-            if (window.mapInitialized) {
-                loadMarkers();
-                updateMapStats();
+            try {
+                // 模拟地理位置（实际项目中应该使用真实的地理位置API）
+                const lng = 73 + Math.random() * 50; // 中国经度范围
+                const lat = 18 + Math.random() * 30; // 中国纬度范围
                 
-                // 移动到新标记位置
-                map.flyTo({
-                    center: [lng, lat],
-                    zoom: 8
+                // 添加新标记
+                const newMarker = window.starMap.addMarker({
+                    username: currentUser.username,
+                    city: city,
+                    message: message,
+                    photo: photo,
+                    lng: lng,
+                    lat: lat,
+                    timestamp: new Date().toISOString(),
+                    likes: []
                 });
+                
+                // 模拟网络延迟
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                // 更新地图
+                const map = window.starMap.getMap();
+                if (map) {
+                    window.starMap.loadMarkers(currentUser, showNotification);
+                    window.starMap.updateMapStats();
+                    
+                    // 移动到新标记位置
+                    map.flyTo({
+                        center: [lng, lat],
+                        zoom: 8,
+                        essential: true,
+                        duration: 1500,
+                        easing: function(t) { return t * (2 - t); }
+                    });
+                    
+                    // 创建星星动画效果
+                    createStarAnimation(map, lng, lat);
+                }
+                
+                // 关闭模态框并重置表单
+                closeMarkerModal();
+                
+                // 更新统计数字
+                const updatedStats = window.starMap.getStats();
+                window.starMap.animateNumber(document.getElementById('total-markers'), parseInt(document.getElementById('total-markers').textContent.replace(/,/g, '')), updatedStats.totalMarkers);
+                
+                showNotification(translations[currentLang]['marker-added'] || '标记添加成功！', 'success');
+                
+            } catch (error) {
+                console.error('提交标记失败:', error);
+                showNotification(translations[currentLang]['marker-error'] || '标记添加失败，请重试', 'error');
+            } finally {
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
-            
-            // 关闭模态框并重置表单
-            document.getElementById('add-marker-modal').classList.add('hidden');
-            resetMarkerForm();
-            
-            alert(translations[currentLang]['marker-added']);
         });
+        
+        // 我的位置按钮
+        document.getElementById('my-location-btn').addEventListener('click', function() {
+            const map = window.starMap.getMap();
+            if (map) {
+                // 模拟定位到亚洲地区
+                map.easeTo({
+                    center: [105.8412, 21.0285],
+                    zoom: 4,
+                    duration: 1500,
+                    easing: function(t) {
+                        return t * (2 - t);
+                    }
+                });
+                
+                showNotification(translations[currentLang]['located-asia'] || '已定位到亚洲区域', 'info');
+            }
+        });
+        
+        // 当map.js模块加载完成后初始化地图
+        window.addEventListener('starMapLoaded', function() {
+            initStarMap();
+        });
+        
+        // 如果模块已经加载，则直接初始化
+        if (window.starMap) {
+            initStarMap();
+        }
 
         // 工具函数：格式化日期
         function formatDate(dateString) {
@@ -1835,6 +1911,8 @@
         // 创建星星动画效果
         function createStars() {
             const container = document.getElementById('stars-container');
+            if (!container) return;
+            
             const starCount = 50; // 增加星星数量
             
             for (let i = 0; i < starCount; i++) {
@@ -1857,6 +1935,93 @@
                 
                 container.appendChild(star);
             }
+        }
+        
+        // 创建添加标记时的星星动画
+        function createStarAnimation(map, lng, lat) {
+            if (!map) return;
+            
+            // 获取地图容器
+            const mapContainer = document.getElementById('map');
+            
+            // 转换地理坐标为屏幕坐标
+            const point = map.project([lng, lat]);
+            
+            // 创建星星元素
+            const star = document.createElement('div');
+            star.className = 'star-animation';
+            star.style.cssText = `
+                position: absolute;
+                left: ${point.x}px;
+                top: ${point.y}px;
+                width: 20px;
+                height: 20px;
+                background: rgba(255, 215, 0, 0.9);
+                border-radius: 50%;
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+                transform: scale(0);
+                pointer-events: none;
+                z-index: 100;
+            `;
+            
+            // 添加到地图容器
+            mapContainer.appendChild(star);
+            
+            // 执行动画
+            setTimeout(() => {
+                star.style.transition = 'all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                star.style.transform = 'scale(2)';
+                star.style.opacity = '0';
+                star.style.boxShadow = '0 0 40px rgba(255, 215, 0, 0.5)';
+                
+                // 创建一些小的星星粒子
+                for (let i = 0; i < 5; i++) {
+                    const particle = document.createElement('div');
+                    const angle = (i / 5) * Math.PI * 2;
+                    const distance = 30;
+                    const x = point.x + Math.cos(angle) * distance;
+                    const y = point.y + Math.sin(angle) * distance;
+                    
+                    particle.style.cssText = `
+                        position: absolute;
+                        left: ${point.x}px;
+                        top: ${point.y}px;
+                        width: 8px;
+                        height: 8px;
+                        background: rgba(255, 255, 255, 0.9);
+                        border-radius: 50%;
+                        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+                        opacity: 0;
+                        pointer-events: none;
+                        z-index: 100;
+                    `;
+                    
+                    mapContainer.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        particle.style.transition = 'all 0.8s ease-out';
+                        particle.style.left = `${x}px`;
+                        particle.style.top = `${y}px`;
+                        particle.style.opacity = '1';
+                        
+                        setTimeout(() => {
+                            particle.style.opacity = '0';
+                            setTimeout(() => {
+                                if (mapContainer.contains(particle)) {
+                                    particle.remove();
+                                }
+                            }, 800);
+                        }, 400);
+                    }, 10);
+                }
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    if (mapContainer.contains(star)) {
+                        star.remove();
+                    }
+                }, 1000);
+            }, 10);
         }
         
         // 显示通知提示
