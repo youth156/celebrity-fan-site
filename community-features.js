@@ -27,7 +27,8 @@ const Notifications = {
             data,
             read: false,
             timestamp: new Date().toISOString()
-        };
+        // 不再需要export结尾
+// };
         
         notifications.unshift(notification);
         
@@ -984,12 +985,13 @@ function updateActiveTab(activeTabId) {
 }
 
 // 导出功能模块
-export { 
+// 不再导出，改为全局对象
+// export { 
     Notifications, 
     UserActivity, 
     MessageWallEnhancements,
     initCommunityFeatures 
-};
+// };
 
 // 当文档加载完成后初始化
 if (typeof document !== 'undefined') {

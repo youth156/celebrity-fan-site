@@ -4,7 +4,7 @@
  * 获取当前登录用户信息
  * @returns {Object|null} 用户信息对象或null（未登录）
  */
-export function getCurrentUser() {
+function getCurrentUser() {
     try {
         const userData = localStorage.getItem('user') || sessionStorage.getItem('user');
         return userData ? JSON.parse(userData) : null;
@@ -19,7 +19,7 @@ export function getCurrentUser() {
  * @param {Object} userData 用户数据
  * @param {boolean} rememberMe 是否记住登录状态
  */
-export function saveUser(userData, rememberMe = false) {
+function saveUser(userData, rememberMe = false) {
     const userString = JSON.stringify(userData);
     
     if (rememberMe) {
@@ -33,14 +33,14 @@ export function saveUser(userData, rememberMe = false) {
  * 检查用户是否已登录
  * @returns {boolean} 是否已登录
  */
-export function isLoggedIn() {
+function isLoggedIn() {
     return getCurrentUser() !== null;
 }
 
 /**
  * 退出登录
  */
-export function logout() {
+function logout() {
     localStorage.removeItem('user');
     sessionStorage.removeItem('user');
 }
@@ -50,7 +50,7 @@ export function logout() {
  * @param {string} redirectUrl 登录成功后重定向的URL
  * @returns {boolean} 是否已登录
  */
-export function checkLoginStatus(redirectUrl = window.location.pathname) {
+function checkLoginStatus(redirectUrl = window.location.pathname) {
     const user = getCurrentUser();
     
     if (!user) {
@@ -66,7 +66,7 @@ export function checkLoginStatus(redirectUrl = window.location.pathname) {
  * 获取用户列表（模拟数据）
  * @returns {Array} 用户数组
  */
-export function getUsers() {
+function getUsers() {
     const users = localStorage.getItem('users');
     return users ? JSON.parse(users) : [
         // 默认示例用户
@@ -78,7 +78,7 @@ export function getUsers() {
  * 保存用户列表
  * @param {Array} users 用户数组
  */
-export function saveUsers(users) {
+function saveUsers(users) {
     localStorage.setItem('users', JSON.stringify(users));
 }
 
@@ -89,7 +89,7 @@ export function saveUsers(users) {
  * @param {string} password 密码
  * @returns {Object|null} 注册成功返回用户对象，失败返回null
  */
-export function register(username, email, password) {
+function register(username, email, password) {
     const users = getUsers();
     
     // 检查用户名是否已存在
@@ -116,7 +116,7 @@ export function register(username, email, password) {
  * @param {string} password 密码
  * @returns {Object|null} 登录成功返回用户对象，失败返回null
  */
-export function login(username, password) {
+function login(username, password) {
     const users = getUsers();
     const user = users.find(u => u.username === username && u.password === password);
     
@@ -132,7 +132,7 @@ export function login(username, password) {
  * 获取用户语言偏好设置
  * @returns {string} 语言代码
  */
-export function getPreferredLanguage() {
+function getPreferredLanguage() {
     return localStorage.getItem('preferredLanguage') || 'zh';
 }
 
@@ -140,6 +140,6 @@ export function getPreferredLanguage() {
  * 保存用户语言偏好设置
  * @param {string} lang 语言代码
  */
-export function savePreferredLanguage(lang) {
+function savePreferredLanguage(lang) {
     localStorage.setItem('preferredLanguage', lang);
 }

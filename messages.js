@@ -12,7 +12,7 @@ let currentSearch = '';
  * 获取保存的留言数据
  * @returns {Array} 留言数组
  */
-export function getMessages() {
+function getMessages() {
     const messages = localStorage.getItem(messagesKey);
     return messages ? JSON.parse(messages) : [];
 }
@@ -21,7 +21,7 @@ export function getMessages() {
  * 保存留言数据
  * @param {Array} messages 留言数组
  */
-export function saveMessages(messages) {
+function saveMessages(messages) {
     localStorage.setItem(messagesKey, JSON.stringify(messages));
     // 重新渲染消息列表
     if (typeof renderMessages === 'function') {
@@ -33,7 +33,7 @@ export function saveMessages(messages) {
  * 获取保存的评论数据
  * @returns {Object} 评论对象，键为留言ID，值为评论数组
  */
-export function getComments() {
+function getComments() {
     const comments = localStorage.getItem(commentsKey);
     return comments ? JSON.parse(comments) : {};
 }
@@ -43,7 +43,7 @@ export function getComments() {
  * @param {string} messageId 留言ID
  * @returns {Array} 评论数组
  */
-export function getCommentsForMessage(messageId) {
+function getCommentsForMessage(messageId) {
     const comments = getComments();
     return comments[messageId] || [];
 }
@@ -52,7 +52,7 @@ export function getCommentsForMessage(messageId) {
  * 保存评论数据
  * @param {Object} comments 评论对象
  */
-export function saveComments(comments) {
+function saveComments(comments) {
     localStorage.setItem(commentsKey, JSON.stringify(comments));
 }
 
@@ -61,7 +61,7 @@ export function saveComments(comments) {
  * @param {Array} messages 消息数组
  * @returns {Array} 排序后的消息数组
  */
-export function sortMessages(messages) {
+function sortMessages(messages) {
     const sortedMessages = [...messages];
     
     switch(currentSort) {
@@ -90,7 +90,7 @@ export function sortMessages(messages) {
  * @param {Array} messages 消息数组
  * @returns {Array} 过滤后的消息数组
  */
-export function filterMessages(messages) {
+function filterMessages(messages) {
     if (!currentSearch) return messages;
     
     const searchTerm = currentSearch.toLowerCase();
@@ -104,7 +104,7 @@ export function filterMessages(messages) {
  * 设置排序方式
  * @param {string} sortType 排序类型 (latest, popular, mostComments)
  */
-export function setSort(sortType) {
+function setSort(sortType) {
     currentSort = sortType;
     
     // 更新排序按钮样式
@@ -128,7 +128,7 @@ export function setSort(sortType) {
  * 设置搜索关键词
  * @param {string} searchTerm 搜索关键词
  */
-export function setSearch(searchTerm) {
+function setSearch(searchTerm) {
     currentSearch = searchTerm;
     if (typeof renderMessages === 'function') {
         renderMessages();
@@ -142,7 +142,7 @@ export function setSearch(searchTerm) {
  * @param {Array} images 图片数组
  * @returns {Object} 新发布的留言对象
  */
-export function postMessage(username, content, images = []) {
+function postMessage(username, content, images = []) {
     const messages = getMessages();
     
     const newMessage = {
@@ -167,7 +167,7 @@ export function postMessage(username, content, images = []) {
  * @param {string} content 评论内容
  * @returns {Object} 新发布的评论对象
  */
-export function postComment(messageId, username, content) {
+function postComment(messageId, username, content) {
     const comments = getComments();
     
     if (!comments[messageId]) {
@@ -193,7 +193,7 @@ export function postComment(messageId, username, content) {
  * @param {string} username 用户名
  * @returns {boolean} 是否点赞成功
  */
-export function toggleLike(messageId, username) {
+function toggleLike(messageId, username) {
     const messages = getMessages();
     const message = messages.find(m => m.id === messageId);
     
@@ -222,7 +222,7 @@ export function toggleLike(messageId, username) {
  * @param {string} username 用户名
  * @returns {boolean} 是否删除成功
  */
-export function deleteMessage(messageId, username) {
+function deleteMessage(messageId, username) {
     const messages = getMessages();
     const messageIndex = messages.findIndex(m => m.id === messageId);
     
@@ -252,7 +252,7 @@ export function deleteMessage(messageId, username) {
  * @param {string} username 用户名
  * @returns {boolean} 是否删除成功
  */
-export function deleteComment(messageId, commentId, username) {
+function deleteComment(messageId, commentId, username) {
     const comments = getComments();
     
     if (!comments[messageId]) return false;
@@ -277,7 +277,7 @@ export function deleteComment(messageId, commentId, username) {
  * @param {string} newContent 新内容
  * @returns {boolean} 是否编辑成功
  */
-export function editMessage(messageId, username, newContent) {
+function editMessage(messageId, username, newContent) {
     const messages = getMessages();
     const message = messages.find(m => m.id === messageId);
     

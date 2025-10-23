@@ -16,7 +16,7 @@
     <!-- 引入社区功能增强模块 -->
     <script src="community-features.js" defer></script>
     <!-- 引入星光地图功能模块 -->
-    <script src="map.js" type="module"></script>
+    <!-- 移除重复的模块引入 -->
     <!-- 配置Tailwind自定义颜色和字体 -->
     <script src="./tailwind-fix.js"></script>
     <!-- 自定义工具类 -->
@@ -711,7 +711,8 @@
     <script src="utils.js"></script>
     <script src="auth.js"></script>
     <script src="messages.js"></script>
-    <script src="map.js"></script>
+    <!-- 保留一个非模块方式的引入，确保全局可访问 -->
+<script src="map.js"></script>
     <script>
         // 页面主逻辑
         document.addEventListener('DOMContentLoaded', function() {
@@ -1871,14 +1872,57 @@
             }
         });
         
+        // 标志位，确保地图只初始化一次
+        let mapInitialized = false;
+        
+        // 安全的地图初始化函数
+        function safelyInitMap() {
+            if (!mapInitialized && window.starMap && typeof window.starMap.initializeMap === 'function') {
+                console.log('初始化星光地图...');
+                mapInitialized = true;
+                initStarMap().catch(error => {
+                    console.error('地图初始化失败:', error);
+                    showNotification('地图初始化失败，请刷新页面重试', 'error');
+                    // 显示加载失败状态
+                    const loadingElement = document.getElementById('map-loading');
+                    if (loadingElement) {
+                        loadingElement.innerHTML = `
+                            <div class="text-red-500 text-4xl mb-4">⚠️</div>
+                            <p class="text-gray-600 mt-4 text-lg">地图加载失败</p>
+                            <button id="retry-map" class="mt-4 px-4 py-2 bg-primary text-white rounded-full hover:bg-primary/90">
+                                重试
+                            </button>
+                        `;
+                        loadingElement.classList.remove('hidden');
+                        // 添加重试按钮事件
+                        document.getElementById('retry-map').addEventListener('click', function() {
+                            mapInitialized = false;
+                            safelyInitMap();
+                        });
+                    }
+                });
+            }
+        }
+        
         // 当map.js模块加载完成后初始化地图
         window.addEventListener('starMapLoaded', function() {
-            initStarMap();
+            console.log('检测到starMapLoaded事件');
+            safelyInitMap();
         });
         
         // 如果模块已经加载，则直接初始化
         if (window.starMap) {
-            initStarMap();
+            console.log('检测到starMap对象已存在');
+            safelyInitMap();
+        } else {
+            console.warn('starMap对象未找到，等待加载...');
+            // 设置超时检查
+            setTimeout(() => {
+                if (!window.starMap) {
+                    console.error('超时：未加载starMap模块');
+                    showNotification('地图模块加载超时', 'error');
+                }
+            }, 5000);
         }
 
         // 工具函数：格式化日期

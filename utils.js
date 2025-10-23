@@ -3,7 +3,8 @@
 /**
  * 多语言翻译数据
  */
-export const translations = {
+// 移除export关键字
+const translations = {
     zh: {
         // 导航
         'nav.home': '首页',
@@ -264,7 +265,7 @@ export const translations = {
  * @param {string} lang 语言代码
  * @returns {string} 翻译后的文本
  */
-export function translate(key, lang = 'zh') {
+function translate(key, lang = 'zh') {
     return translations[lang]?.[key] || key;
 }
 
@@ -272,7 +273,7 @@ export function translate(key, lang = 'zh') {
  * 更新页面上的所有翻译元素
  * @param {string} lang 语言代码
  */
-export function updateTranslations(lang = 'zh') {
+function updateTranslations(lang = 'zh') {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         el.textContent = translate(key, lang);
@@ -290,7 +291,7 @@ export function updateTranslations(lang = 'zh') {
  * @param {string} type 通知类型 (success, error, info)
  * @param {number} duration 持续时间(毫秒)
  */
-export function showNotification(message, type = 'info', duration = 3000) {
+function showNotification(message, type = 'info', duration = 3000) {
     // 创建通知元素
     const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg transition-all transform translate-x-full opacity-0`;
@@ -353,7 +354,7 @@ export function showNotification(message, type = 'info', duration = 3000) {
  * @param {string|Date} date 日期对象或ISO字符串
  * @returns {string} 格式化后的日期字符串
  */
-export function formatDate(date) {
+function formatDate(date) {
     const d = new Date(date);
     const now = new Date();
     const diffMs = now - d;
@@ -374,7 +375,7 @@ export function formatDate(date) {
  * @param {string} email 邮箱地址
  * @returns {boolean} 是否有效
  */
-export function isValidEmail(email) {
+function isValidEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
@@ -384,7 +385,7 @@ export function isValidEmail(email) {
  * @param {string} name 参数名
  * @returns {string|null} 参数值
  */
-export function getUrlParam(name) {
+function getUrlParam(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
 }
@@ -392,7 +393,7 @@ export function getUrlParam(name) {
 /**
  * 滚动到顶部
  */
-export function scrollToTop() {
+function scrollToTop() {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -405,7 +406,7 @@ export function scrollToTop() {
  * @param {number} maxLength 最大长度
  * @returns {string} 截断后的文本
  */
-export function truncateText(text, maxLength = 100) {
+function truncateText(text, maxLength = 100) {
     if (!text || text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
 }

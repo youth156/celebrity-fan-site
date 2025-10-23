@@ -1,12 +1,13 @@
 // map.js - 星光地图功能模块
 
 // 存储键名常量
-export const markersKey = 'fanMapMarkers';
+// 移除export关键字
+const markersKey = 'fanMapMarkers';
 const statsKey = 'starMapStats';
 
 // 地图实例和标记数组
 let map = null;
-export let userMarkers = [];
+let userMarkers = [];
 let markerClusters = {};
 let animationFrame = null;
 
@@ -17,7 +18,7 @@ const starMap = {};
  * 获取保存的标记数据
  * @returns {Array} 标记数组
  */
-export function getMarkers() {
+function getMarkers() {
     const markers = localStorage.getItem(markersKey);
     return markers ? JSON.parse(markers) : [];
 }
@@ -26,7 +27,7 @@ export function getMarkers() {
  * 保存标记数据
  * @param {Array} markers 标记数组
  */
-export function saveMarkers(markers) {
+function saveMarkers(markers) {
     localStorage.setItem(markersKey, JSON.stringify(markers));
 }
 
@@ -35,7 +36,7 @@ export function saveMarkers(markers) {
  * @param {Object} markerData 标记数据（包含位置信息、内容等）
  * @returns {Object} 添加的标记对象
  */
-export function addMarker(markerData) {
+function addMarker(markerData) {
     const markers = getMarkers();
     
     const newMarker = {
@@ -59,7 +60,7 @@ export function addMarker(markerData) {
  * @param {string} markerId 标记ID
  * @returns {boolean} 是否删除成功
  */
-export function deleteMarker(markerId) {
+function deleteMarker(markerId) {
     const markers = getMarkers();
     const markerIndex = markers.findIndex(m => m.id === markerId);
     
@@ -81,7 +82,7 @@ export function deleteMarker(markerId) {
  * @param {string} username 用户名
  * @returns {boolean} 是否点赞成功
  */
-export function likeMarker(markerId, username) {
+function likeMarker(markerId, username) {
     const markers = getMarkers();
     const marker = markers.find(m => m.id === markerId);
     
@@ -103,7 +104,7 @@ export function likeMarker(markerId, username) {
  * @param {string} username 用户名
  * @returns {boolean} 是否取消点赞成功
  */
-export function unlikeMarker(markerId, username) {
+function unlikeMarker(markerId, username) {
     const markers = getMarkers();
     const marker = markers.find(m => m.id === markerId);
     
@@ -123,7 +124,7 @@ export function unlikeMarker(markerId, username) {
  * 获取统计数据
  * @returns {Object} 统计数据
  */
-export function getStats() {
+function getStats() {
     const stats = localStorage.getItem(statsKey);
     return stats ? JSON.parse(stats) : {
         totalMarkers: 0,
@@ -138,7 +139,7 @@ export function getStats() {
  * 保存统计数据
  * @param {Object} stats 统计数据
  */
-export function saveStats(stats) {
+function saveStats(stats) {
     localStorage.setItem(statsKey, JSON.stringify(stats));
 }
 
@@ -146,7 +147,7 @@ export function saveStats(stats) {
  * 更新统计数据
  * @param {Object} newMarker 新添加的标记
  */
-export function updateStats(newMarker) {
+function updateStats(newMarker) {
     const stats = getStats();
     
     // 更新总标记数
@@ -171,7 +172,7 @@ export function updateStats(newMarker) {
 /**
  * 更新总统计数据
  */
-export function updateTotalStats() {
+function updateTotalStats() {
     const markers = getMarkers();
     const stats = getStats();
     
@@ -204,7 +205,7 @@ export function updateTotalStats() {
  * @param {Object} options 地图选项
  * @returns {Promise<Object>} 地图实例Promise
  */
-export function initializeMap(containerId, options = {}) {
+function initializeMap(containerId, options = {}) {
     return new Promise((resolve, reject) => {
         // 检查Mapbox是否已加载
         if (typeof mapboxgl === 'undefined') {
@@ -516,7 +517,7 @@ function createMarkerPopup(markerData) {
  * @param {Object} currentUser 当前用户
  * @param {Function} showNotification 通知函数
  */
-export function loadMarkers(currentUser, showNotification) {
+function loadMarkers(currentUser, showNotification) {
     if (!map) {
         console.error('地图尚未初始化');
         return;
@@ -689,7 +690,7 @@ function showPhotoModal(photoUrl) {
 /**
  * 清除所有标记
  */
-export function clearMarkers() {
+function clearMarkers() {
     userMarkers.forEach(({ mapboxMarker }) => {
         if (mapboxMarker) {
             mapboxMarker.remove();
@@ -703,7 +704,7 @@ export function clearMarkers() {
  * @param {string} markerId 标记ID
  * @param {number} zoom 缩放级别
  */
-export function flyToMarker(markerId, zoom = 8) {
+function flyToMarker(markerId, zoom = 8) {
     const marker = userMarkers.find(m => m.id === markerId);
     if (marker && map) {
         map.flyTo({
@@ -722,7 +723,7 @@ export function flyToMarker(markerId, zoom = 8) {
  * @param {number} limit 限制数量
  * @returns {Array} 最近活动标记数组
  */
-export function getRecentMarkers(limit = 5) {
+function getRecentMarkers(limit = 5) {
     const markers = getMarkers();
     return markers
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
@@ -733,7 +734,7 @@ export function getRecentMarkers(limit = 5) {
  * 获取区域分布统计
  * @returns {Array} 区域统计数组
  */
-export function getRegionStats() {
+function getRegionStats() {
     const stats = getStats();
     const regions = Object.entries(stats.topRegions)
         .map(([region, count]) => ({ name: region, value: count }))
@@ -745,7 +746,7 @@ export function getRegionStats() {
 /**
  * 更新地图统计显示
  */
-export function updateMapStats() {
+function updateMapStats() {
     const markers = getMarkers();
     const cities = new Set(markers.map(m => m.city).filter(Boolean));
     
@@ -772,7 +773,7 @@ export function updateMapStats() {
 /**
  * 添加示例标记数据（用于测试）
  */
-export function addExampleMarkers() {
+function addExampleMarkers() {
     const exampleMarkers = [
         {
             username: '星光守护者',
@@ -1017,7 +1018,7 @@ function addMapStyles() {
 addMapStyles();
 
 // 导出地图实例获取方法
-export function getMap() {
+function getMap() {
     return map;
 }
 
@@ -1041,7 +1042,7 @@ starMap.getRegionStats = getRegionStats;
 starMap.updateMapStats = updateMapStats;
 starMap.addExampleMarkers = addExampleMarkers;
 starMap.getMap = getMap;
-starMap.updateMapStats = updateMapStats;
+// 修复重复定义
 
 // 增强标记聚类功能
 markerClusters.createClusters = function(markers, zoom) {
@@ -1083,11 +1084,26 @@ markerClusters.update = function(markers, zoom) {
     return this.clusters;
 };
 
-// 将starMap暴露到全局window对象
+// 将starMap暴露到全局window对象 - 修复模块加载问题
 if (typeof window !== 'undefined') {
-    window.starMap = starMap;
+    // 确保starMap对象存在
+    if (!window.starMap) {
+        window.starMap = {};
+    }
+    
+    // 合并starMap对象，保留可能已存在的属性
+    Object.assign(window.starMap, starMap);
+    
+    console.log('Star Map module loaded and exposed to window object');
     
     // 触发模块加载完成事件
-    const event = new CustomEvent('starMapLoaded');
-    window.dispatchEvent(event);
+    try {
+        const event = new CustomEvent('starMapLoaded');
+        window.dispatchEvent(event);
+        console.log('starMapLoaded event dispatched');
+    } catch (e) {
+        console.error('Failed to dispatch starMapLoaded event:', e);
+    }
 }
+
+// 不再需要export语句，因为以非模块方式引入
