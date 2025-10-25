@@ -1081,6 +1081,29 @@
         // 直接初始化地图和用户信息
         initUserInfo();
         initMap();
+        
+        // 确保添加标记模态框默认是隐藏的，并添加多重保障
+        window.addEventListener('load', function() {
+            const addMarkerModal = document.getElementById('add-marker-modal');
+            if (addMarkerModal) {
+                // 强制隐藏模态框
+                addMarkerModal.classList.add('hidden');
+                // 重置模态框内容状态
+                const modalContent = document.getElementById('modal-content');
+                if (modalContent) {
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    modalContent.classList.add('scale-95', 'opacity-0');
+                }
+            }
+        });
+        
+        // 立即执行一次隐藏，确保页面加载过程中不会显示
+        setTimeout(function() {
+            const addMarkerModal = document.getElementById('add-marker-modal');
+            if (addMarkerModal) {
+                addMarkerModal.classList.add('hidden');
+            }
+        }, 0);
     </script>
 </body>
 </html>
