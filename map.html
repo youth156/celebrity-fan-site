@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="star-map-title">星光地图 - BoomRaveewit粉丝社区</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入Mapbox GL JS用于地图功能 -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <!-- 引入地图功能模块 -->
+    <script src="map.js" defer></script>
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script src="./tailwind-fix.js"></script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+            .transition-custom {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            .backdrop-blur-sm {
+                backdrop-filter: blur(4px);
+            }
+            .scrollbar-hide {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            /* 卡片基础样式 */
+            .card {
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 24px -8px rgba(108, 56, 255, 0.15);
+            }
+        }
+    </style>
+    <!-- 预加载字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* 地图自定义样式 */
+        .mapboxgl-popup-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .mapboxgl-popup-close-button {
+            font-size: 20px;
+            color: #666;
+        }
+        /* 星空效果 */
+        .star-animation {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        /* 加载动画 */
+        .loader {
+            border-top-color: #6C38FF;
+            animation: spinner 0.8s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-light to-gray-100 font-sans text-gray-800 min-h-screen">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/95 backdrop-blur-sm shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fa fa-star text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-display font-bold text-dark">BoomRaveewit</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html#home" class="text-dark hover:text-primary transition-custom font-medium" data-lang-key="home">首页</a>
+                    <a href="index.html#about" class="text-dark hover:text-primary transition-custom font-medium" data-lang-key="about">关于</a>
+                    <a href="index.html#works" class="text-dark hover:text-primary transition-custom font-medium" data-lang-key="works">作品</a>
+                    <a href="index.html#gallery" class="text-dark hover:text-primary transition-custom font-medium" data-lang-key="gallery">照片</a>
+                    <a href="index.html#news" class="text-dark hover:text-primary transition-custom font-medium" data-lang-key="news">动态</a>
+                    <a href="community.html" class="text-dark hover:text-primary transition-custom font-medium" data-lang-key="community">粉丝社区</a>
+                       
+                    <!-- 语言切换下拉菜单 -->
+                    <div id="language-selector" class="relative ml-6">
+                        <button id="language-btn" class="flex items-center space-x-2 bg-gray-100 hover:bg-primary text-gray-800 hover:text-white px-3 py-1.5 rounded-full transition-custom">
+                            <i class="fa fa-globe"></i>
+                            <span id="current-language">中文</span>
+                            <i class="fa fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 hidden">
+                            <a href="#" data-lang="zh" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇨🇳</span> 中文
+                            </a>
+                            <a href="#" data-lang="en" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇬🇧</span> English
+                            </a>
+                            <a href="#" data-lang="th" class="block px-4 py-2 hover:bg-primary/10 text-gray-800 transition-custom">
+                                <span class="flag-icon">🇹🇭</span> ภาษาไทย
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-dark text-2xl focus:outline-none">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>            
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-4 space-y-4">
+                <a href="index.html#home" class="block text-dark hover:text-primary py-2 transition-custom" data-lang-key="home">首页</a>
+                <a href="index.html#about" class="block text-dark hover:text-primary py-2 transition-custom" data-lang-key="about">关于</a>
+                <a href="index.html#works" class="block text-dark hover:text-primary py-2 transition-custom" data-lang-key="works">作品</a>
+                <a href="index.html#gallery" class="block text-dark hover:text-primary py-2 transition-custom" data-lang-key="gallery">照片</a>
+                <a href="index.html#news" class="block text-dark hover:text-primary py-2 transition-custom" data-lang-key="news">动态</a>
+                <a href="community.html" class="block bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg font-medium transition-custom text-center mt-2" data-lang-key="community">粉丝社区</a>
+                
+                <!-- 移动端语言切换 -->
+                <div class="pt-2 border-t border-gray-200">
+                    <button id="mobile-lang-btn" class="flex items-center justify-between w-full text-dark py-2">
+                        <span><i class="fa fa-globe mr-2"></i> <span data-lang-key="language">语言</span></span>
+                        <i class="fa fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="mobile-lang-menu" class="hidden mt-2 space-y-1">
+                        <a href="#" data-lang="zh" class="block px-4 py-2 hover:bg-primary/10 text-dark transition-custom">
+                            <span class="flag-icon">🇨🇳</span> 中文
+                        </a>
+                        <a href="#" data-lang="en" class="block px-4 py-2 hover:bg-primary/10 text-dark transition-custom">
+                            <span class="flag-icon">🇬🇧</span> English
+                        </a>
+                        <a href="#" data-lang="th" class="block px-4 py-2 hover:bg-primary/10 text-dark transition-custom">
+                            <span class="flag-icon">🇹🇭</span> ภาษาไทย
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 页面内容 -->
+    <main class="pt-24 pb-16">
+        <div class="container mx-auto px-4">
+            <!-- 返回社区按钮 -->
+            <a href="community.html" class="inline-flex items-center bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-full shadow-sm transition-custom mb-6">
+                <i class="fa fa-arrow-left mr-2"></i>
+                <span>返回社区</span>
+            </a>
+
+            <!-- 星光地图标题和统计 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 card mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <h3 class="text-2xl font-bold flex items-center" data-lang-key="star-map-description">
+                        <i class="fa fa-globe text-primary mr-2"></i> 星光地图 - 与全球粉丝连接
+                    </h3>
+                    <button id="add-marker-btn" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full font-medium transition-custom transform hover:scale-105 shadow-lg shadow-primary/20">
+                        <i class="fa fa-plus mr-2"></i>
+                        <span data-lang-key="add-marker">添加标记</span>
+                    </button>
+                </div>
+                
+                <!-- 粉丝统计 -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-gray-50 rounded-xl p-4 text-center transition-all duration-300 hover:shadow-md hover:bg-primary/5">
+                        <div class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center">
+                            <i class="fa fa-users text-primary text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-primary" id="total-fans">0</p>
+                        <p class="text-gray-500" data-lang-key="total-fans">总粉丝数</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center transition-all duration-300 hover:shadow-md hover:bg-secondary/5">
+                        <div class="w-12 h-12 mx-auto mb-2 bg-secondary/10 rounded-full flex items-center justify-center">
+                            <i class="fa fa-map-marker text-secondary text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-secondary" id="total-markers">0</p>
+                        <p class="text-gray-500" data-lang-key="total-markers">地图标记</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center transition-all duration-300 hover:shadow-md hover:bg-green-500/5">
+                        <div class="w-12 h-12 mx-auto mb-2 bg-green-500/10 rounded-full flex items-center justify-center">
+                            <i class="fa fa-building text-green-500 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-green-500" id="total-cities">0</p>
+                        <p class="text-gray-500" data-lang-key="total-cities">覆盖城市</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center transition-all duration-300 hover:shadow-md hover:bg-blue-500/5">
+                        <div class="w-12 h-12 mx-auto mb-2 bg-blue-500/10 rounded-full flex items-center justify-center">
+                            <i class="fa fa-flag text-blue-500 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-blue-500" id="total-countries">0</p>
+                        <p class="text-gray-500" data-lang-key="total-countries">覆盖国家</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 地图容器 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden card relative transition-all duration-500 hover:shadow-xl">
+                <div id="map" class="w-full h-[80vh] min-h-[600px]"></div>
+                <!-- 地图加载状态 -->
+                <div id="map-loading" class="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-10 hidden transition-opacity duration-500">
+                    <div class="w-16 h-16 border-4 border-gray-200 border-t-primary rounded-full animate-spin mb-4"></div>
+                    <p class="text-gray-600 mt-4 text-lg" data-lang-key="loading">地图加载中...</p>
+                    <p class="text-gray-400 text-sm mt-2">连接全球粉丝，点亮明星梦想</p>
+                </div>
+                
+                <!-- 地图操作按钮 -->
+                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg flex gap-4 z-5 transition-all duration-300 hover:bg-white">
+                    <button id="add-marker-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <i class="fa fa-plus"></i>
+                        <span>添加标记</span>
+                    </button>
+                    <button id="my-location-btn" class="flex items-center gap-1 px-3 py-2 bg-white text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition-all duration-300 shadow-sm transform hover:-translate-y-0.5">
+                        <i class="fa fa-location-arrow"></i>
+                        <span>我的位置</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 移动端底部导航 -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 lg:hidden z-40">
+        <div class="flex justify-around items-center h-16 overflow-hidden">
+            <a href="community.html" class="flex flex-col items-center justify-center text-gray-500">
+                <i class="fa fa-comments text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="message-wall">留言</span>
+            </a>
+            <a href="map.html" class="flex flex-col items-center justify-center text-primary">
+                <i class="fa fa-map-marker text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="star-map">地图</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center text-gray-500">
+                <i class="fa fa-bell text-xl"></i>
+                <span class="text-xs mt-1">通知</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center text-gray-500">
+                <i class="fa fa-user text-xl"></i>
+                <span class="text-xs mt-1">我的</span>
+            </a>
+            <a href="https://youth156.github.io/pingtu/" target="_blank" class="flex flex-col items-center justify-center text-gray-500 hover:text-primary transition-colors">
+                <i class="fa fa-puzzle-piece text-xl"></i>
+                <span class="text-xs mt-1">拼图</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 添加标记模态框 -->
+    <div id="add-marker-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-xl font-bold" data-lang-key="add-marker">添加位置标记</h3>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <label for="marker-username" class="block text-sm font-medium text-gray-700 mb-1">昵称</label>
+                    <input type="text" id="marker-username" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-custom" placeholder="请输入你的昵称" required>
+                </div>
+                <div class="mb-4">
+                    <label for="marker-city" class="block text-sm font-medium text-gray-700 mb-1">城市</label>
+                    <input type="text" id="marker-city" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-custom" placeholder="请输入你的城市" required>
+                </div>
+                <div class="mb-4">
+                    <label for="marker-country" class="block text-sm font-medium text-gray-700 mb-1">国家</label>
+                    <input type="text" id="marker-country" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-custom" placeholder="请输入你的国家" required>
+                </div>
+                <div class="mb-6">
+                    <label for="marker-message" class="block text-sm font-medium text-gray-700 mb-1">留言（可选）</label>
+                    <textarea id="marker-message" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-custom resize-none" placeholder="分享你对Boom的喜爱..."></textarea>
+                </div>
+                <button id="save-marker-btn" class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-medium transition-custom transform hover:scale-[1.02]">
+                    保存标记
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航菜单切换
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // 移动端语言菜单切换
+            const mobileLangBtn = document.getElementById('mobile-lang-btn');
+            const mobileLangMenu = document.getElementById('mobile-lang-menu');
+            
+            if (mobileLangBtn && mobileLangMenu) {
+                mobileLangBtn.addEventListener('click', function() {
+                    mobileLangMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // 语言选择器切换
+            const languageBtn = document.getElementById('language-btn');
+            const languageDropdown = document.getElementById('language-dropdown');
+            
+            if (languageBtn && languageDropdown) {
+                languageBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    languageDropdown.classList.toggle('hidden');
+                });
+            }
+            
+            // 点击页面其他地方关闭下拉菜单
+            document.addEventListener('click', function() {
+                if (languageDropdown && !languageDropdown.classList.contains('hidden')) {
+                    languageDropdown.classList.add('hidden');
+                }
+                if (mobileLangMenu && !mobileLangMenu.classList.contains('hidden')) {
+                    mobileLangMenu.classList.add('hidden');
+                }
+            });
+            
+            // 防止点击下拉菜单本身时关闭
+            if (languageDropdown) {
+                languageDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            if (mobileLangMenu) {
+                mobileLangMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
