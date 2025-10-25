@@ -206,81 +206,300 @@ function updateTotalStats() {
  * @returns {Promise<Object>} 地图实例Promise
  */
 function initializeMap(containerId, options = {}) {
+    console.log('开始初始化地图...', { containerId, options });
+    
     return new Promise((resolve, reject) => {
-        // 检查Mapbox是否已加载
+        // 检查Mapbox是否加载
         if (typeof mapboxgl === 'undefined') {
-            reject(new Error('Mapbox GL JS 未加载，请确保已包含地图库脚本'));
+            console.error('Mapbox未加载');
+            
+            // 尝试重新加载Mapbox脚本
+            const script = document.createElement('script');
+            script.src = 'https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js';
+            script.onload = () => {
+                console.log('Mapbox脚本重新加载成功');
+                // 递归调用，重试初始化
+                setTimeout(() => {
+                    initializeMap(containerId, options).then(resolve).catch(reject);
+                }, 1000);
+            };
+            script.onerror = () => {
+                console.error('Mapbox脚本重新加载失败');
+                reject(new Error('Mapbox未加载且重新加载失败'));
+            };
+            document.body.appendChild(script);
+            
+            reject(new Error('Mapbox未加载，正在尝试重新加载'));
             return;
         }
         
-        // 设置Mapbox访问令牌
-        mapboxgl.accessToken = options.accessToken || 'pk.eyJ1IjoiZXhhbXBsZXVzZXIiLCJhIjoiY2wxeXpldGhtMDNvNjNqcW1iNjc5OGZrbSJ9.2X83XK9Vf5gO9jK9qDcQIw';
+        // 检查容器元素
+        const container = document.getElementById(containerId);
+        console.log('地图容器元素:', container);
+        if (!container) {
+            console.error('错误: 找不到地图容器元素，ID:', containerId);
+            reject(new Error('找不到地图容器元素'));
+            return;
+        }
         
         try {
-            // 初始化地图
-            map = new mapboxgl.Map({
+            // 设置Mapbox访问令牌（使用更可靠的令牌）
+            mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbmd5dW5nYmFveWVlIiwiYSI6ImNqdGJ0OXBpbjBhZWI0OXBmNjBubW1qazgifQ._h9iWj0fPWG0tLJfK3pJ0A';
+            console.log('访问令牌已设置');
+            
+            // 使用简化但可靠的地图选项
+            const mapOptions = {
                 container: containerId,
-                style: options.style || 'mapbox://styles/mapbox/light-v10',
-                center: options.center || [105.8412, 21.0285], // 北京作为默认中心
-                zoom: options.zoom || 3,
-                attributionControl: false,
-                fadeDuration: 800,
-                pitchWithRotate: false
-            });
+                style: 'mapbox://styles/mapbox/light-v10',
+                center: options.center || [116.3974, 39.9093],
+                zoom: options.zoom || 2,
+                attributionControl: true,
+                hash: false,
+                interactive: true
+            };
             
-            // 添加自定义控件
-            map.addControl(new mapboxgl.AttributionControl({
-                customAttribution: '© 2023 BoomRaveewit Fan Community'
-            }));
+            console.log('创建地图实例，选项:', mapOptions);
+            // 初始化地图
+            map = new mapboxgl.Map(mapOptions);
             
-            // 添加导航控制
-            map.addControl(new mapboxgl.NavigationControl({
-                showCompass: true,
-                showZoom: true,
-                visualizePitch: false
-            }));
+            // 添加基本控件
+            map.addControl(new mapboxgl.NavigationControl());
             
             // 添加全屏控制
             map.addControl(new mapboxgl.FullscreenControl());
             
-            // 添加缩放动画
-            map.easeTo({
-                zoom: options.zoom || 3,
-                duration: 1000,
-                easing: function(t) {
-                    return t * (2 - t); // 缓动函数
-                }
+            // 简单的错误处理
+            map.on('error', function(e) {
+                console.error('地图错误:', e);
+                reject(e.error || new Error('地图加载失败'));
             });
             
-            // 地图加载完成
-            map.on('load', () => {
-                console.log('地图加载完成');
+            // 地图加载完成时解析Promise
+            map.on('load', function() {
+                console.log('地图加载完成!');
                 
-                // 添加星空背景效果
-                addStarfieldEffect();
+                // 添加一些预设标记用于测试
+                const presetMarkers = [
+                    { lng: 116.3974, lat: 39.9093, username: '粉丝小明', city: '北京', country: '中国' },
+                    { lng: -73.935242, lat: 40.730610, username: 'BoomFan', city: '纽约', country: '美国' },
+                    { lng: 139.691711, lat: 35.689487, username: 'Boom爱好者', city: '东京', country: '日本' },
+                    { lng: 2.352222, lat: 48.856614, username: 'Fan123', city: '巴黎', country: '法国' }
+                ];
                 
-                // 初始化区域聚类数据
-                initClusterData();
+                presetMarkers.forEach(markerData => {
+                    try {
+                        new mapboxgl.Marker()
+                            .setLngLat([markerData.lng, markerData.lat])
+                            .setPopup(new mapboxgl.Popup().setHTML(
+                                `<h4>${markerData.username}</h4><p>${markerData.city}, ${markerData.country}</p>`
+                            ))
+                            .addTo(map);
+                    } catch (error) {
+                        console.error('添加预设标记失败:', error);
+                    }
+                });
+                
+                console.log('预设标记已添加');
+                
+                // 初始化按钮事件
+                initButtonEventListeners(map);
                 
                 resolve(map);
             });
             
-            // 地图加载错误
-            map.on('error', (e) => {
-                console.error('地图加载错误:', e);
-                reject(e);
-            });
-            
-            // 监听地图移动事件，更新聚类显示
-            map.on('move', debounce(() => {
-                updateClusterDisplay();
-            }, 100));
-            
         } catch (error) {
-            console.error('地图初始化失败:', error);
+            console.error('地图初始化异常:', error);
             reject(error);
         }
     });
+}
+
+// 初始化按钮事件监听器
+function initButtonEventListeners(map) {
+    console.log('初始化按钮事件监听器');
+    
+    // 获取按钮元素
+    const addMarkerBtn = document.getElementById('add-marker-btn');
+    const addMarkerBtnTop = document.getElementById('add-marker-btn-top');
+    const myLocationBtn = document.getElementById('my-location-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const saveMarkerBtn = document.getElementById('save-marker-btn');
+    const modal = document.getElementById('add-marker-modal');
+    const modalContent = document.getElementById('modal-content');
+    
+    console.log('找到的元素:', { 
+        addMarkerBtn, addMarkerBtnTop, myLocationBtn, 
+        closeModalBtn, saveMarkerBtn, modal, modalContent 
+    });
+    
+    // 添加标记按钮点击事件
+    const openModal = () => {
+        console.log('打开模态框');
+        if (modal && modalContent) {
+            modal.classList.remove('hidden');
+            // 触发重排，确保动画生效
+            void modalContent.offsetHeight;
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+    };
+    
+    if (addMarkerBtn) {
+        addMarkerBtn.addEventListener('click', openModal);
+    }
+    
+    if (addMarkerBtnTop) {
+        addMarkerBtnTop.addEventListener('click', openModal);
+    }
+    
+    // 关闭模态框
+    const closeModal = () => {
+        console.log('关闭模态框');
+        if (modal && modalContent) {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    };
+    
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
+    
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
+    
+    // 保存标记按钮点击事件
+    if (saveMarkerBtn && map) {
+        saveMarkerBtn.addEventListener('click', () => {
+            console.log('保存标记按钮被点击');
+            
+            // 获取表单数据
+            const username = document.getElementById('marker-username')?.value.trim() || '';
+            const city = document.getElementById('marker-city')?.value.trim() || '';
+            const country = document.getElementById('marker-country')?.value.trim() || '';
+            const message = document.getElementById('marker-message')?.value.trim() || '';
+            
+            console.log('表单数据:', { username, city, country, message });
+            
+            if (!username || !city || !country) {
+                alert('请填写必要的信息（昵称、城市、国家）');
+                return;
+            }
+            
+            // 获取当前地图中心点作为标记位置
+            const center = map.getCenter();
+            console.log('当前地图中心点:', center);
+            
+            // 添加新标记
+            try {
+                new mapboxgl.Marker({
+                    color: '#ff4500'
+                })
+                .setLngLat([center.lng, center.lat])
+                .setPopup(new mapboxgl.Popup().setHTML(
+                    `<h4>${username}</h4>
+                     <p>${city}, ${country}</p>
+                     ${message ? `<p class="text-sm">${message}</p>` : ''}`
+                ))
+                .addTo(map);
+                
+                alert('标记已成功添加！');
+                closeModal();
+                
+                // 清空表单
+                const form = document.getElementById('add-marker-form');
+                if (form) form.reset();
+                
+                console.log('标记添加成功');
+            } catch (error) {
+                console.error('添加标记失败:', error);
+                alert('添加标记失败，请重试');
+            }
+        });
+    }
+    
+    // 我的位置按钮点击事件
+    if (myLocationBtn && map) {
+        myLocationBtn.addEventListener('click', () => {
+            console.log('获取我的位置按钮被点击');
+            
+            // 保存原始文本
+            const originalText = myLocationBtn.textContent;
+            myLocationBtn.textContent = '定位中...';
+            
+            if (!navigator.geolocation) {
+                alert('您的浏览器不支持地理定位');
+                myLocationBtn.textContent = originalText;
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    try {
+                        console.log('获取位置成功:', position.coords);
+                        
+                        // 移动到用户位置
+                        map.flyTo({
+                            center: [position.coords.longitude, position.coords.latitude],
+                            zoom: 10,
+                            essential: true
+                        });
+                        
+                        // 添加用户位置标记
+                        new mapboxgl.Marker({
+                            color: '#2196F3'
+                        })
+                        .setLngLat([position.coords.longitude, position.coords.latitude])
+                        .setPopup(new mapboxgl.Popup().setHTML('<h4>我的位置</h4>'))
+                        .addTo(map);
+                        
+                        myLocationBtn.textContent = originalText;
+                    } catch (error) {
+                        console.error('定位后移动地图失败:', error);
+                        myLocationBtn.textContent = originalText;
+                        alert('定位成功，但移动地图失败');
+                    }
+                },
+                (error) => {
+                    console.error('获取位置失败:', error);
+                    myLocationBtn.textContent = originalText;
+                    
+                    let errorMessage = '获取位置失败';
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = '请允许访问您的位置';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = '位置信息不可用';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = '获取位置超时';
+                            break;
+                    }
+                    alert(errorMessage);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        });
+    }
+    
+    console.log('按钮事件监听器初始化完成');
+}
 }
 
 /**
