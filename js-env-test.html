@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript环境测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        .test-container { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; }
+        .test-title { font-weight: bold; margin-bottom: 10px; }
+        .success { color: green; }
+        .error { color: red; }
+        .debug-info { background: #f5f5f5; padding: 10px; border-radius: 4px; margin-top: 10px; font-family: monospace; font-size: 14px; }
+        #output { margin-top: 20px; }
+        .log-entry { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript环境测试</h1>
+    
+    <div id="output"></div>
+    
+    <div class="test-container">
+        <div class="test-title">DOM操作测试</div>
+        <div id="dom-test-result" class="debug-info">测试进行中...</div>
+    </div>
+    
+    <div class="test-container">
+        <div class="test-title">Promise测试</div>
+        <div id="promise-test-result" class="debug-info">测试进行中...</div>
+    </div>
+    
+    <div class="test-container">
+        <div class="test-title">事件处理测试</div>
+        <div id="event-test-result" class="debug-info">测试进行中...</div>
+        <button id="test-button">点击测试</button>
+    </div>
+    
+    <div class="test-container">
+        <div class="test-title">全局对象测试</div>
+        <div id="global-test-result" class="debug-info">测试进行中...</div>
+    </div>
+    
+    <script>
+        // 日志函数
+        function log(message, isError = false) {
+            const output = document.getElementById('output');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry ' + (isError ? 'error' : '');
+            logEntry.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            output.appendChild(logEntry);
+            console.log(message);
+        }
+        
+        // 设置测试结果
+        function setTestResult(elementId, success, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.className = 'debug-info ' + (success ? 'success' : 'error');
+                element.textContent = message;
+            }
+        }
+        
+        // 开始测试
+        log('开始JavaScript环境测试');
+        
+        // 1. DOM操作测试
+        try {
+            log('开始DOM操作测试');
+            const testElement = document.createElement('div');
+            testElement.id = 'temp-test-element';
+            testElement.textContent = '这是一个测试元素';
+            testElement.style.color = 'blue';
+            document.body.appendChild(testElement);
+            
+            const foundElement = document.getElementById('temp-test-element');
+            if (foundElement && foundElement.textContent === '这是一个测试元素') {
+                setTestResult('dom-test-result', true, 'DOM操作测试成功：元素创建、属性设置和查询都正常工作。');
+                log('DOM操作测试成功');
+            } else {
+                setTestResult('dom-test-result', false, 'DOM操作测试失败：无法正确创建或查询元素。');
+                log('DOM操作测试失败', true);
+            }
+        } catch (error) {
+            setTestResult('dom-test-result', false, 'DOM操作测试异常：' + error.message);
+            log('DOM操作测试异常: ' + error.message, true);
+        }
+        
+        // 2. Promise测试
+        log('开始Promise测试');
+        const promiseTest = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                try {
+                    const testValue = 42;
+                    if (testValue === 42) {
+                        resolve('Promise执行成功，值为：' + testValue);
+                    } else {
+                        reject('Promise执行失败，值不匹配');
+                    }
+                } catch (error) {
+                    reject('Promise内部异常：' + error.message);
+                }
+            }, 1000);
+        });
+        
+        promiseTest
+            .then(result => {
+                setTestResult('promise-test-result', true, result);
+                log('Promise测试成功: ' + result);
+            })
+            .catch(error => {
+                setTestResult('promise-test-result', false, error);
+                log('Promise测试失败: ' + error, true);
+            });
+        
+        // 3. 事件处理测试
+        try {
+            log('开始事件处理测试');
+            const testButton = document.getElementById('test-button');
+            if (testButton) {
+                testButton.addEventListener('click', function() {
+                    setTestResult('event-test-result', true, '事件处理测试成功：按钮点击事件被正确触发！');
+                    log('按钮点击事件触发');
+                });
+                setTestResult('event-test-result', true, '事件监听已添加，请点击按钮测试');
+                log('事件监听设置成功');
+            } else {
+                setTestResult('event-test-result', false, '无法找到测试按钮');
+                log('找不到测试按钮', true);
+            }
+        } catch (error) {
+            setTestResult('event-test-result', false, '事件处理测试异常：' + error.message);
+            log('事件处理测试异常: ' + error.message, true);
+        }
+        
+        // 4. 全局对象测试
+        try {
+            log('开始全局对象测试');
+            
+            // 测试window对象
+            log('window对象类型: ' + typeof window);
+            log('document对象类型: ' + typeof document);
+            log('navigator对象类型: ' + typeof navigator);
+            
+            // 测试自定义全局对象
+            window.TestGlobalObject = window.TestGlobalObject || {};
+            window.TestGlobalObject.testMethod = function() {
+                return '测试方法执行成功';
+            };
+            
+            const testResult = window.TestGlobalObject.testMethod();
+            if (testResult === '测试方法执行成功') {
+                setTestResult('global-test-result', true, '全局对象测试成功：自定义全局对象和方法都正常工作。');
+                log('全局对象测试成功');
+            } else {
+                setTestResult('global-test-result', false, '全局对象测试失败：无法正确执行全局方法。');
+                log('全局对象测试失败', true);
+            }
+        } catch (error) {
+            setTestResult('global-test-result', false, '全局对象测试异常：' + error.message);
+            log('全局对象测试异常: ' + error.message, true);
+        }
+        
+        // 测试完成信息
+        log('所有测试初始化完成');
+    </script>
+</body>
+</html>

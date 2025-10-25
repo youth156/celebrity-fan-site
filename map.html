@@ -3,147 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星光地图 - Boom明星粉丝</title>
+    <title>Boom粉丝地图</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #3a86ff;
-            --secondary: #8338ec;
-            --dark: #1a1a2e;
-            --light: #eaeaea;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: var(--light);
-            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f8f9fa;
         }
         
-        /* 星光地图特效样式 */
-        .star-map-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-        }
-        
-        /* 星星闪烁动画 */
-        .star-blink {
-            animation: twinkle 2s infinite ease-in-out;
-        }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-        
-        /* 星星标记样式 */
-        .star-marker {
-            background-color: rgba(255, 215, 0, 0.9);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 15px 2px rgba(255, 215, 0, 0.8);
-            cursor: pointer;
-        }
-        
-        /* 标记图片样式 */
-        .marker-image {
-            max-width: 150px;
-            max-height: 120px;
-            border-radius: 4px;
-            margin-top: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        /* 地图容器样式增强 */
-        #map {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        /* 星空背景效果 */
-        .star-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
-            background-size: 550px 550px, 350px 350px, 250px 250px;
-            background-position: 0 0, 40px 60px, 130px 270px;
-            z-index: 0;
-        }
-        
-        /* 顶部导航栏 */
         .navbar {
-            position: relative;
-            z-index: 100;
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .navbar-brand {
-            font-weight: 700;
-            color: #ffd700 !important;
-            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff4757;
         }
         
-        .nav-link {
-            color: var(--light) !important;
-            transition: all 0.3s ease;
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 70px);
         }
         
-        .nav-link:hover {
-            color: #ffd700 !important;
-        }
-        
-        /* 统计卡片 */
-        .stats-card {
-            background: rgba(26, 26, 46, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        
-        .stats-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .stats-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #ffd700;
-            margin-bottom: 10px;
-        }
-        
-        .stats-label {
-            color: var(--light);
-            font-size: 1rem;
+        #map {
+            width: 100%;
+            height: 100%;
         }
         
         /* 地图控制按钮 */
         .map-controls {
             position: absolute;
-            top: 100px;
+            top: 20px;
             right: 20px;
             z-index: 10;
             display: flex;
@@ -152,74 +47,108 @@
         }
         
         .control-btn {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: none;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--dark);
-            font-size: 1.2rem;
+            background: white;
+            color: #333;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
         }
         
         .control-btn:hover {
-            background: #ffd700;
+            background: #ff4757;
+            color: white;
             transform: scale(1.1);
         }
         
-        .control-btn:active {
-            transform: scale(0.95);
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
         
-        /* 添加标记按钮样式 */
-        .add-marker-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-title {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .close-btn {
+            background: none;
             border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: 600;
+            font-size: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.4);
+            color: #999;
         }
         
-        .add-marker-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(58, 134, 255, 0.6);
+        .close-btn:hover {
+            color: #ff4757;
         }
         
-        /* 模态框和表单样式已移除，现在直接获取用户位置添加标记 */
+        /* 标记样式 */
+        .fan-marker {
+            background: #ff4757;
+            border: 2px solid white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,71,87,0.5);
+        }
         
         /* 加载指示器 */
-        .loading-indicator {
+        .loading {
+            display: none;
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(26, 26, 46, 0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: rgba(255,255,255,0.8);
+            z-index: 5;
             justify-content: center;
-            z-index: 100;
-            backdrop-filter: blur(5px);
+            align-items: center;
         }
         
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            border-top: 3px solid #ffd700;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #ff4757;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
         }
         
         @keyframes spin {
@@ -227,76 +156,29 @@
             100% { transform: rotate(360deg); }
         }
         
-        .loading-text {
-            color: var(--light);
-            font-size: 1.1rem;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 15px;
-            }
-            
-            .map-controls {
-                top: 90px;
-                right: 10px;
-            }
-            
-            .control-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-            
-            .stats-card {
-                padding: 15px;
-            }
-            
-            .stats-number {
-                font-size: 2rem;
-            }
-            
-            .modal-content {
-                padding: 20px;
-                width: 95%;
-            }
-        
-        /* 提示消息样式 */
+        /* 提示消息 */
         .toast {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
             z-index: 2000;
-            min-width: 250px;
-            text-align: center;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            animation: slideUp 0.3s ease;
+            display: none;
         }
-        
-        @keyframes slideUp {
-            from {
-                transform: translateX(-50%) translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
     </style>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
 </head>
 <body>
-    <!-- 星空背景 -->
-    <div class="star-bg"></div>
-    
     <!-- 顶部导航栏 -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <i class="fa fa-star mr-2"></i>Boom星光地图
+                <i class="fa fa-star mr-2"></i>Boom明星粉丝
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -307,7 +189,7 @@
                         <a class="nav-link" href="index.html">首页</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="map.html">星光地图</a>
+                        <a class="nav-link" href="map.html">粉丝地图</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="gallery.html">照片墙</a>
@@ -315,343 +197,217 @@
                     <li class="nav-item">
                         <a class="nav-link" href="news.html">最新动态</a>
                     </li>
-                    <li class="nav-item">
-                        <button id="add-marker-btn-top" class="add-marker-btn ml-3">
-                            <i class="fa fa-plus mr-2"></i>我的位置
-                        </button>
-                    </li>
                 </ul>
             </div>
         </div>
     </nav>
     
-    <!-- 统计信息卡片 -->
-    <div class="container mt-4 mb-4">
-        <div class="row justify-content-center">
-            <div class="col-md-3">
-                <div class="stats-card">
-                    <div class="stats-number" id="marker-count">0</div>
-                    <div class="stats-label">粉丝标记</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stats-card">
-                    <div class="stats-number" id="country-count">0</div>
-                    <div class="stats-label">覆盖国家/地区</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <!-- 地图容器 -->
-    <div class="star-map-container">
-        <!-- 地图元素 -->
+    <div class="map-container">
         <div id="map"></div>
-        
-        <!-- 加载指示器 -->
-        <div id="map-loading" class="loading-indicator">
+        <div id="map-loading" class="loading">
             <div class="loading-spinner"></div>
-            <div class="loading-text">正在加载星光地图...</div>
         </div>
         
         <!-- 地图控制按钮 -->
         <div class="map-controls">
-            <button id="my-location-btn" class="control-btn" title="我的位置">
-                <i class="fa fa-map-marker"></i>
-            </button>
-            <button id="add-marker-btn" class="control-btn" title="添加位置">
+            <button id="add-fan-btn" class="control-btn" title="添加我的位置">
                 <i class="fa fa-plus"></i>
             </button>
+            <button id="my-location-btn" class="control-btn" title="定位到我">
+                <i class="fa fa-map-marker"></i>
+            </button>
         </div>
     </div>
     
-    <!-- 模态框已移除，现在直接获取用户位置添加标记 -->
-    
-    <!-- 移动端语言切换菜单 -->
-    <div class="mobile-language-menu fixed bottom-0 left-0 w-full bg-dark text-white py-3 px-4 z-50 hidden">
-        <div class="d-flex justify-content-between items-center mb-3">
-            <h4 class="mb-0">选择语言</h4>
-            <button id="close-language-menu" class="text-white"><i class="fa fa-times"></i></button>
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-            <button class="language-btn p-2 border rounded">中文</button>
-            <button class="language-btn p-2 border rounded">English</button>
-            <button class="language-btn p-2 border rounded">日本語</button>
+    <!-- 添加粉丝标记模态框 -->
+    <div id="add-fan-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">分享你的位置</h3>
+                <button id="close-modal-btn" class="close-btn">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <form id="fan-form">
+                <div class="form-group">
+                    <label for="fan-name">昵称 *</label>
+                    <input type="text" id="fan-name" class="form-control" placeholder="请输入你的昵称" required>
+                </div>
+                <div class="form-group">
+                    <label for="fan-city">城市 *</label>
+                    <input type="text" id="fan-city" class="form-control" placeholder="请输入你的城市" required>
+                </div>
+                <div class="form-group">
+                    <label for="fan-message">留言</label>
+                    <textarea id="fan-message" class="form-control" rows="2" placeholder="想对Boom说的话..."></textarea>
+                </div>
+                <button type="button" id="save-fan-btn" class="btn btn-primary btn-block">提交</button>
+            </form>
         </div>
     </div>
     
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+    <!-- 提示消息 -->
+    <div id="toast-message" class="toast"></div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="auth.js"></script>
-    
     <script>
         // 全局变量
         let map = null;
         let markers = [];
-        let currentUser = null;
+        
+        // DOM元素
+        const mapLoading = document.getElementById('map-loading');
+        const addFanModal = document.getElementById('add-fan-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const addFanBtn = document.getElementById('add-fan-btn');
+        const myLocationBtn = document.getElementById('my-location-btn');
+        const saveFanBtn = document.getElementById('save-fan-btn');
+        const toastMessage = document.getElementById('toast-message');
         
         // 显示加载指示器
-        const mapLoading = document.getElementById('map-loading');
-        if (mapLoading) {
-            mapLoading.classList.remove('hidden');
-        }
-        
-        // 显示调试信息
-        function logDebug(message, type = 'info') {
-            console.log(`[地图] ${type.toUpperCase()}: ${message}`);
-        }
-        
-        // 初始化用户信息
-        function initUserInfo() {
-            try {
-                currentUser = getCurrentUser();
-                logDebug(`用户登录状态: ${currentUser ? '已登录' : '未登录'}`);
-                
-                // 更新昵称输入框
-                const usernameInput = document.getElementById('marker-username');
-                if (usernameInput && currentUser) {
-                    usernameInput.value = currentUser.username;
-                    usernameInput.readOnly = true;
-                    usernameInput.classList.add('bg-gray-100', 'cursor-not-allowed');
-                    usernameInput.placeholder = '已自动填充登录用户名';
-                }
-            } catch (error) {
-                logDebug('初始化用户信息失败: ' + error.message, 'error');
+        function showLoading(show = true) {
+            if (mapLoading) {
+                mapLoading.style.display = show ? 'flex' : 'none';
             }
         }
         
-        // 更新统计信息
-        function updateStats() {
-            try {
-                const markerCount = markers.length;
-                const countrySet = new Set(markers.map(m => m.country));
-                const countryCount = countrySet.size;
+        // 显示提示消息
+        function showToast(message, duration = 2000) {
+            if (toastMessage) {
+                toastMessage.textContent = message;
+                toastMessage.style.display = 'block';
                 
-                if (document.getElementById('marker-count')) {
-                    document.getElementById('marker-count').textContent = markerCount;
-                }
-                if (document.getElementById('country-count')) {
-                    document.getElementById('country-count').textContent = countryCount;
-                }
-                
-                logDebug(`更新统计: ${markerCount}个标记, ${countryCount}个国家/地区`, 'success');
-            } catch (error) {
-                logDebug('更新统计信息失败: ' + error.message, 'error');
+                setTimeout(() => {
+                    toastMessage.style.display = 'none';
+                }, duration);
             }
         }
         
-        // 添加测试标记
-        function addTestMarkers() {
-            logDebug('添加测试标记...');
-            
-            const testMarkers = [
-                { lng: 116.3974, lat: 39.9093, username: '粉丝小明', city: '北京', country: '中国' },
-                { lng: -73.935242, lat: 40.730610, username: 'BoomFan', city: '纽约', country: '美国' },
-                { lng: 139.691711, lat: 35.689487, username: 'Boom爱好者', city: '东京', country: '日本' },
-                { lng: 114.109497, lat: 22.396428, username: '香港粉丝', city: '香港', country: '中国' }
-            ];
-            
-            testMarkers.forEach(marker => {
-                try {
-                    let popupContent = `
-                        <div class="p-2 min-w-[200px]">
-                            <h4 class="font-bold text-yellow-400 mb-1">${marker.username}</h4>
-                            <p class="text-sm text-gray-300">${marker.city}, ${marker.country}</p>
-                        </div>
-                    `;
-                    
-                    // 创建自定义标记元素
-                    const el = document.createElement('div');
-                    el.className = 'star-marker star-blink';
-                    
-                    new mapboxgl.Marker(el)
-                        .setLngLat([marker.lng, marker.lat])
-                        .setPopup(new mapboxgl.Popup({
-                            offset: 25,
-                            closeButton: true
-                        }).setHTML(popupContent))
-                        .addTo(map);
-                    
-                    markers.push(marker);
-                    logDebug(`已添加标记: ${marker.username}`, 'success');
-                } catch (error) {
-                    logDebug(`添加标记失败: ${error.message}`, 'error');
-                }
-            });
+        // 打开模态框
+        function openModal() {
+            if (addFanModal) {
+                addFanModal.style.display = 'flex';
+            }
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            if (addFanModal) {
+                addFanModal.style.display = 'none';
+            }
         }
         
         // 初始化地图
         function initMap() {
-            logDebug('开始初始化地图...');
             try {
-                // 获取地图DOM元素
-                const mapElement = document.getElementById('map');
-                logDebug('地图容器元素: ' + (mapElement ? '找到' : '未找到'));
-                if (!mapElement) {
-                    logDebug('地图容器元素未找到', 'error');
-                    if (mapLoading) {
-                        mapLoading.classList.add('hidden');
-                    }
-                    return;
-                }
+                showLoading(true);
                 
-                // 检查Mapbox
-                if (typeof mapboxgl === 'undefined') {
-                    throw new Error('Mapbox未加载');
-                }
-                logDebug('Mapbox已加载', 'success');
-                
-                // 设置访问令牌
+                // 设置Mapbox访问令牌
                 mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbmd5dW5nYmFveWVlIiwiYSI6ImNqdGJ0OXBpbjBhZWI0OXBmNjBubW1qazgifQ._h9iWj0fPWG0tLJfK3pJ0A';
-                logDebug('访问令牌已设置', 'success');
                 
-                // 创建地图
+                // 创建地图实例
                 map = new mapboxgl.Map({
                     container: 'map',
-                    style: 'mapbox://styles/mapbox/dark-v10', // 使用暗色主题更适合星光效果
-                    center: [116.3974, 39.9093],
-                    zoom: 2,
-                    attributionControl: true
+                    style: 'mapbox://styles/mapbox/dark-v10',
+                    center: [116.3974, 39.9093], // 北京
+                    zoom: 2
                 });
-                logDebug('地图实例已创建', 'success');
                 
-                // 添加控件
+                // 添加导航控制
                 map.addControl(new mapboxgl.NavigationControl());
-                map.addControl(new mapboxgl.FullscreenControl());
-                logDebug('已添加地图控件', 'success');
                 
-                // 地图加载完成事件
-                map.on('load', () => {
-                    logDebug('地图加载完成！', 'success');
+                // 地图加载完成
+                map.on('load', function() {
+                    console.log('地图加载完成');
+                    showLoading(false);
                     
-                    // 隐藏加载指示器
-                    if (mapLoading) {
-                        mapLoading.classList.add('hidden');
-                    }
-                    
-                    // 添加测试标记
-                    addTestMarkers();
-                    
-                    // 更新统计信息
-                    updateStats();
+                    // 添加一些示例标记
+                    addSampleMarkers();
                 });
                 
-                // 错误处理
-                map.on('error', (e) => {
-                    const errorMsg = e.error ? e.error.message : JSON.stringify(e);
-                    logDebug('地图错误: ' + errorMsg, 'error');
-                    if (mapLoading) {
-                        mapLoading.classList.add('hidden');
-                    }
-                    if (mapElement) {
-                        mapElement.innerHTML = `
-                            <div class="flex flex-col items-center justify-center h-full p-8 text-center">
-                                <h3 class="text-xl font-bold text-red-500 mb-2">地图加载失败</h3>
-                                <p class="text-gray-600 mb-4">请刷新页面重试</p>
-                            </div>
-                        `;
-                    }
+                // 地图错误处理
+                map.on('error', function(e) {
+                    console.error('地图加载错误:', e);
+                    showLoading(false);
+                    showToast('地图加载失败，请刷新页面重试');
                 });
+                
             } catch (error) {
-                logDebug('初始化错误: ' + error.message, 'error');
-                if (mapLoading) {
-                    mapLoading.classList.add('hidden');
-                }
-                const mapContainer = document.getElementById('map');
-                if (mapContainer) {
-                    mapContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-500">地图加载失败，请刷新页面重试</div>';
+                console.error('初始化地图失败:', error);
+                showLoading(false);
+                const mapElement = document.getElementById('map');
+                if (mapElement) {
+                    mapElement.innerHTML = '<div class="d-flex align-items-center justify-content-center h-100 text-danger">地图加载失败</div>';
                 }
             }
         }
         
-        const addMarkerBtnTop = document.getElementById('add-marker-btn-top');
-        if (addMarkerBtnTop) {
-            addMarkerBtnTop.addEventListener('click', function() {
-                // 检查是否已登录
-                if (!currentUser) {
-                    if (confirm('请先登录后添加标记。是否跳转到登录页？')) {
-                        window.location.href = `login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
-                    }
-                    return;
-                }
-                
-                logDebug('点击了顶部添加标记按钮');
-                addMarkerAtUserLocation();
+        // 添加示例标记
+        function addSampleMarkers() {
+            const sampleMarkers = [
+                { lng: 116.3974, lat: 39.9093, name: '北京粉丝', city: '北京' },
+                { lng: 121.4737, lat: 31.2304, name: '上海粉丝', city: '上海' },
+                { lng: -74.0060, lat: 40.7128, name: '纽约粉丝', city: '纽约' },
+                { lng: 139.6917, lat: 35.6895, name: '东京粉丝', city: '东京' }
+            ];
+            
+            sampleMarkers.forEach(marker => {
+                addMarker(marker.lng, marker.lat, marker.name, marker.city, '');
             });
         }
         
-        const addMarkerBtn = document.getElementById('add-marker-btn');
-        if (addMarkerBtn) {
-            addMarkerBtn.addEventListener('click', function() {
-                // 检查是否已登录
-                if (!currentUser) {
-                    if (confirm('请先登录后添加标记。是否跳转到登录页？')) {
-                        window.location.href = `login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
-                    }
-                    return;
+        // 添加标记
+        function addMarker(lng, lat, name, city, message) {
+            try {
+                // 创建标记元素
+                const el = document.createElement('div');
+                el.className = 'fan-marker';
+                
+                // 创建弹窗内容
+                let popupContent = `
+                    <div class="p-2 min-w-[180px]">
+                        <h4 style="font-weight: bold; color: #ff4757; margin: 0 0 5px 0">${name}</h4>
+                        <p style="font-size: 14px; margin: 0">${city}</p>
+                `;
+                
+                if (message) {
+                    popupContent += `<p style="font-size: 14px; margin-top: 5px">${message}</p>`;
                 }
                 
-                logDebug('点击了添加标记按钮');
-                addMarkerAtUserLocation();
-            });
+                popupContent += `</div>`;
+                
+                // 创建标记并添加到地图
+                new mapboxgl.Marker(el)
+                    .setLngLat([lng, lat])
+                    .setPopup(new mapboxgl.Popup({
+                        offset: 25,
+                        closeButton: true
+                    }).setHTML(popupContent))
+                    .addTo(map);
+                
+                // 保存标记信息
+                markers.push({ lng, lat, name, city, message });
+                
+                return true;
+            } catch (error) {
+                console.error('添加标记失败:', error);
+                return false;
+            }
         }
         
-        // 为我的位置按钮绑定事件
-        const myLocationBtn = document.getElementById('my-location-btn');
-        if (myLocationBtn) {
-            myLocationBtn.addEventListener('click', function() {
-                logDebug('获取我的位置');
-                
-                if (!map) {
-                    logDebug('地图未初始化', 'error');
-                    alert('地图未初始化');
-                    return;
-                }
-                
-                // 尝试获取用户位置
-                if (navigator.geolocation) {
-                    // 添加提示
-                    const statusEl = document.createElement('div');
-                    statusEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-primary text-white px-4 py-2 rounded-full text-sm z-50';
-                    statusEl.textContent = '正在获取您的位置...';
-                    document.body.appendChild(statusEl);
-                    
-                    // 禁用按钮
-                    myLocationBtn.disabled = true;
-                    
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        // 移除状态提示
-                        statusEl.remove();
-                        
-                        // 移动到用户位置
-                        map.flyTo({
-                            center: [position.coords.longitude, position.coords.latitude],
-                            zoom: 10,
-                            duration: 1000
+        // 获取用户位置
+        function getUserLocation(callback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        callback(null, {
+                            lng: position.coords.longitude,
+                            lat: position.coords.latitude
                         });
-                        logDebug('已定位到用户位置');
-                               
-                        // 添加成功提示
-                        const successEl = document.createElement('div');
-                        successEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                        successEl.textContent = '已定位到您的位置';
-                        document.body.appendChild(successEl);
-                        setTimeout(() => successEl.remove(), 2000);
-                        
-                        // 恢复按钮
-                        myLocationBtn.disabled = false;
-                    }, function(error) {
-                        // 移除状态提示
-                        statusEl.remove();
-                        
-                        logDebug(`获取位置失败: ${error.message}`, 'error');
-                        
-                        // 添加错误提示
-                        const errorEl = document.createElement('div');
-                        errorEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                        
-                        let errorMessage = '无法获取位置，请检查权限设置';
+                    },
+                    error => {
+                        let errorMessage = '获取位置失败';
                         switch (error.code) {
                             case error.PERMISSION_DENIED:
                                 errorMessage = '请允许访问您的位置';
@@ -663,374 +419,112 @@
                                 errorMessage = '获取位置超时';
                                 break;
                         }
-                        errorEl.textContent = errorMessage;
-                        document.body.appendChild(errorEl);
-                        setTimeout(() => errorEl.remove(), 2000);
-                        
-                        // 恢复按钮
-                        myLocationBtn.disabled = false;
-                    }, {
+                        callback(errorMessage);
+                    },
+                    {
                         enableHighAccuracy: true,
                         timeout: 10000,
                         maximumAge: 0
-                    });
-                } else {
-                    alert('您的浏览器不支持地理定位');
-                }
-            });
-        }
-        
-        // 模态框相关代码已完全移除
-        
-        // 保存标记按钮相关代码已移除，现在直接获取用户位置添加标记
-        
-        /**
-         * 初始化用户信息，自动填充标记表单
-         */
-        function initUserInfo() {
-            // 获取当前登录用户
-            const currentUser = getCurrentUser();
-            
-            if (currentUser && currentUser.username) {
-                // 如果用户已登录，自动填充用户名到标记表单
-                const usernameInput = document.getElementById('marker-username');
-                if (usernameInput) {
-                    usernameInput.value = currentUser.username;
-                    // 可以选择禁用用户名输入，防止用户修改
-                    usernameInput.disabled = true;
-                    usernameInput.title = '已使用您的登录用户名';
-                }
+                    }
+                );
+            } else {
+                callback('您的浏览器不支持地理定位');
             }
         }
         
-        // 确保在DOM加载完成后初始化用户信息
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initUserInfo);
-        } else {
-            initUserInfo();
-        }
-        
-        /**
-         * 直接获取用户位置并添加标记
-         */
-        function addMarkerAtUserLocation() {
-            if (!map) {
-                logDebug('地图未初始化', 'error');
-                alert('地图未初始化');
-                return;
+        // 绑定事件
+        function bindEvents() {
+            // 添加位置按钮
+            if (addFanBtn) {
+                addFanBtn.addEventListener('click', openModal);
             }
             
-            // 尝试获取用户位置
-            if (navigator.geolocation) {
-                // 添加提示
-                const statusEl = document.createElement('div');
-                statusEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-primary text-white px-4 py-2 rounded-full text-sm z-50';
-                statusEl.textContent = '正在获取您的位置...';
-                document.body.appendChild(statusEl);
-                
-                // 创建标记基本信息
-                const markerData = {
-                    id: Date.now().toString(),
-                    username: currentUser.username,
-                    city: '', // 不要求用户输入
-                    country: '', // 不要求用户输入
-                    message: '', // 不要求用户输入
-                    timestamp: new Date().toISOString(),
-                    likes: 0,
-                    likers: [],
-                    image: null
-                };
-                
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    try {
-                        // 移除状态提示
-                        statusEl.remove();
+            // 关闭模态框
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeModal);
+            }
+            
+            // 点击模态框背景关闭
+            if (addFanModal) {
+                addFanModal.addEventListener('click', e => {
+                    if (e.target === addFanModal) {
+                        closeModal();
+                    }
+                });
+            }
+            
+            // 定位到我的位置
+            if (myLocationBtn) {
+                myLocationBtn.addEventListener('click', function() {
+                    showToast('正在获取您的位置...');
+                    
+                    getUserLocation((error, location) => {
+                        if (error) {
+                            showToast(error);
+                            return;
+                        }
                         
-                        const userLocation = {
-                            lng: position.coords.longitude,
-                            lat: position.coords.latitude
-                        };
-                        
-                        // 将位置信息添加到标记数据中
-                        markerData.lng = userLocation.lng;
-                        markerData.lat = userLocation.lat;
-                        
-                        // 创建弹出框内容
-                        let popupContent = `
-                            <div class="p-2 min-w-[200px]">
-                                <h4 class="font-bold text-yellow-400 mb-1">${markerData.username}</h4>
-                                <p class="text-sm text-gray-300 mb-2">粉丝位置标记</p>
-                            </div>
-                        `;
-                        
-                        // 创建自定义标记元素
-                        const el = document.createElement('div');
-                        el.className = 'star-marker star-blink';
-                        
-                        // 添加标记到地图
-                        new mapboxgl.Marker(el)
-                            .setLngLat([userLocation.lng, userLocation.lat])
-                            .setPopup(new mapboxgl.Popup({
-                                offset: 25,
-                                closeButton: true
-                            }).setHTML(popupContent))
-                            .addTo(map);
-                        
-                        // 保存标记到数组
-                        markers.push(markerData);
-                        logDebug('标记添加成功', 'success');
-                        
-                        // 添加成功提示
-                        const successEl = document.createElement('div');
-                        successEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                        successEl.textContent = '标记添加成功！感谢您的参与';
-                        document.body.appendChild(successEl);
-                        setTimeout(() => successEl.remove(), 2000);
-                        
-                        // 更新统计
-                        updateStats();
-                        
-                        // 移动地图到用户位置
+                        // 定位到用户位置
                         map.flyTo({
-                            center: [userLocation.lng, userLocation.lat],
+                            center: [location.lng, location.lat],
                             zoom: 10,
                             duration: 1000
                         });
                         
-                    } catch (error) {
-                        logDebug(`添加标记失败: ${error.message}`, 'error');
-                        
-                        // 添加错误提示
-                        const errorEl = document.createElement('div');
-                        errorEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                        errorEl.textContent = '添加标记失败，请重试';
-                        document.body.appendChild(errorEl);
-                        setTimeout(() => errorEl.remove(), 2000);
-                    }
-                }, function(error) {
-                    // 移除状态提示
-                    statusEl.remove();
-                    
-                    logDebug(`获取位置失败: ${error.message}`, 'error');
-                    
-                    // 添加错误提示
-                    const errorEl = document.createElement('div');
-                    errorEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                    
-                    let errorMessage = '无法获取位置，请检查权限设置';
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage = '请允许访问您的位置';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage = '位置信息不可用';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage = '获取位置超时';
-                            break;
-                    }
-                    errorEl.textContent = errorMessage;
-                    document.body.appendChild(errorEl);
-                    setTimeout(() => errorEl.remove(), 2000);
-                }, {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
+                        showToast('已定位到您的位置');
+                    });
                 });
-            } else {
-                alert('您的浏览器不支持地理定位');
-            }
-        }
-        
-        /**
-         * 获取位置并添加标记的函数（兼容旧功能）
-         */
-        function getLocationAndAddMarker(markerData) {
-            const username = markerData.username;
-            const city = markerData.city;
-            const country = markerData.country;
-            
-            if (!username || !city || !country) {
-                // 添加错误提示
-                const errorEl = document.createElement('div');
-                errorEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                errorEl.textContent = '请填写所有必填字段';
-                document.body.appendChild(errorEl);
-                setTimeout(() => errorEl.remove(), 2000);
-                return;
             }
             
-            // 直接获取用户定位
-            if (!navigator.geolocation) {
-                alert('您的浏览器不支持地理定位');
-                return;
-            }
-            
-            // 添加提示
-            const statusEl = document.createElement('div');
-            statusEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-primary text-white px-4 py-2 rounded-full text-sm z-50';
-            statusEl.textContent = '正在获取您的位置...';
-            document.body.appendChild(statusEl);
-            
-            // 禁用按钮防止重复提交
-            saveMarkerBtn.disabled = true;
-            
-            // 获取位置并添加标记
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    // 移除状态提示
-                    statusEl.remove();
+            // 保存粉丝位置
+            if (saveFanBtn) {
+                saveFanBtn.addEventListener('click', function() {
+                    const name = document.getElementById('fan-name').value.trim();
+                    const city = document.getElementById('fan-city').value.trim();
+                    const message = document.getElementById('fan-message').value.trim();
                     
-                    try {
-                        const userLocation = {
-                            lng: position.coords.longitude,
-                                lat: position.coords.latitude
-                            };
-                            
-                            const newMarker = {
-                                lng: userLocation.lng,
-                                lat: userLocation.lat,
-                                username: username,
-                                city: city,
-                                country: country,
-                                message: message,
-                                imageUrl: imagePreviewUrl,
-                                timestamp: new Date().toISOString()
-                            };
-                            
-                            logDebug(`添加新标记在: ${userLocation.lng}, ${userLocation.lat}`);
-                            
-                            let popupContent = `
-                                <div class="p-2 min-w-[200px]">
-                                    <h4 class="font-bold text-yellow-400 mb-1">${username}</h4>
-                                    <p class="text-sm text-gray-300 mb-2">${city}, ${country}</p>
-                            `;
-                            
-                            if (message) {
-                                popupContent += `<p class="text-sm text-white mb-2">${message}</p>`;
-                            }
-                            
-                            if (imagePreviewUrl) {
-                                popupContent += `<img src="${imagePreviewUrl}" class="marker-image mx-auto" alt="用户上传图片">`;
-                            }
-                            
-                            popupContent += `</div>`;
-                            
-                            // 创建自定义标记元素
-                            const el = document.createElement('div');
-                            el.className = 'star-marker star-blink';
-                            
-                            new mapboxgl.Marker(el)
-                                .setLngLat([userLocation.lng, userLocation.lat])
-                                .setPopup(new mapboxgl.Popup({
-                                    offset: 25,
-                                    closeButton: true
-                                }).setHTML(popupContent))
-                                .addTo(map);
-                            
-                            markers.push(newMarker);
-                            logDebug('标记添加成功', 'success');
-                            
-                            // 添加成功提示
-                            const successEl = document.createElement('div');
-                            successEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                            successEl.textContent = '标记添加成功！感谢您的参与';
-                            document.body.appendChild(successEl);
-                            setTimeout(() => successEl.remove(), 2000);
-                            
-                            // 更新统计
-                            updateStats();
-                            
-                            // 关闭模态框
-                            modalContent.classList.remove('scale-100', 'opacity-100');
-                            modalContent.classList.add('scale-95', 'opacity-0');
-                            
-                            setTimeout(() => {
-                                addMarkerModal.classList.add('hidden');
-                                // 清空表单（保持用户名不变）
-                                document.getElementById('marker-city').value = '';
-                                document.getElementById('marker-country').value = '';
-                                document.getElementById('marker-message').value = '';
-                                document.getElementById('marker-image').value = '';
-                            }, 300);
-                            
-                        } catch (error) {
-                            logDebug(`添加标记失败: ${error.message}`, 'error');
-                            
-                            // 添加错误提示
-                            const errorEl = document.createElement('div');
-                            errorEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                            errorEl.textContent = '添加标记失败，请重试';
-                            document.body.appendChild(errorEl);
-                            setTimeout(() => errorEl.remove(), 2000);
+                    if (!name || !city) {
+                        showToast('请填写昵称和城市');
+                        return;
+                    }
+                    
+                    showToast('正在获取您的位置...');
+                    
+                    getUserLocation((error, location) => {
+                        if (error) {
+                            showToast(error);
+                            return;
                         }
                         
-                        // 恢复按钮状态
-                        saveMarkerBtn.disabled = false;
-                    },
-                    function(error) {
-                        // 移除状态提示
-                        statusEl.remove();
+                        // 添加标记
+                        const success = addMarker(location.lng, location.lat, name, city, message);
                         
-                        logDebug(`获取位置失败: ${error.message}`, 'error');
-                        
-                        // 添加错误提示
-                        const errorEl = document.createElement('div');
-                        errorEl.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-sm z-50';
-                        
-                        let errorMessage = '无法获取位置，请检查权限设置';
-                        switch (error.code) {
-                            case error.PERMISSION_DENIED:
-                                errorMessage = '请允许访问您的位置';
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                errorMessage = '位置信息不可用';
-                                break;
-                            case error.TIMEOUT:
-                                errorMessage = '获取位置超时';
-                                break;
+                        if (success) {
+                            showToast('位置分享成功！');
+                            closeModal();
+                            
+                            // 清空表单
+                            document.getElementById('fan-form').reset();
+                            
+                            // 定位到新添加的标记
+                            map.flyTo({
+                                center: [location.lng, location.lat],
+                                zoom: 8,
+                                duration: 1000
+                            });
+                        } else {
+                            showToast('添加失败，请重试');
                         }
-                        errorEl.textContent = errorMessage;
-                        document.body.appendChild(errorEl);
-                        setTimeout(() => errorEl.remove(), 2000);
-                        
-                        // 恢复按钮状态
-                        saveMarkerBtn.disabled = false;
-                    },
-                    {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
-                }
-            );
+                    });
+                });
+            }
         }
         
-        // 直接初始化地图和用户信息
-        initUserInfo();
-        initMap();
-        
-        // 确保添加标记模态框默认是隐藏的，并添加多重保障
+        // 页面加载完成后初始化
         window.addEventListener('load', function() {
-            const addMarkerModal = document.getElementById('add-marker-modal');
-            if (addMarkerModal) {
-                // 强制隐藏模态框
-                addMarkerModal.classList.add('hidden');
-                // 重置模态框内容状态
-                const modalContent = document.getElementById('modal-content');
-                if (modalContent) {
-                    modalContent.classList.remove('scale-100', 'opacity-100');
-                    modalContent.classList.add('scale-95', 'opacity-0');
-                }
-            }
+            initMap();
+            bindEvents();
         });
-        
-        // 立即执行一次隐藏，确保页面加载过程中不会显示
-        setTimeout(function() {
-            const addMarkerModal = document.getElementById('add-marker-modal');
-            if (addMarkerModal) {
-                addMarkerModal.classList.add('hidden');
-            }
-        }, 0);
     </script>
 </body>
 </html>

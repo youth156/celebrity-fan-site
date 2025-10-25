@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapbox测试页面</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { width: 100vw; height: 100vh; }
+        .error-info { position: absolute; top: 20px; left: 20px; background: white; padding: 10px; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 10; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="error-info" id="error-info" style="display: none;"></div>
+
+    <script>
+        console.log('开始测试Mapbox初始化');
+        console.log('Mapbox对象是否存在:', typeof mapboxgl !== 'undefined');
+        
+        try {
+            // 设置访问令牌
+            const accessToken = 'pk.eyJ1IjoiZXhhbXBsZXVzZXIiLCJhIjoiY2wxeXpldGhtMDNvNjNqcW1iNjc5OGZrbSJ9.2X83XK9Vf5gO9jK9qDcQIw';
+            mapboxgl.accessToken = accessToken;
+            console.log('访问令牌设置成功:', mapboxgl.accessToken);
+            
+            // 检查地图容器
+            const mapContainer = document.getElementById('map');
+            console.log('地图容器元素:', mapContainer);
+            
+            // 尝试创建地图实例
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [116.3974, 39.9093], // 北京坐标
+                zoom: 12
+            });
+            
+            console.log('地图实例创建成功:', map);
+            
+            // 地图加载事件
+            map.on('load', () => {
+                console.log('地图加载完成!');
+            });
+            
+            // 地图错误事件
+            map.on('error', (error) => {
+                console.error('地图错误事件:', error);
+                showError('地图加载错误事件: ' + error.message);
+            });
+            
+        } catch (error) {
+            console.error('地图初始化异常:', error);
+            showError('地图初始化异常: ' + error.message);
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error-info');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

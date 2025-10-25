@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简地图测试</title>
+    <!-- 引入Mapbox CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <!-- 引入Mapbox JS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { width: 100%; height: 600px; }
+        .loading-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>极简地图测试</h1>
+    
+    <!-- 地图加载指示器 -->
+    <div id="map-loading" class="loading-indicator">
+        <p>正在加载地图...</p>
+    </div>
+    
+    <!-- 地图容器 -->
+    <div id="map"></div>
+    
+    <!-- 错误显示区域 -->
+    <div id="map-error" class="error-message" style="display: none;"></div>
+    
+    <!-- 引入极简版地图JS -->
+    <script src="minimal-map.js"></script>
+    
+    <script>
+        // 等待DOM加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，准备初始化地图');
+            
+            // 检查starMap是否已加载
+            if (window.starMap && window.starMap.initializeMap) {
+                console.log('starMap已加载，开始初始化地图');
+                initMap();
+            } else {
+                console.log('等待starMap加载...');
+                // 监听starMap加载完成事件
+                window.addEventListener('starMapLoaded', function() {
+                    console.log('starMap加载完成事件触发');
+                    initMap();
+                });
+                
+                // 设置超时检查
+                setTimeout(function() {
+                    if (!window.starMap || !window.starMap.initializeMap) {
+                        console.error('starMap加载超时');
+                        document.getElementById('map-loading').classList.add('hidden');
+                        document.getElementById('map-error').textContent = '地图组件加载失败，请刷新页面重试';
+                        document.getElementById('map-error').style.display = 'block';
+                    }
+                }, 3000);
+            }
+        });
+        
+        // 初始化地图函数
+        function initMap() {
+            console.log('执行initMap函数');
+            
+            try {
+                // 获取加载指示器
+                const mapLoading = document.getElementById('map-loading');
+                
+                // 创建地图选项
+                const options = {
+                    center: [116.3974, 39.9093], // 北京坐标
+                    zoom: 12
+                };
+                
+                // 初始化地图
+                console.log('调用window.starMap.initializeMap');
+                window.starMap.initializeMap('map', options)
+                    .then(function(map) {
+                        console.log('地图初始化成功，返回地图实例:', map);
+                        // 隐藏加载指示器
+                        if (mapLoading) {
+                            mapLoading.style.display = 'none';
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('地图初始化失败:', error);
+                        // 隐藏加载指示器
+                        if (mapLoading) {
+                            mapLoading.style.display = 'none';
+                        }
+                        // 显示错误信息
+                        const errorDiv = document.getElementById('map-error');
+                        errorDiv.innerHTML = `地图加载失败: ${error.message || '未知错误'}`;
+                        errorDiv.style.display = 'block';
+                    });
+                    
+            } catch (error) {
+                console.error('initMap函数异常:', error);
+                document.getElementById('map-loading').style.display = 'none';
+                document.getElementById('map-error').innerHTML = `初始化函数异常: ${error.message}`;
+                document.getElementById('map-error').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地图调试页面</title>
+    <!-- 引入Mapbox GL JS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: sans-serif; }
+        #debug-output { 
+            background: #f1f1f1; 
+            padding: 10px; 
+            border-radius: 5px; 
+            max-height: 200px; 
+            overflow-y: auto;
+            font-family: monospace;
+            margin-top: 20px;
+        }
+        .debug-message { margin: 5px 0; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        .btn { 
+            padding: 10px 15px; 
+            background: #4CAF50; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 5px;
+        }
+        .btn:hover { background: #45a049; }
+        #map { height: 400px; width: 100%; margin-top: 20px; }
+    </style>
+</head>
+<body class="p-4">
+    <h1 class="text-2xl font-bold">地图调试页面</h1>
+    
+    <div>
+        <button id="init-map-btn" class="btn">初始化地图</button>
+        <button id="add-marker-btn" class="btn">添加标记</button>
+        <button id="my-location-btn" class="btn">我的位置</button>
+    </div>
+    
+    <div id="map"></div>
+    
+    <!-- 调试输出区域 -->
+    <div>
+        <h3 class="text-lg font-bold mt-4">调试信息：</h3>
+        <div id="debug-output"></div>
+    </div>
+    
+    <!-- 添加标记模态框 -->
+    <div id="add-marker-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center">
+        <div id="modal-content" class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">添加标记</h3>
+                <button id="close-modal-btn">×</button>
+            </div>
+            <div class="mb-4">
+                <label>昵称: <input id="marker-username" type="text" class="border"></label>
+            </div>
+            <div class="mb-4">
+                <label>城市: <input id="marker-city" type="text" class="border"></label>
+            </div>
+            <div class="mb-4">
+                <label>国家: <input id="marker-country" type="text" class="border"></label>
+            </div>
+            <div class="flex justify-end">
+                <button id="close-modal-btn" class="btn mr-2 bg-gray-500">取消</button>
+                <button id="save-marker-btn" class="btn">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 全局变量
+        let map = null;
+        
+        // 显示调试信息
+        function logDebug(message, type = 'info') {
+            const debugOutput = document.getElementById('debug-output');
+            const logElement = document.createElement('div');
+            logElement.className = `debug-message ${type}`;
+            logElement.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            debugOutput.appendChild(logElement);
+            debugOutput.scrollTop = debugOutput.scrollHeight;
+            console.log(message);
+        }
+        
+        // 初始化地图
+        function initMap() {
+            logDebug('开始初始化地图...');
+            
+            try {
+                // 检查Mapbox
+                if (typeof mapboxgl === 'undefined') {
+                    throw new Error('Mapbox未加载');
+                }
+                logDebug('Mapbox已加载', 'success');
+                
+                // 设置访问令牌
+                mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbmd5dW5nYmFveWVlIiwiYSI6ImNqdGJ0OXBpbjBhZWI0OXBmNjBubW1qazgifQ._h9iWj0fPWG0tLJfK3pJ0A';
+                logDebug('访问令牌已设置', 'success');
+                
+                // 创建地图
+                map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/light-v10',
+                    center: [116.3974, 39.9093],
+                    zoom: 2
+                });
+                logDebug('地图实例已创建', 'success');
+                
+                // 添加控件
+                map.addControl(new mapboxgl.NavigationControl());
+                map.addControl(new mapboxgl.FullscreenControl());
+                logDebug('已添加地图控件', 'success');
+                
+                // 地图加载完成事件
+                map.on('load', () => {
+                    logDebug('地图加载完成！', 'success');
+                    
+                    // 添加测试标记
+                    addTestMarkers();
+                });
+                
+                // 错误处理
+                map.on('error', (e) => {
+                    const errorMsg = e.error ? e.error.message : JSON.stringify(e);
+                    logDebug('地图错误: ' + errorMsg, 'error');
+                });
+                
+            } catch (error) {
+                logDebug('初始化错误: ' + error.message, 'error');
+                logDebug('错误堆栈: ' + error.stack, 'error');
+            }
+        }
+        
+        // 添加测试标记
+        function addTestMarkers() {
+            logDebug('添加测试标记...');
+            
+            const markers = [
+                { lng: 116.3974, lat: 39.9093, username: '粉丝小明', city: '北京', country: '中国' },
+                { lng: -73.935242, lat: 40.730610, username: 'BoomFan', city: '纽约', country: '美国' },
+                { lng: 139.691711, lat: 35.689487, username: 'Boom爱好者', city: '东京', country: '日本' }
+            ];
+            
+            markers.forEach(marker => {
+                try {
+                    new mapboxgl.Marker()
+                        .setLngLat([marker.lng, marker.lat])
+                        .setPopup(new mapboxgl.Popup().setHTML(
+                            `<h4>${marker.username}</h4><p>${marker.city}, ${marker.country}</p>`
+                        ))
+                        .addTo(map);
+                    logDebug(`已添加标记: ${marker.username}`, 'success');
+                } catch (error) {
+                    logDebug(`添加标记失败: ${error.message}`, 'error');
+                }
+            });
+        }
+        
+        // 打开模态框
+        function openModal() {
+            logDebug('打开模态框');
+            const modal = document.getElementById('add-marker-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            logDebug('关闭模态框');
+            const modal = document.getElementById('add-marker-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        
+        // 保存标记
+        function saveMarker() {
+            logDebug('保存标记');
+            
+            if (!map) {
+                logDebug('地图未初始化', 'error');
+                alert('地图未初始化');
+                return;
+            }
+            
+            const username = document.getElementById('marker-username').value;
+            const city = document.getElementById('marker-city').value;
+            const country = document.getElementById('marker-country').value;
+            
+            if (!username || !city || !country) {
+                logDebug('缺少必要信息', 'error');
+                alert('请填写所有必要信息');
+                return;
+            }
+            
+            try {
+                const center = map.getCenter();
+                logDebug(`添加新标记在: ${center.lng}, ${center.lat}`);
+                
+                new mapboxgl.Marker({ color: '#ff4500' })
+                    .setLngLat([center.lng, center.lat])
+                    .setPopup(new mapboxgl.Popup().setHTML(
+                        `<h4>${username}</h4><p>${city}, ${country}</p>`
+                    ))
+                    .addTo(map);
+                
+                logDebug('标记添加成功', 'success');
+                alert('标记添加成功！');
+                closeModal();
+                
+                // 清空表单
+                document.getElementById('marker-username').value = '';
+                document.getElementById('marker-city').value = '';
+                document.getElementById('marker-country').value = '';
+                
+            } catch (error) {
+                logDebug(`添加标记失败: ${error.message}`, 'error');
+                alert('添加标记失败');
+            }
+        }
+        
+        // 获取我的位置
+        function getMyLocation() {
+            logDebug('获取我的位置');
+            
+            if (!map) {
+                logDebug('地图未初始化', 'error');
+                alert('地图未初始化');
+                return;
+            }
+            
+            const btn = document.getElementById('my-location-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '定位中...';
+            
+            if (!navigator.geolocation) {
+                logDebug('浏览器不支持地理定位', 'error');
+                alert('您的浏览器不支持地理定位');
+                btn.textContent = originalText;
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    logDebug(`获取位置成功: ${position.coords.longitude}, ${position.coords.latitude}`);
+                    
+                    try {
+                        // 移动到用户位置
+                        map.flyTo({
+                            center: [position.coords.longitude, position.coords.latitude],
+                            zoom: 10
+                        });
+                        
+                        // 添加位置标记
+                        new mapboxgl.Marker({ color: '#2196F3' })
+                            .setLngLat([position.coords.longitude, position.coords.latitude])
+                            .setPopup(new mapboxgl.Popup().setHTML('<h4>我的位置</h4>'))
+                            .addTo(map);
+                            
+                        btn.textContent = originalText;
+                    } catch (error) {
+                        logDebug(`定位后操作失败: ${error.message}`, 'error');
+                        btn.textContent = originalText;
+                    }
+                },
+                (error) => {
+                    logDebug(`获取位置失败: ${error.message}`, 'error');
+                    btn.textContent = originalText;
+                    
+                    let errorMessage = '获取位置失败';
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = '请允许访问您的位置';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = '位置信息不可用';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = '获取位置超时';
+                            break;
+                    }
+                    alert(errorMessage);
+                }
+            );
+        }
+        
+        // 页面加载完成后初始化事件监听
+        document.addEventListener('DOMContentLoaded', () => {
+            logDebug('DOM加载完成', 'success');
+            
+            // 绑定按钮事件
+            document.getElementById('init-map-btn').addEventListener('click', initMap);
+            document.getElementById('add-marker-btn').addEventListener('click', openModal);
+            document.getElementById('my-location-btn').addEventListener('click', getMyLocation);
+            
+            // 模态框按钮
+            const closeBtns = document.querySelectorAll('#close-modal-btn');
+            closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+            document.getElementById('save-marker-btn').addEventListener('click', saveMarker);
+            
+            // 点击模态框背景关闭
+            document.getElementById('add-marker-modal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closeModal();
+            });
+            
+            logDebug('事件监听器已绑定', 'success');
+        });
+    </script>
+</body>
+</html>
